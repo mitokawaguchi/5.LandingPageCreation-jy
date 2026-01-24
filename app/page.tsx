@@ -5,10 +5,12 @@ import { WorksSection } from "@/components/works-section"
 import { LabSection } from "@/components/lab-section"
 import { ContactSection } from "@/components/contact-section"
 import { Footer } from "@/components/footer"
+import { ParticleCanvas } from "@/components/particle-canvas"
 
 export default function Home() {
   return (
-    <main className="selection:bg-[#00f0ff] selection:text-[#0f172a]">
+    <main className="selection:bg-primary selection:text-primary-foreground">
+      <ParticleCanvas />
       <Header />
       <HeroSection />
       <AboutSection />

@@ -4,9 +4,9 @@ import { Inter, Noto_Sans_JP, Roboto } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
-const inter = Inter({ subsets: ["latin"], variable: '--font-inter' });
-const notoSansJP = Noto_Sans_JP({ subsets: ["latin"], variable: '--font-noto' });
-const roboto = Roboto({ weight: ['400', '700'], subsets: ["latin"], variable: '--font-roboto' });
+const inter = Inter({ subsets: ["latin"], variable: '--font-inter', weight: ['300', '400', '500', '600', '700'] });
+const notoSansJP = Noto_Sans_JP({ subsets: ["latin"], variable: '--font-noto', weight: ['300', '400', '500', '600', '700'] });
+const roboto = Roboto({ subsets: ["latin"], variable: '--font-roboto', weight: ['300', '400', '500', '600', '700'] });
 
 export const metadata: Metadata = {
   title: 'Mit Tech Studio | Engineering meets Creativity',
@@ -38,7 +38,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja" className="scroll-smooth">
-      <body className={`${inter.variable} ${notoSansJP.variable} ${roboto.variable} font-sans antialiased`}>
+      <body className={`${inter.variable} ${notoSansJP.variable} font-sans antialiased`}>
         {children}
         <Analytics />
       </body>

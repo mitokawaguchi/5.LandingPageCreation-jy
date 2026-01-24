@@ -1,7 +1,6 @@
 "use client"
 
 import React from "react"
-
 import { useState, useEffect } from "react"
 import { Menu, X } from "lucide-react"
 
@@ -18,9 +17,10 @@ export function Header() {
   }, [])
 
   const navLinks = [
-    { href: "#about", label: "ABOUT" },
-    { href: "#works", label: "WORKS" },
-    { href: "#lab", label: "LAB" },
+    { href: "#about", label: "About" },
+    { href: "#works", label: "Works" },
+    { href: "#lab", label: "Lab" },
+    { href: "#contact", label: "Contact" },
   ]
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -32,82 +32,84 @@ export function Header() {
 
   return (
     <header
-      className={`fixed top-0 w-full z-50 glass transition-all duration-300 ${
-        isScrolled ? "shadow-lg bg-[#0f172a]/90" : ""
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        isScrolled ? "glass py-4" : "py-6 bg-transparent"
       }`}
     >
-      <div className="container mx-auto px-6 h-20 flex items-center justify-between">
-        <a href="#" className="text-2xl font-bold tracking-wider font-tech text-white group">
-          MIT{" "}
-          <span className="text-[#00f0ff] group-hover:text-[#bd00ff] transition-colors duration-300">
-            TECH
-          </span>{" "}
-          STUDIO
+      <nav className="container mx-auto px-6 flex items-center justify-between">
+        <a href="#" className="text-2xl font-bold tracking-tight group">
+          <span className="text-foreground group-hover:text-primary transition-colors duration-300">
+            Mit
+          </span>
+          <span className="text-primary">Tech</span>
+          <span className="text-muted-foreground text-sm ml-1 font-normal">
+            Studio
+          </span>
         </a>
 
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center space-x-8">
+        {/* Desktop Navigation */}
+        <ul className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              onClick={(e) => handleNavClick(e, link.href)}
-              className="text-slate-300 hover:text-[#00f0ff] transition-colors text-sm font-medium tracking-wide relative group"
-            >
-              {link.label}
-              <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-[#00f0ff] transition-all duration-300 group-hover:w-full" />
-            </a>
+            <li key={link.href}>
+              <a
+                href={link.href}
+                onClick={(e) => handleNavClick(e, link.href)}
+                className="text-muted-foreground hover:text-foreground underline-animate transition-colors duration-300 text-sm font-medium"
+              >
+                {link.label}
+              </a>
+            </li>
           ))}
-          <a
-            href="#contact"
-            onClick={(e) => handleNavClick(e, "#contact")}
-            className="px-5 py-2 border border-[#00f0ff] text-[#00f0ff] hover:bg-[#00f0ff] hover:text-[#0f172a] transition-all duration-300 text-sm font-bold skew-x-[-10deg] inline-block magnetic-btn"
-          >
-            <span className="inline-block skew-x-[10deg]">CONTACT</span>
-          </a>
-        </nav>
+          <li>
+            <a
+              href="#contact"
+              onClick={(e) => handleNavClick(e, "#contact")}
+              className="btn-primary bg-primary text-primary-foreground px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-primary/90"
+            >
+              Get in Touch
+            </a>
+          </li>
+        </ul>
 
         {/* Mobile Menu Button */}
         <button
+          type="button"
+          className="md:hidden text-foreground p-2"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="md:hidden text-white focus:outline-none"
           aria-label="Toggle menu"
         >
-          {isMobileMenuOpen ? <X className="w-8 h-8" /> : <Menu className="w-8 h-8" />}
+          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
-      </div>
+      </nav>
 
-      {/* Mobile Nav Overlay */}
+      {/* Mobile Menu */}
       <div
-        className={`fixed inset-0 bg-[#0f172a] z-40 transform transition-transform duration-500 ease-out flex flex-col items-center justify-center space-y-8 md:hidden ${
-          isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
+        className={`md:hidden absolute top-full left-0 right-0 glass transition-all duration-300 overflow-hidden ${
+          isMobileMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
         }`}
       >
-        <button
-          onClick={() => setIsMobileMenuOpen(false)}
-          className="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors"
-          aria-label="Close menu"
-        >
-          <X className="w-8 h-8" />
-        </button>
-        {navLinks.map((link, i) => (
-          <a
-            key={link.href}
-            href={link.href}
-            onClick={(e) => handleNavClick(e, link.href)}
-            className="text-2xl font-tech text-white hover:text-[#00f0ff] transition-all duration-300 transform hover:scale-110"
-            style={{ transitionDelay: `${i * 100}ms` }}
-          >
-            {link.label}
-          </a>
-        ))}
-        <a
-          href="#contact"
-          onClick={(e) => handleNavClick(e, "#contact")}
-          className="text-2xl font-tech text-[#00f0ff] border-b-2 border-[#00f0ff] pb-1 hover:text-white hover:border-white transition-colors"
-        >
-          CONTACT
-        </a>
+        <ul className="container mx-auto px-6 py-6 flex flex-col gap-4">
+          {navLinks.map((link) => (
+            <li key={link.href}>
+              <a
+                href={link.href}
+                onClick={(e) => handleNavClick(e, link.href)}
+                className="text-muted-foreground hover:text-foreground transition-colors duration-300 text-lg font-medium block py-2"
+              >
+                {link.label}
+              </a>
+            </li>
+          ))}
+          <li className="pt-4">
+            <a
+              href="#contact"
+              onClick={(e) => handleNavClick(e, "#contact")}
+              className="btn-primary bg-primary text-primary-foreground px-6 py-3 rounded-lg text-sm font-medium inline-block hover:bg-primary/90"
+            >
+              Get in Touch
+            </a>
+          </li>
+        </ul>
       </div>
     </header>
   )
