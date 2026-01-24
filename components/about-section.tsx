@@ -1,92 +1,98 @@
 "use client"
 
 import { useScrollReveal } from "@/hooks/use-scroll-reveal"
+import { Palette, Code2, Smartphone, HeadphonesIcon } from "lucide-react"
 
 const skills = [
-  { label: "UI/UX Design" },
-  { label: "Front-end Dev" },
-  { label: "Web Applications" },
-  { label: "Technical Support" },
+  { label: "UI/UX Design", icon: Palette, color: "#5ba3b8" },
+  { label: "Front-end Dev", icon: Code2, color: "#356A7C" },
+  { label: "Web Applications", icon: Smartphone, color: "#7ec8e3" },
+  { label: "Technical Support", icon: HeadphonesIcon, color: "#4a8a9c" },
 ]
 
 export function AboutSection() {
   const { ref: sectionRef, isVisible } = useScrollReveal<HTMLElement>({ threshold: 0.2 })
-  const { ref: imageRef, isVisible: imageVisible } = useScrollReveal<HTMLDivElement>({ threshold: 0.3 })
 
   return (
     <section
       ref={sectionRef}
       id="about"
-      className="py-24 md:py-32 relative bg-[#0f172a] border-t border-slate-800"
+      className="py-24 md:py-32 relative bg-card"
     >
       <div className="container mx-auto px-6">
-        <div className="flex flex-col md:flex-row items-center gap-16">
-          <div ref={imageRef} className="md:w-1/2 relative">
-            <div
-              className={`relative z-10 rounded overflow-hidden shadow-2xl border border-slate-700 transition-all duration-1000 ${
-                imageVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"
-              }`}
-            >
-              <img
-                src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&h=400&fit=crop"
-                alt="Studio Space"
-                className="w-full h-auto object-cover opacity-80 hover:scale-105 transition-transform duration-700"
-              />
+        <div className="flex flex-col lg:flex-row items-center gap-16">
+          {/* Image Card */}
+          <div className={`lg:w-1/2 transition-all duration-700 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}>
+            <div className="relative">
+              <div className="rounded-2xl overflow-hidden border border-border card-glow">
+                <img
+                  src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&h=400&fit=crop"
+                  alt="Studio Space"
+                  className="w-full h-auto object-cover"
+                />
+              </div>
+              {/* Floating Badge */}
+              <div 
+                className={`absolute -bottom-4 -right-4 bg-secondary rounded-2xl p-4 border border-border transition-all duration-700 delay-300 ${
+                  isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center">
+                    <span className="text-lg">✨</span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">Since 2020</p>
+                    <p className="text-xs text-muted-foreground">Building the web</p>
+                  </div>
+                </div>
+              </div>
             </div>
-            {/* Decorative Frame */}
-            <div
-              className={`absolute -bottom-6 -right-6 w-full h-full border-2 border-[#00f0ff]/30 -z-0 transition-all duration-1000 delay-300 ${
-                imageVisible ? "opacity-100 translate-x-0 translate-y-0" : "opacity-0 translate-x-5 translate-y-5"
-              }`}
-            />
           </div>
 
-          <div className="md:w-1/2">
-            <h2
-              className={`text-3xl md:text-4xl font-bold mb-6 flex items-center transition-all duration-700 ${
+          {/* Content */}
+          <div className="lg:w-1/2">
+            <div
+              className={`transition-all duration-700 delay-100 ${
                 isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
               }`}
             >
-              <span
-                className={`h-[2px] bg-[#00f0ff] mr-4 transition-all duration-700 delay-200 ${
-                  isVisible ? "w-12" : "w-0"
-                }`}
-              />
-              <span className="text-white">About Us</span>
-            </h2>
-
-            <h3
-              className={`text-xl md:text-2xl font-light text-slate-200 mb-6 leading-relaxed transition-all duration-700 delay-200 ${
-                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
-              }`}
-            >
-              デザインとエンジニアリングの境界をなくす。
-            </h3>
+              <span className="text-primary text-sm font-semibold tracking-wide uppercase">About Us</span>
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-2 mb-4 tracking-tight">
+                デザインとエンジニアリングの境界をなくす。
+              </h2>
+            </div>
 
             <p
-              className={`text-slate-400 mb-6 leading-loose transition-all duration-700 delay-300 ${
+              className={`text-muted-foreground text-lg leading-relaxed mb-8 transition-all duration-700 delay-200 ${
                 isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
               }`}
             >
               Mit Tech Studioは、単に綺麗なサイトを作るだけではありません。
               ビジネスの課題を解決するための「機能美」と、ユーザーの心を動かす「体験」を両立させます。
-              スタートアップの立ち上げから、企業のDX推進まで、確かな技術力でサポートします。
             </p>
 
-            <ul className="grid grid-cols-2 gap-4 text-sm text-slate-300 font-tech">
-              {skills.map((skill, i) => (
-                <li
+            {/* Skills Grid */}
+            <div className={`grid grid-cols-2 gap-3 stagger-children ${isVisible ? 'visible' : ''}`}>
+              {skills.map((skill) => (
+                <div
                   key={skill.label}
-                  className={`flex items-center transition-all duration-500 group cursor-default ${
-                    isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-5"
-                  }`}
-                  style={{ transitionDelay: `${400 + i * 100}ms` }}
+                  className="bg-secondary p-4 rounded-xl group cursor-default border border-border card-glow"
                 >
-                  <span className="text-[#00f0ff] mr-2 group-hover:translate-x-1 transition-transform">/</span>
-                  <span className="group-hover:text-[#00f0ff] transition-colors">{skill.label}</span>
-                </li>
+                  <div className="flex items-center gap-3">
+                    <div 
+                      className="w-10 h-10 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110"
+                      style={{ background: `${skill.color}20` }}
+                    >
+                      <skill.icon className="w-5 h-5" style={{ color: skill.color }} />
+                    </div>
+                    <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
+                      {skill.label}
+                    </span>
+                  </div>
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
         </div>
       </div>

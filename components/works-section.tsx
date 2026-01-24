@@ -1,37 +1,33 @@
 "use client"
 
 import React from "react"
-
 import { useScrollReveal } from "@/hooks/use-scroll-reveal"
-import { useRef, useState } from "react"
+import { ArrowUpRight } from "lucide-react"
 
 const works = [
   {
     title: "TaskFlow",
-    category: "SaaS LP",
+    category: "SaaS Landing Page",
     description: "マイクロインタラクションを重視したタスク管理ツールのLP。スムーズな操作感を視覚的に表現。",
-    tags: ["#Nuxt.js", "#GSAP"],
+    tags: ["Nuxt.js", "GSAP"],
     image: "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=600&h=400&fit=crop",
-    color: "#2563eb",
-    hoverColor: "#00f0ff",
+    color: "#356A7C",
   },
   {
     title: "LUMIÈRE",
     category: "EC Site",
     description: "オーガニックコスメのブランドサイト。余白を活かした高級感のあるレイアウト。",
-    tags: ["#Shopify", "#Liquid"],
+    tags: ["Shopify", "Liquid"],
     image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=600&h=400&fit=crop",
-    color: "#db2777",
-    hoverColor: "#bd00ff",
+    color: "#5ba3b8",
   },
   {
     title: "Sales Insight",
     category: "Dashboard",
     description: "業務管理用ダッシュボードUI。Reactを用いたリアルタイムなデータ可視化を実現。",
-    tags: ["#React", "#TypeScript", "#Recharts"],
+    tags: ["React", "TypeScript", "Recharts"],
     image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop",
-    color: "#4f46e5",
-    hoverColor: "#00f0ff",
+    color: "#7ec8e3",
   },
 ]
 
@@ -44,87 +40,61 @@ function WorkCard({
   index: number
   isVisible: boolean
 }) {
-  const cardRef = useRef<HTMLDivElement>(null)
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-  const [isHovered, setIsHovered] = useState(false)
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return
-    const rect = cardRef.current.getBoundingClientRect()
-    const x = (e.clientX - rect.left - rect.width / 2) / 20
-    const y = (e.clientY - rect.top - rect.height / 2) / 20
-    setMousePosition({ x, y })
-  }
-
-  const handleMouseLeave = () => {
-    setMousePosition({ x: 0, y: 0 })
-    setIsHovered(false)
-  }
-
   return (
     <article
-      ref={cardRef}
-      className={`group relative bg-[#1e293b] rounded-xl overflow-hidden shadow-lg border border-slate-700 transition-all duration-500 cursor-pointer ${
+      className={`bg-card rounded-2xl overflow-hidden group transition-all duration-500 border border-border card-glow ${
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
       }`}
-      style={{
-        transitionDelay: `${index * 150}ms`,
-        transform: isHovered
-          ? `perspective(1000px) rotateX(${-mousePosition.y}deg) rotateY(${mousePosition.x}deg) translateY(-8px)`
-          : "perspective(1000px) rotateX(0) rotateY(0) translateY(0)",
-        borderColor: isHovered ? work.hoverColor : undefined,
-      }}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={handleMouseLeave}
+      style={{ transitionDelay: `${index * 100}ms` }}
     >
-      <div className="aspect-video overflow-hidden relative">
+      {/* Image */}
+      <div className="aspect-[4/3] overflow-hidden relative">
         <img
           src={work.image || "/placeholder.svg"}
           alt={work.title}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
-        <div
-          className="absolute inset-0 bg-gradient-to-t from-[#1e293b] to-transparent opacity-0 group-hover:opacity-60 transition-opacity duration-500"
-        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        
+        {/* Hover Arrow */}
+        <div className="absolute top-4 right-4 w-10 h-10 bg-primary/90 backdrop-blur rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+          <ArrowUpRight className="w-5 h-5 text-primary-foreground" />
+        </div>
       </div>
 
-      <div className="p-6 relative">
-        <div className="flex justify-between items-start mb-3">
-          <h3
-            className="text-xl font-bold text-white transition-colors duration-300"
-            style={{ color: isHovered ? work.hoverColor : undefined }}
-          >
-            {work.title}
-          </h3>
-          <span className="text-xs font-tech px-2 py-1 bg-slate-700 rounded text-slate-300 group-hover:bg-slate-600 transition-colors">
-            {work.category}
-          </span>
+      {/* Content */}
+      <div className="p-5">
+        <div className="flex items-start justify-between mb-2">
+          <div>
+            <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
+              {work.title}
+            </h3>
+            <span 
+              className="text-xs font-medium px-2 py-0.5 rounded-full"
+              style={{ 
+                background: `${work.color}20`,
+                color: work.color 
+              }}
+            >
+              {work.category}
+            </span>
+          </div>
         </div>
 
-        <p className="text-slate-400 text-sm mb-4 group-hover:text-slate-300 transition-colors">
+        <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
           {work.description}
         </p>
 
-        <div className="flex flex-wrap gap-2 text-xs text-slate-500 font-mono">
+        <div className="flex flex-wrap gap-2">
           {work.tags.map((tag) => (
             <span
               key={tag}
-              className="transition-colors duration-300 group-hover:text-slate-400"
+              className="text-xs px-2.5 py-1 bg-secondary text-muted-foreground rounded-md font-medium border border-border"
             >
               {tag}
             </span>
           ))}
         </div>
-
-        {/* Animated border glow */}
-        <div
-          className="absolute bottom-0 left-0 h-[2px] bg-gradient-to-r transition-all duration-500"
-          style={{
-            width: isHovered ? "100%" : "0%",
-            background: `linear-gradient(to right, transparent, ${work.hoverColor}, transparent)`,
-          }}
-        />
       </div>
     </article>
   )
@@ -134,23 +104,26 @@ export function WorksSection() {
   const { ref, isVisible } = useScrollReveal<HTMLElement>({ threshold: 0.1 })
 
   return (
-    <section ref={ref} id="works" className="py-24 md:py-32 bg-slate-900 relative">
+    <section ref={ref} id="works" className="py-24 md:py-32 bg-background bg-grid">
       <div className="container mx-auto px-6">
-        <div className="mb-16 text-center">
-          <h2
-            className={`text-3xl md:text-4xl font-bold inline-block relative pb-2 transition-all duration-700 ${
+        {/* Header */}
+        <div className="text-center mb-16">
+          <span
+            className={`text-primary text-sm font-semibold tracking-wide uppercase transition-all duration-700 ${
               isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
             }`}
           >
-            <span className="text-white">Selected Works</span>
-            <span
-              className={`absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-transparent via-[#bd00ff] to-transparent transition-all duration-1000 delay-300 ${
-                isVisible ? "w-full" : "w-0"
-              }`}
-            />
+            Portfolio
+          </span>
+          <h2
+            className={`text-3xl md:text-4xl font-bold text-foreground mt-2 tracking-tight transition-all duration-700 delay-100 ${
+              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
+            }`}
+          >
+            Selected Works
           </h2>
           <p
-            className={`mt-4 text-slate-400 transition-all duration-700 delay-200 ${
+            className={`mt-4 text-muted-foreground transition-all duration-700 delay-200 ${
               isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
             }`}
           >
@@ -158,7 +131,8 @@ export function WorksSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* Works Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {works.map((work, i) => (
             <WorkCard key={work.title} work={work} index={i} isVisible={isVisible} />
           ))}
