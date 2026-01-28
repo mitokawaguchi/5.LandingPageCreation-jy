@@ -3,6 +3,8 @@
 import { useScrollReveal } from "@/hooks/use-scroll-reveal"
 import { Palette, Code2, Smartphone, HeadphonesIcon } from "lucide-react"
 
+const aboutStack = ["Next.js", "React", "TypeScript", "Tailwind CSS", "Vercel"]
+
 const skills = [
   { label: "UI/UX Design", ja: "UI/UXデザイン", icon: Palette, color: "#5ba3b8" },
   { label: "Front-end Dev", ja: "フロントエンド開発", icon: Code2, color: "#356A7C" },
@@ -23,14 +25,47 @@ export function AboutSection() {
         <div className="flex flex-col lg:flex-row items-center gap-16">
           {/* Image Card */}
           <div className={`lg:w-1/2 transition-all duration-700 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}>
-            <div className="relative">
+            <div className="relative group">
               <div className="rounded-2xl overflow-hidden border border-border card-glow">
-                <img
-                  src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&h=400&fit=crop"
-                  alt="Studio Space"
-                  className="w-full h-auto object-cover"
-                />
+                <div className="relative">
+                  <img
+                    src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&h=400&fit=crop"
+                    alt="Studio Space"
+                    className="w-full h-auto object-cover"
+                  />
+
+                  {/* Desktop hover: tech tags overlay + animated background */}
+                  <div className="hidden md:block absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="absolute inset-0 gradient-animate opacity-35" />
+                    <div className="absolute inset-0 bg-black/35" />
+                    <div className="relative h-full w-full p-4 flex items-end">
+                      <div className="flex flex-wrap gap-2">
+                        {aboutStack.map((tag) => (
+                          <span
+                            key={tag}
+                            className="text-xs px-2.5 py-1 bg-secondary/80 text-foreground rounded-md font-medium border border-border backdrop-blur"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
+
+              {/* Mobile: always show stack under image */}
+              <div className="mt-3 flex flex-wrap gap-2 md:hidden">
+                {aboutStack.map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-xs px-2.5 py-1 bg-secondary text-muted-foreground rounded-md font-medium border border-border"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+
               {/* Floating Badge */}
               <div 
                 className={`absolute -bottom-4 -right-4 bg-secondary rounded-2xl p-4 border border-border transition-all duration-700 delay-300 ${

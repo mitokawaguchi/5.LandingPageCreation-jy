@@ -58,6 +58,24 @@ function WorkCard({
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+        {/* Desktop hover: tech tags overlay + animated background */}
+        <div className="hidden md:block absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <div className="absolute inset-0 gradient-animate opacity-35" />
+          <div className="absolute inset-0 bg-black/35" />
+          <div className="relative h-full w-full p-4 flex items-end">
+            <div className="flex flex-wrap gap-2">
+              {work.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="text-xs px-2.5 py-1 bg-secondary/80 text-foreground rounded-md font-medium border border-border backdrop-blur"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
         
         {/* Hover Arrow */}
         <div className="absolute top-4 right-4 w-10 h-10 bg-primary/90 backdrop-blur rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
@@ -100,7 +118,7 @@ function WorkCard({
           {work.description}
         </p>
 
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 md:hidden">
           {work.tags.map((tag) => (
             <span
               key={tag}
