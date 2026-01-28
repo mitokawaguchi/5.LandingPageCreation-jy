@@ -1,7 +1,20 @@
 "use client"
 
 import { useScrollReveal } from "@/hooks/use-scroll-reveal"
-import { Github, Twitter, Mail } from "lucide-react"
+import { Github, Instagram, Mail } from "lucide-react"
+
+function ThreadsIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path
+        d="M7.25 3.5h4.65c4.6 0 7.35 2.53 7.35 6.95 0 4.35-2.62 7.05-7.05 7.05-1.28 0-2.4-.23-3.36-.7-.1 1.45-.86 2.7-2.28 3.75-.9.67-2.05 1.08-3.46 1.25v-2.2c2.3-.28 3.45-1.55 3.45-3.8V3.5Zm4.65 11.95c2.86 0 4.55-1.8 4.55-4.95 0-3.17-1.78-4.85-4.95-4.85H9.7v9.8c.7.0 1.37-.0 2.2 0Z"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
 
 export function ContactSection() {
   const { ref, isVisible } = useScrollReveal<HTMLElement>({ threshold: 0.2 })
@@ -56,14 +69,27 @@ export function ContactSection() {
             }`}
           >
             <a
-              href="#"
+              href="https://www.instagram.com/mito_112_/"
+              target="_blank"
+              rel="noopener noreferrer"
               className="w-12 h-12 bg-secondary rounded-full flex items-center justify-center text-muted-foreground hover:bg-primary/20 hover:text-primary border border-border active:scale-95 transition-all duration-200"
             >
-              <span className="sr-only">Twitter</span>
-              <Twitter className="w-5 h-5" />
+              <span className="sr-only">Instagram</span>
+              <Instagram className="w-5 h-5" />
             </a>
             <a
-              href="#"
+              href="https://www.threads.net/@mito_112_"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-12 h-12 bg-secondary rounded-full flex items-center justify-center text-muted-foreground hover:bg-primary/20 hover:text-primary border border-border active:scale-95 transition-all duration-200"
+            >
+              <span className="sr-only">Threads</span>
+              <ThreadsIcon className="w-5 h-5" />
+            </a>
+            <a
+              href="https://github.com/mitokawaguchi"
+              target="_blank"
+              rel="noopener noreferrer"
               className="w-12 h-12 bg-secondary rounded-full flex items-center justify-center text-muted-foreground hover:bg-primary/20 hover:text-primary border border-border active:scale-95 transition-all duration-200"
             >
               <span className="sr-only">GitHub</span>
