@@ -61,8 +61,8 @@ export function ParticleCanvas() {
       const h = window.innerHeight;
       const t = performance.now() / 1000;
 
-      // Trail / fade (techy "HUD" feel)
-      ctx.fillStyle = "rgba(10, 17, 24, 0.14)";
+      // Trail / fade (faster decay to avoid dirty trails)
+      ctx.fillStyle = "rgba(10, 17, 24, 0.32)";
       ctx.fillRect(0, 0, w, h);
 
       // Subtle scanning line
@@ -119,8 +119,8 @@ export function ParticleCanvas() {
             ctx.lineWidth = 0.8;
             ctx.stroke();
 
-            // "Data packet" moving along the circuit line (limited frequency)
-            if ((i + (particlesRef.current.length - 1)) % 12 === 0) {
+            // "Electrical signal" running on the circuit (limited frequency)
+            if ((i + (particlesRef.current.length - 1)) % 18 === 0) {
               const seg1 = Math.abs(ey - particle.y) + Math.abs(ex - particle.x);
               const seg2 = Math.abs(other.x - ex) + Math.abs(other.y - ey);
               const total = Math.max(1, seg1 + seg2);
@@ -128,17 +128,48 @@ export function ParticleCanvas() {
               const phase = ((t * speed) + i * 7) % total;
               let px = particle.x;
               let py = particle.y;
+              let ax = particle.x;
+              let ay = particle.y;
+              let bx = ex;
+              let by = ey;
               if (phase <= seg1) {
                 const p = phase / Math.max(1, seg1);
                 px = particle.x + (ex - particle.x) * p;
                 py = particle.y + (ey - particle.y) * p;
+                ax = particle.x; ay = particle.y; bx = ex; by = ey;
               } else {
                 const p = (phase - seg1) / Math.max(1, seg2);
                 px = ex + (other.x - ex) * p;
                 py = ey + (other.y - ey) * p;
+                ax = ex; ay = ey; bx = other.x; by = other.y;
               }
-              ctx.fillStyle = "rgba(240, 244, 248, 0.55)";
-              ctx.fillRect(px - 1, py - 1, 2, 2);
+
+              // Glow dot + short glowing segment along the circuit direction
+              const vx = bx - ax;
+              const vy = by - ay;
+              const vlen = Math.max(1, Math.hypot(vx, vy));
+              const ux = vx / vlen;
+              const uy = vy / vlen;
+              const segLen = 10;
+              const sx = px - ux * segLen;
+              const sy = py - uy * segLen;
+              const tx = px + ux * segLen;
+              const ty = py + uy * segLen;
+
+              ctx.save();
+              ctx.globalCompositeOperation = "lighter";
+              ctx.strokeStyle = "rgba(240, 244, 248, 0.55)";
+              ctx.lineWidth = 2;
+              ctx.shadowColor = "rgba(91, 163, 184, 0.8)";
+              ctx.shadowBlur = 12;
+              ctx.beginPath();
+              ctx.moveTo(sx, sy);
+              ctx.lineTo(tx, ty);
+              ctx.stroke();
+
+              ctx.fillStyle = "rgba(240, 244, 248, 0.65)";
+              ctx.fillRect(px - 1.5, py - 1.5, 3, 3);
+              ctx.restore();
             }
           }
         });

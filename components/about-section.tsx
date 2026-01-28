@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { useScrollReveal } from "@/hooks/use-scroll-reveal"
 import { Palette, Code2, Smartphone, HeadphonesIcon } from "lucide-react"
 
@@ -12,6 +13,13 @@ const skills = [
 
 export function AboutSection() {
   const { ref: sectionRef, isVisible } = useScrollReveal<HTMLElement>({ threshold: 0.2 })
+  const [activeSkillLabel, setActiveSkillLabel] = useState<string | null>(null)
+
+  const toggleSkill = (label: string) => {
+    // Only enable tap-to-toggle on mobile/tablet. Desktop uses hover.
+    if (typeof window !== "undefined" && window.matchMedia("(min-width: 768px)").matches) return
+    setActiveSkillLabel((prev) => (prev === label ? null : label))
+  }
 
   return (
     <section
@@ -76,12 +84,27 @@ export function AboutSection() {
             {/* Skills Grid */}
             <div className={`grid grid-cols-2 gap-3 stagger-children ${isVisible ? 'visible' : ''}`}>
               {skills.map((skill) => (
-                <div
+                <button
+                  type="button"
                   key={skill.label}
-                  className="bg-secondary p-4 rounded-xl group cursor-default border border-border card-glow relative"
+                  onClick={() => toggleSkill(skill.label)}
+                  aria-expanded={activeSkillLabel === skill.label}
+                  className="bg-secondary p-4 rounded-xl group cursor-default border border-border card-glow relative text-left w-full"
                 >
+                  {/*
+                    Desktop: hover to show stack
+                    Mobile: tap to show stack
+                  */}
+                  {(() => {
+                    const isActive = activeSkillLabel === skill.label
+                    return (
+                      <>
                   {/* Desktop: show stack on hover */}
-                  <div className="hidden md:flex absolute inset-0 z-10 rounded-xl bg-background/90 backdrop-blur border border-border opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none p-3 items-center justify-center">
+                  <div
+                    className={`absolute inset-0 z-10 rounded-xl bg-background/90 backdrop-blur border border-border transition-opacity duration-200 pointer-events-none p-3 flex items-center justify-center ${
+                      isActive ? "opacity-100" : "opacity-0 md:group-hover:opacity-100"
+                    }`}
+                  >
                     <div className="flex flex-wrap gap-1.5 justify-center max-w-[95%]">
                       {skill.stack.map((tag) => (
                         <span
@@ -93,7 +116,11 @@ export function AboutSection() {
                       ))}
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 transition-opacity duration-200 md:group-hover:opacity-0">
+                  <div
+                    className={`flex items-center gap-3 transition-opacity duration-200 md:group-hover:opacity-0 ${
+                      isActive ? "opacity-0" : ""
+                    }`}
+                  >
                     <div 
                       className="w-10 h-10 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110"
                       style={{ background: `${skill.color}20` }}
@@ -104,20 +131,12 @@ export function AboutSection() {
                       <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors leading-snug">
                         {skill.label}
                       </span>
-                      {/* Mobile: always show stack */}
-                      <div className="md:hidden mt-1 flex flex-wrap gap-1.5">
-                        {skill.stack.map((tag) => (
-                          <span
-                            key={tag}
-                            className="text-[11px] px-2 py-0.5 bg-secondary text-muted-foreground rounded-md font-medium border border-border"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
                     </div>
                   </div>
-                </div>
+                      </>
+                    )
+                  })()}
+                </button>
               ))}
             </div>
           </div>
