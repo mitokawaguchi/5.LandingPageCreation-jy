@@ -286,3 +286,35 @@
   background-size: 400% 400%;
   animation: gradient-rotate 15s ease infinite;
 }
+
+/* Header logo hover: strong animation */
+@keyframes logo-glow {
+  0%, 100% { text-shadow: 0 0 0 rgba(0,0,0,0); }
+  50% { text-shadow: 0 0 18px rgba(91, 163, 184, 0.6), 0 0 40px rgba(53, 106, 124, 0.45); }
+}
+
+.logo-animate .logo-mit {
+  display: inline-block;
+  transition: transform 0.25s ease, letter-spacing 0.25s ease;
+}
+
+.logo-animate .logo-tech {
+  display: inline-block;
+  transition: transform 0.25s ease;
+}
+
+.logo-animate:hover .logo-mit {
+  letter-spacing: 0.03em;
+  transform: translateY(-1px) scale(1.04);
+  background: linear-gradient(90deg, #f0f4f8 0%, #356A7C 25%, #5ba3b8 50%, #356A7C 75%, #f0f4f8 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: text-shimmer 1.2s linear infinite, logo-glow 1.1s ease-in-out infinite;
+}
+
+.logo-animate:hover .logo-tech {
+  transform: translateY(-1px) scale(1.02);
+  animation: logo-glow 1.1s ease-in-out infinite;
+}

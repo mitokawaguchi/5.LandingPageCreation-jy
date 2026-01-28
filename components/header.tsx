@@ -37,11 +37,11 @@ export function Header() {
       }`}
     >
       <nav className="container mx-auto px-6 flex items-center justify-between">
-        <a href="#" className="text-2xl font-bold tracking-tight group">
-          <span className="text-foreground group-hover:text-primary transition-colors duration-300">
+        <a href="#" className="text-2xl font-bold tracking-tight group logo-animate">
+          <span className="text-foreground transition-colors duration-300 logo-mit">
             Mit
           </span>
-          <span className="text-primary">Tech</span>
+          <span className="text-primary logo-tech">Tech</span>
           <span className="text-muted-foreground text-sm ml-1 font-normal">
             Studio
           </span>

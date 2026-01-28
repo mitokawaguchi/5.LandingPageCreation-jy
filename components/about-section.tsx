@@ -81,7 +81,7 @@ export function AboutSection() {
                   className="bg-secondary p-4 rounded-xl group cursor-default border border-border card-glow relative"
                 >
                   {/* Desktop: show stack on hover */}
-                  <div className="hidden md:flex absolute inset-0 rounded-xl bg-background/90 backdrop-blur border border-border opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none p-3 items-center justify-center">
+                  <div className="hidden md:flex absolute inset-0 z-10 rounded-xl bg-background/90 backdrop-blur border border-border opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none p-3 items-center justify-center">
                     <div className="flex flex-wrap gap-1.5 justify-center max-w-[95%]">
                       {skill.stack.map((tag) => (
                         <span
@@ -93,7 +93,7 @@ export function AboutSection() {
                       ))}
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 transition-opacity duration-200 md:group-hover:opacity-0">
                     <div 
                       className="w-10 h-10 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110"
                       style={{ background: `${skill.color}20` }}
