@@ -24,6 +24,7 @@ export function ParticleCanvas() {
   const particlesRef = useRef<Particle[]>([]);
   const signalsRef = useRef<Signal[]>([]);
   const lastTimeRef = useRef<number>(0);
+  const lastDrawRef = useRef<number>(0);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -32,8 +33,28 @@ export function ParticleCanvas() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    const reducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const coarsePointer =
+      typeof window !== "undefined" &&
+      window.matchMedia &&
+      (window.matchMedia("(pointer: coarse)").matches || window.matchMedia("(hover: none)").matches);
+
+    // Mobile/low-power tuning (keeps feel but reduces load a lot)
+    const TARGET_FPS = coarsePointer ? 30 : 60;
+    const CONNECTION_DIST = coarsePointer ? 115 : 130;
+    const PARTICLE_COUNT = coarsePointer ? 38 : 80;
+    const SIGNAL_COUNT = coarsePointer ? 10 : 18;
+    const FADE_ALPHA = coarsePointer ? 0.42 : 0.32;
+    const SIGNAL_SHADOW = coarsePointer ? 10 : 16;
+    const SIGNAL_TRAIL = coarsePointer ? 18 : 28;
+
     const resizeCanvas = () => {
-      const dpr = window.devicePixelRatio || 1;
+      // Capping DPR is critical on mobile (dpr=3 makes canvas very heavy)
+      const rawDpr = window.devicePixelRatio || 1;
+      const dpr = Math.min(coarsePointer ? 1.5 : 2, rawDpr);
       const w = window.innerWidth;
       const h = window.innerHeight;
       canvas.width = Math.floor(w * dpr);
@@ -47,8 +68,7 @@ export function ParticleCanvas() {
     window.addEventListener("resize", resizeCanvas);
 
     // Initialize particles
-    const particleCount = 80;
-    particlesRef.current = Array.from({ length: particleCount }, () => ({
+    particlesRef.current = Array.from({ length: PARTICLE_COUNT }, () => ({
       x: Math.random() * window.innerWidth,
       y: Math.random() * window.innerHeight,
       vx: (Math.random() - 0.5) * 0.5,
@@ -56,8 +76,6 @@ export function ParticleCanvas() {
       size: Math.random() * 2 + 1,
       opacity: Math.random() * 0.5 + 0.2,
     }));
-
-    const CONNECTION_DIST = 130;
 
     const pickNeighborIndex = (from: number) => {
       const particles = particlesRef.current;
@@ -76,15 +94,14 @@ export function ParticleCanvas() {
     };
 
     // Initialize "electrical signals" that travel node-to-node
-    const signalCount = 18;
-    signalsRef.current = Array.from({ length: signalCount }, () => {
-      const from = Math.floor(Math.random() * particleCount);
-      const to = pickNeighborIndex(from) ?? ((from + 1) % particleCount);
+    signalsRef.current = Array.from({ length: SIGNAL_COUNT }, () => {
+      const from = Math.floor(Math.random() * PARTICLE_COUNT);
+      const to = pickNeighborIndex(from) ?? ((from + 1) % PARTICLE_COUNT);
       return {
         from,
         to,
         progress: Math.random(),
-        speed: 140 + Math.random() * 90,
+        speed: (coarsePointer ? 120 : 140) + Math.random() * (coarsePointer ? 70 : 90),
       };
     });
 
@@ -104,8 +121,36 @@ export function ParticleCanvas() {
       const dt = Math.min(0.05, Math.max(0, (now - (lastTimeRef.current || now)) / 1000));
       lastTimeRef.current = now;
 
+      // If user prefers reduced motion, keep it subtle (nearly static)
+      if (reducedMotion) {
+        ctx.clearRect(0, 0, w, h);
+        // Draw a very subtle grid-like scan once in a while
+        if (now - (lastDrawRef.current || 0) > 150) {
+          lastDrawRef.current = now;
+          const scan = (t * 120) % (w + h);
+          ctx.beginPath();
+          ctx.moveTo(-h + scan, 0);
+          ctx.lineTo(scan, h);
+          ctx.strokeStyle = "rgba(91, 163, 184, 0.05)";
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+        animationId = requestAnimationFrame(animate);
+        return;
+      }
+
+      // FPS limit on mobile to reduce CPU/GPU load
+      if (TARGET_FPS < 60) {
+        const minFrameMs = 1000 / TARGET_FPS;
+        if (now - (lastDrawRef.current || 0) < minFrameMs) {
+          animationId = requestAnimationFrame(animate);
+          return;
+        }
+        lastDrawRef.current = now;
+      }
+
       // Trail / fade (faster decay to avoid dirty trails)
-      ctx.fillStyle = "rgba(10, 17, 24, 0.32)";
+      ctx.fillStyle = `rgba(10, 17, 24, ${FADE_ALPHA})`;
       ctx.fillRect(0, 0, w, h);
 
       // Subtle scanning line
@@ -199,9 +244,8 @@ export function ParticleCanvas() {
         const px = fromP.x + dx * s.progress;
         const py = fromP.y + dy * s.progress;
 
-        const trail = 28;
-        const sx = px - ux * trail;
-        const sy = py - uy * trail;
+        const sx = px - ux * SIGNAL_TRAIL;
+        const sy = py - uy * SIGNAL_TRAIL;
 
         ctx.save();
         ctx.globalCompositeOperation = "lighter";
@@ -213,7 +257,7 @@ export function ParticleCanvas() {
         ctx.strokeStyle = grad;
         ctx.lineWidth = 2.2;
         ctx.shadowColor = "rgba(91, 163, 184, 0.9)";
-        ctx.shadowBlur = 16;
+        ctx.shadowBlur = SIGNAL_SHADOW;
         ctx.beginPath();
         ctx.moveTo(sx, sy);
         ctx.lineTo(px, py);
