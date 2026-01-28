@@ -3,13 +3,11 @@
 import { useScrollReveal } from "@/hooks/use-scroll-reveal"
 import { Palette, Code2, Smartphone, HeadphonesIcon } from "lucide-react"
 
-const aboutStack = ["Next.js", "React", "TypeScript", "Tailwind CSS", "Vercel"]
-
 const skills = [
-  { label: "UI/UX Design", ja: "UI/UXデザイン", icon: Palette, color: "#5ba3b8" },
-  { label: "Front-end Dev", ja: "フロントエンド開発", icon: Code2, color: "#356A7C" },
-  { label: "Web Applications", ja: "Webアプリ開発", icon: Smartphone, color: "#7ec8e3" },
-  { label: "Technical Support", ja: "技術サポート", icon: HeadphonesIcon, color: "#4a8a9c" },
+  { label: "UI/UX Design", stack: ["Figma", "Design System", "Prototyping"], icon: Palette, color: "#5ba3b8" },
+  { label: "Front-end Dev", stack: ["HTML", "CSS", "JavaScript", "TypeScript", "React"], icon: Code2, color: "#356A7C" },
+  { label: "Web Applications", stack: ["Next.js", "API", "Auth", "DB"], icon: Smartphone, color: "#7ec8e3" },
+  { label: "Technical Support", stack: ["Git", "CI/CD", "Performance", "Accessibility"], icon: HeadphonesIcon, color: "#4a8a9c" },
 ]
 
 export function AboutSection() {
@@ -25,45 +23,13 @@ export function AboutSection() {
         <div className="flex flex-col lg:flex-row items-center gap-16">
           {/* Image Card */}
           <div className={`lg:w-1/2 transition-all duration-700 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}>
-            <div className="relative group">
+            <div className="relative">
               <div className="rounded-2xl overflow-hidden border border-border card-glow">
-                <div className="relative">
-                  <img
-                    src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&h=400&fit=crop"
-                    alt="Studio Space"
-                    className="w-full h-auto object-cover"
-                  />
-
-                  {/* Desktop hover: tech tags overlay + animated background */}
-                  <div className="hidden md:block absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="absolute inset-0 gradient-animate opacity-35" />
-                    <div className="absolute inset-0 bg-black/35" />
-                    <div className="relative h-full w-full p-4 flex items-end">
-                      <div className="flex flex-wrap gap-2">
-                        {aboutStack.map((tag) => (
-                          <span
-                            key={tag}
-                            className="text-xs px-2.5 py-1 bg-secondary/80 text-foreground rounded-md font-medium border border-border backdrop-blur"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Mobile: always show stack under image */}
-              <div className="mt-3 flex flex-wrap gap-2 md:hidden">
-                {aboutStack.map((tag) => (
-                  <span
-                    key={tag}
-                    className="text-xs px-2.5 py-1 bg-secondary text-muted-foreground rounded-md font-medium border border-border"
-                  >
-                    {tag}
-                  </span>
-                ))}
+                <img
+                  src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&h=400&fit=crop"
+                  alt="Studio Space"
+                  className="w-full h-auto object-cover"
+                />
               </div>
 
               {/* Floating Badge */}
@@ -114,10 +80,19 @@ export function AboutSection() {
                   key={skill.label}
                   className="bg-secondary p-4 rounded-xl group cursor-default border border-border card-glow relative"
                 >
-                  {/* Desktop: show Japanese label on hover */}
-                  <span className="hidden md:block absolute -top-3 left-1/2 -translate-x-1/2 px-2 py-1 rounded-md bg-background/90 backdrop-blur border border-border text-xs text-muted-foreground opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 whitespace-nowrap">
-                    {skill.ja}
-                  </span>
+                  {/* Desktop: show stack on hover */}
+                  <div className="hidden md:flex absolute inset-0 rounded-xl bg-background/90 backdrop-blur border border-border opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none p-3 items-center justify-center">
+                    <div className="flex flex-wrap gap-1.5 justify-center max-w-[95%]">
+                      {skill.stack.map((tag) => (
+                        <span
+                          key={tag}
+                          className="text-[11px] px-2 py-0.5 bg-secondary/80 text-foreground rounded-md font-medium border border-border"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                   <div className="flex items-center gap-3">
                     <div 
                       className="w-10 h-10 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110"
@@ -129,10 +104,17 @@ export function AboutSection() {
                       <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors leading-snug">
                         {skill.label}
                       </span>
-                      {/* Mobile: always show Japanese label */}
-                      <span className="md:hidden text-xs text-muted-foreground leading-snug">
-                        {skill.ja}
-                      </span>
+                      {/* Mobile: always show stack */}
+                      <div className="md:hidden mt-1 flex flex-wrap gap-1.5">
+                        {skill.stack.map((tag) => (
+                          <span
+                            key={tag}
+                            className="text-[11px] px-2 py-0.5 bg-secondary text-muted-foreground rounded-md font-medium border border-border"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
