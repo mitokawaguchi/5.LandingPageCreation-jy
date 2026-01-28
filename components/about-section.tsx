@@ -4,10 +4,10 @@ import { useScrollReveal } from "@/hooks/use-scroll-reveal"
 import { Palette, Code2, Smartphone, HeadphonesIcon } from "lucide-react"
 
 const skills = [
-  { label: "UI/UX Design", icon: Palette, color: "#5ba3b8" },
-  { label: "Front-end Dev", icon: Code2, color: "#356A7C" },
-  { label: "Web Applications", icon: Smartphone, color: "#7ec8e3" },
-  { label: "Technical Support", icon: HeadphonesIcon, color: "#4a8a9c" },
+  { label: "UI/UX Design", ja: "UI/UXデザイン", icon: Palette, color: "#5ba3b8" },
+  { label: "Front-end Dev", ja: "フロントエンド開発", icon: Code2, color: "#356A7C" },
+  { label: "Web Applications", ja: "Webアプリ開発", icon: Smartphone, color: "#7ec8e3" },
+  { label: "Technical Support", ja: "技術サポート", icon: HeadphonesIcon, color: "#4a8a9c" },
 ]
 
 export function AboutSection() {
@@ -77,8 +77,12 @@ export function AboutSection() {
               {skills.map((skill) => (
                 <div
                   key={skill.label}
-                  className="bg-secondary p-4 rounded-xl group cursor-default border border-border card-glow"
+                  className="bg-secondary p-4 rounded-xl group cursor-default border border-border card-glow relative"
                 >
+                  {/* Desktop: show Japanese label on hover */}
+                  <span className="hidden md:block absolute -top-3 left-1/2 -translate-x-1/2 px-2 py-1 rounded-md bg-background/90 backdrop-blur border border-border text-xs text-muted-foreground opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 whitespace-nowrap">
+                    {skill.ja}
+                  </span>
                   <div className="flex items-center gap-3">
                     <div 
                       className="w-10 h-10 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110"
@@ -86,9 +90,15 @@ export function AboutSection() {
                     >
                       <skill.icon className="w-5 h-5" style={{ color: skill.color }} />
                     </div>
-                    <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
-                      {skill.label}
-                    </span>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors leading-snug">
+                        {skill.label}
+                      </span>
+                      {/* Mobile: always show Japanese label */}
+                      <span className="md:hidden text-xs text-muted-foreground leading-snug">
+                        {skill.ja}
+                      </span>
+                    </div>
                   </div>
                 </div>
               ))}
