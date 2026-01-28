@@ -2,29 +2,15 @@
 
 import { useEffect, useRef } from "react";
 
-interface Particle {
+interface Node {
   x: number;
   y: number;
-  vx: number;
-  vy: number;
   size: number;
   opacity: number;
 }
 
-interface Signal {
-  from: number;
-  to: number;
-  progress: number; // 0..1
-  speed: number; // px/sec
-}
-
 export function ParticleCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const mouseRef = useRef({ x: 0, y: 0 });
-  const particlesRef = useRef<Particle[]>([]);
-  const signalsRef = useRef<Signal[]>([]);
-  const lastTimeRef = useRef<number>(0);
-  const lastDrawRef = useRef<number>(0);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -33,251 +19,72 @@ export function ParticleCanvas() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const reducedMotion =
-      typeof window !== "undefined" &&
-      window.matchMedia &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const coarsePointer =
       typeof window !== "undefined" &&
       window.matchMedia &&
       (window.matchMedia("(pointer: coarse)").matches || window.matchMedia("(hover: none)").matches);
 
-    // Mobile/low-power tuning (keeps feel but reduces load a lot)
-    const TARGET_FPS = coarsePointer ? 30 : 60;
-    const CONNECTION_DIST = coarsePointer ? 115 : 130;
-    const PARTICLE_COUNT = coarsePointer ? 38 : 80;
-    const SIGNAL_COUNT = coarsePointer ? 10 : 18;
-    const FADE_ALPHA = coarsePointer ? 0.42 : 0.32;
-    const SIGNAL_SHADOW = coarsePointer ? 10 : 16;
-    const SIGNAL_TRAIL = coarsePointer ? 18 : 28;
+    const NODE_COUNT = coarsePointer ? 26 : 55;
+    const CONNECTION_DIST = coarsePointer ? 130 : 160;
 
-    const resizeCanvas = () => {
-      // Capping DPR is critical on mobile (dpr=3 makes canvas very heavy)
+    const resizeAndDraw = () => {
       const rawDpr = window.devicePixelRatio || 1;
-      const dpr = Math.min(coarsePointer ? 1.5 : 2, rawDpr);
+      const dpr = Math.min(1.5, rawDpr);
       const w = window.innerWidth;
       const h = window.innerHeight;
+
       canvas.width = Math.floor(w * dpr);
       canvas.height = Math.floor(h * dpr);
       canvas.style.width = `${w}px`;
       canvas.style.height = `${h}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    };
 
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
+      // Clear
+      ctx.clearRect(0, 0, w, h);
 
-    // Initialize particles
-    particlesRef.current = Array.from({ length: PARTICLE_COUNT }, () => ({
-      x: Math.random() * window.innerWidth,
-      y: Math.random() * window.innerHeight,
-      vx: (Math.random() - 0.5) * 0.5,
-      vy: (Math.random() - 0.5) * 0.5,
-      size: Math.random() * 2 + 1,
-      opacity: Math.random() * 0.5 + 0.2,
-    }));
+      // Generate nodes deterministically-ish (stable per resize)
+      const nodes: Node[] = Array.from({ length: NODE_COUNT }, (_, i) => ({
+        x: (w * ((i * 73) % 101)) / 100 + (Math.sin(i * 3.1) * 18),
+        y: (h * ((i * 41) % 97)) / 100 + (Math.cos(i * 2.7) * 18),
+        size: 2 + ((i * 7) % 3),
+        opacity: 0.18 + (((i * 13) % 10) / 50),
+      }));
 
-    const pickNeighborIndex = (from: number) => {
-      const particles = particlesRef.current;
-      const p = particles[from];
-      if (!p) return null;
-      const candidates: number[] = [];
-      for (let i = 0; i < particles.length; i++) {
-        if (i === from) continue;
-        const q = particles[i];
-        const dx = q.x - p.x;
-        const dy = q.y - p.y;
-        if (Math.hypot(dx, dy) <= CONNECTION_DIST) candidates.push(i);
-      }
-      if (candidates.length === 0) return null;
-      return candidates[Math.floor(Math.random() * candidates.length)];
-    };
+      // Draw connections
+      for (let i = 0; i < nodes.length; i++) {
+        const a = nodes[i];
+        for (let j = i + 1; j < nodes.length; j++) {
+          const b = nodes[j];
+          const dx = b.x - a.x;
+          const dy = b.y - a.y;
+          const dist = Math.hypot(dx, dy);
+          if (dist > CONNECTION_DIST) continue;
 
-    // Initialize "electrical signals" that travel node-to-node
-    signalsRef.current = Array.from({ length: SIGNAL_COUNT }, () => {
-      const from = Math.floor(Math.random() * PARTICLE_COUNT);
-      const to = pickNeighborIndex(from) ?? ((from + 1) % PARTICLE_COUNT);
-      return {
-        from,
-        to,
-        progress: Math.random(),
-        speed: (coarsePointer ? 120 : 140) + Math.random() * (coarsePointer ? 70 : 90),
-      };
-    });
-
-    const handleMouseMove = (e: MouseEvent) => {
-      mouseRef.current = { x: e.clientX, y: e.clientY };
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-
-    let animationId: number;
-
-    const animate = () => {
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      const now = performance.now();
-      const t = now / 1000;
-      const dt = Math.min(0.05, Math.max(0, (now - (lastTimeRef.current || now)) / 1000));
-      lastTimeRef.current = now;
-
-      // If user prefers reduced motion, keep it subtle (nearly static)
-      if (reducedMotion) {
-        ctx.clearRect(0, 0, w, h);
-        // Draw a very subtle grid-like scan once in a while
-        if (now - (lastDrawRef.current || 0) > 150) {
-          lastDrawRef.current = now;
-          const scan = (t * 120) % (w + h);
-          ctx.beginPath();
-          ctx.moveTo(-h + scan, 0);
-          ctx.lineTo(scan, h);
-          ctx.strokeStyle = "rgba(91, 163, 184, 0.05)";
+          const alpha = 0.12 * (1 - dist / CONNECTION_DIST);
+          ctx.strokeStyle = `rgba(53, 106, 124, ${alpha})`;
           ctx.lineWidth = 1;
+
+          // Right-angle "circuit" line
+          const elbowX = (a.x + b.x) / 2;
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(elbowX, a.y);
+          ctx.lineTo(elbowX, b.y);
+          ctx.lineTo(b.x, b.y);
           ctx.stroke();
         }
-        animationId = requestAnimationFrame(animate);
-        return;
       }
 
-      // FPS limit on mobile to reduce CPU/GPU load
-      if (TARGET_FPS < 60) {
-        const minFrameMs = 1000 / TARGET_FPS;
-        if (now - (lastDrawRef.current || 0) < minFrameMs) {
-          animationId = requestAnimationFrame(animate);
-          return;
-        }
-        lastDrawRef.current = now;
+      // Draw nodes
+      for (const n of nodes) {
+        ctx.fillStyle = `rgba(91, 163, 184, ${n.opacity})`;
+        ctx.fillRect(n.x - n.size / 2, n.y - n.size / 2, n.size, n.size);
       }
-
-      // Trail / fade (faster decay to avoid dirty trails)
-      ctx.fillStyle = `rgba(10, 17, 24, ${FADE_ALPHA})`;
-      ctx.fillRect(0, 0, w, h);
-
-      // Subtle scanning line
-      const scan = (t * 120) % (w + h);
-      ctx.beginPath();
-      ctx.moveTo(-h + scan, 0);
-      ctx.lineTo(scan, h);
-      ctx.strokeStyle = "rgba(91, 163, 184, 0.06)";
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
-      const particles = particlesRef.current;
-
-      particles.forEach((particle, i) => {
-        // Mouse interaction
-        const dx = mouseRef.current.x - particle.x;
-        const dy = mouseRef.current.y - particle.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-
-        if (distance < 150) {
-          const force = (150 - distance) / 150;
-          particle.vx -= (dx / distance) * force * 0.02;
-          particle.vy -= (dy / distance) * force * 0.02;
-        }
-
-        // Update position
-        particle.x += particle.vx;
-        particle.y += particle.vy;
-
-        // Boundary check
-        if (particle.x < 0 || particle.x > w) particle.vx *= -1;
-        if (particle.y < 0 || particle.y > h) particle.vy *= -1;
-
-        // Draw node (square = more "engineering" than stars)
-        const nodeSize = particle.size + 1;
-        ctx.fillStyle = `rgba(91, 163, 184, ${Math.min(0.55, particle.opacity + 0.1)})`;
-        ctx.fillRect(particle.x - nodeSize / 2, particle.y - nodeSize / 2, nodeSize, nodeSize);
-
-        // Draw connections
-        particles.slice(i + 1).forEach((other) => {
-          const dx2 = other.x - particle.x;
-          const dy2 = other.y - particle.y;
-          const dist = Math.sqrt(dx2 * dx2 + dy2 * dy2);
-
-          if (dist < CONNECTION_DIST) {
-            const a = 0.16 * (1 - dist / CONNECTION_DIST);
-            ctx.beginPath();
-            ctx.moveTo(particle.x, particle.y);
-            ctx.lineTo(other.x, other.y);
-            ctx.strokeStyle = `rgba(53, 106, 124, ${a})`;
-            ctx.lineWidth = 0.8;
-            ctx.stroke();
-          }
-        });
-      });
-
-      // Update + draw electrical signals (traveling along existing connections)
-      for (const s of signalsRef.current) {
-        const fromP = particles[s.from];
-        if (!fromP) continue;
-
-        // Ensure we always have a valid destination
-        if (s.to === s.from || !particles[s.to]) {
-          s.to = pickNeighborIndex(s.from) ?? ((s.from + 1) % particles.length);
-          s.progress = 0;
-        }
-
-        const toP = particles[s.to];
-        const dx = toP.x - fromP.x;
-        const dy = toP.y - fromP.y;
-        const dist = Math.max(1, Math.hypot(dx, dy));
-
-        // If disconnected, re-route
-        if (dist > CONNECTION_DIST) {
-          s.to = pickNeighborIndex(s.from) ?? s.to;
-          s.progress = 0;
-          continue;
-        }
-
-        // Move at roughly constant pixel speed
-        s.progress += (s.speed * dt) / dist;
-        if (s.progress >= 1) {
-          s.from = s.to;
-          s.to = pickNeighborIndex(s.from) ?? ((s.from + 1) % particles.length);
-          s.progress = 0;
-          continue;
-        }
-
-        const ux = dx / dist;
-        const uy = dy / dist;
-        const px = fromP.x + dx * s.progress;
-        const py = fromP.y + dy * s.progress;
-
-        const sx = px - ux * SIGNAL_TRAIL;
-        const sy = py - uy * SIGNAL_TRAIL;
-
-        ctx.save();
-        ctx.globalCompositeOperation = "lighter";
-
-        const grad = ctx.createLinearGradient(sx, sy, px, py);
-        grad.addColorStop(0, "rgba(240, 244, 248, 0)");
-        grad.addColorStop(1, "rgba(240, 244, 248, 0.85)");
-
-        ctx.strokeStyle = grad;
-        ctx.lineWidth = 2.2;
-        ctx.shadowColor = "rgba(91, 163, 184, 0.9)";
-        ctx.shadowBlur = SIGNAL_SHADOW;
-        ctx.beginPath();
-        ctx.moveTo(sx, sy);
-        ctx.lineTo(px, py);
-        ctx.stroke();
-
-        ctx.fillStyle = "rgba(240, 244, 248, 0.95)";
-        ctx.fillRect(px - 1.6, py - 1.6, 3.2, 3.2);
-        ctx.restore();
-      }
-
-      animationId = requestAnimationFrame(animate);
     };
 
-    animate();
-
-    return () => {
-      window.removeEventListener("resize", resizeCanvas);
-      window.removeEventListener("mousemove", handleMouseMove);
-      cancelAnimationFrame(animationId);
-    };
+    resizeAndDraw();
+    window.addEventListener("resize", resizeAndDraw);
+    return () => window.removeEventListener("resize", resizeAndDraw);
   }, []);
 
   return (
