@@ -11,10 +11,19 @@ interface Particle {
   opacity: number;
 }
 
+interface Signal {
+  from: number;
+  to: number;
+  progress: number; // 0..1
+  speed: number; // px/sec
+}
+
 export function ParticleCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mouseRef = useRef({ x: 0, y: 0 });
   const particlesRef = useRef<Particle[]>([]);
+  const signalsRef = useRef<Signal[]>([]);
+  const lastTimeRef = useRef<number>(0);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -48,6 +57,37 @@ export function ParticleCanvas() {
       opacity: Math.random() * 0.5 + 0.2,
     }));
 
+    const CONNECTION_DIST = 130;
+
+    const pickNeighborIndex = (from: number) => {
+      const particles = particlesRef.current;
+      const p = particles[from];
+      if (!p) return null;
+      const candidates: number[] = [];
+      for (let i = 0; i < particles.length; i++) {
+        if (i === from) continue;
+        const q = particles[i];
+        const dx = q.x - p.x;
+        const dy = q.y - p.y;
+        if (Math.hypot(dx, dy) <= CONNECTION_DIST) candidates.push(i);
+      }
+      if (candidates.length === 0) return null;
+      return candidates[Math.floor(Math.random() * candidates.length)];
+    };
+
+    // Initialize "electrical signals" that travel node-to-node
+    const signalCount = 18;
+    signalsRef.current = Array.from({ length: signalCount }, () => {
+      const from = Math.floor(Math.random() * particleCount);
+      const to = pickNeighborIndex(from) ?? ((from + 1) % particleCount);
+      return {
+        from,
+        to,
+        progress: Math.random(),
+        speed: 140 + Math.random() * 90,
+      };
+    });
+
     const handleMouseMove = (e: MouseEvent) => {
       mouseRef.current = { x: e.clientX, y: e.clientY };
     };
@@ -59,7 +99,10 @@ export function ParticleCanvas() {
     const animate = () => {
       const w = window.innerWidth;
       const h = window.innerHeight;
-      const t = performance.now() / 1000;
+      const now = performance.now();
+      const t = now / 1000;
+      const dt = Math.min(0.05, Math.max(0, (now - (lastTimeRef.current || now)) / 1000));
+      lastTimeRef.current = now;
 
       // Trail / fade (faster decay to avoid dirty trails)
       ctx.fillStyle = "rgba(10, 17, 24, 0.32)";
@@ -74,7 +117,9 @@ export function ParticleCanvas() {
       ctx.lineWidth = 2;
       ctx.stroke();
 
-      particlesRef.current.forEach((particle, i) => {
+      const particles = particlesRef.current;
+
+      particles.forEach((particle, i) => {
         // Mouse interaction
         const dx = mouseRef.current.x - particle.x;
         const dy = mouseRef.current.y - particle.y;
@@ -100,80 +145,84 @@ export function ParticleCanvas() {
         ctx.fillRect(particle.x - nodeSize / 2, particle.y - nodeSize / 2, nodeSize, nodeSize);
 
         // Draw connections
-        particlesRef.current.slice(i + 1).forEach((other) => {
+        particles.slice(i + 1).forEach((other) => {
           const dx2 = other.x - particle.x;
           const dy2 = other.y - particle.y;
           const dist = Math.sqrt(dx2 * dx2 + dy2 * dy2);
 
-          if (dist < 120) {
-            const a = 0.16 * (1 - dist / 120);
-            const elbowFirst = ((i * 31 + (i + 1)) + (Math.round(other.x) ^ Math.round(other.y))) % 2 === 0;
-            const ex = elbowFirst ? particle.x : other.x;
-            const ey = elbowFirst ? other.y : particle.y;
-
+          if (dist < CONNECTION_DIST) {
+            const a = 0.16 * (1 - dist / CONNECTION_DIST);
             ctx.beginPath();
             ctx.moveTo(particle.x, particle.y);
-            ctx.lineTo(ex, ey);
             ctx.lineTo(other.x, other.y);
             ctx.strokeStyle = `rgba(53, 106, 124, ${a})`;
             ctx.lineWidth = 0.8;
             ctx.stroke();
-
-            // "Electrical signal" running on the circuit (limited frequency)
-            if ((i + (particlesRef.current.length - 1)) % 18 === 0) {
-              const seg1 = Math.abs(ey - particle.y) + Math.abs(ex - particle.x);
-              const seg2 = Math.abs(other.x - ex) + Math.abs(other.y - ey);
-              const total = Math.max(1, seg1 + seg2);
-              const speed = 60;
-              const phase = ((t * speed) + i * 7) % total;
-              let px = particle.x;
-              let py = particle.y;
-              let ax = particle.x;
-              let ay = particle.y;
-              let bx = ex;
-              let by = ey;
-              if (phase <= seg1) {
-                const p = phase / Math.max(1, seg1);
-                px = particle.x + (ex - particle.x) * p;
-                py = particle.y + (ey - particle.y) * p;
-                ax = particle.x; ay = particle.y; bx = ex; by = ey;
-              } else {
-                const p = (phase - seg1) / Math.max(1, seg2);
-                px = ex + (other.x - ex) * p;
-                py = ey + (other.y - ey) * p;
-                ax = ex; ay = ey; bx = other.x; by = other.y;
-              }
-
-              // Glow dot + short glowing segment along the circuit direction
-              const vx = bx - ax;
-              const vy = by - ay;
-              const vlen = Math.max(1, Math.hypot(vx, vy));
-              const ux = vx / vlen;
-              const uy = vy / vlen;
-              const segLen = 10;
-              const sx = px - ux * segLen;
-              const sy = py - uy * segLen;
-              const tx = px + ux * segLen;
-              const ty = py + uy * segLen;
-
-              ctx.save();
-              ctx.globalCompositeOperation = "lighter";
-              ctx.strokeStyle = "rgba(240, 244, 248, 0.55)";
-              ctx.lineWidth = 2;
-              ctx.shadowColor = "rgba(91, 163, 184, 0.8)";
-              ctx.shadowBlur = 12;
-              ctx.beginPath();
-              ctx.moveTo(sx, sy);
-              ctx.lineTo(tx, ty);
-              ctx.stroke();
-
-              ctx.fillStyle = "rgba(240, 244, 248, 0.65)";
-              ctx.fillRect(px - 1.5, py - 1.5, 3, 3);
-              ctx.restore();
-            }
           }
         });
       });
+
+      // Update + draw electrical signals (traveling along existing connections)
+      for (const s of signalsRef.current) {
+        const fromP = particles[s.from];
+        if (!fromP) continue;
+
+        // Ensure we always have a valid destination
+        if (s.to === s.from || !particles[s.to]) {
+          s.to = pickNeighborIndex(s.from) ?? ((s.from + 1) % particles.length);
+          s.progress = 0;
+        }
+
+        const toP = particles[s.to];
+        const dx = toP.x - fromP.x;
+        const dy = toP.y - fromP.y;
+        const dist = Math.max(1, Math.hypot(dx, dy));
+
+        // If disconnected, re-route
+        if (dist > CONNECTION_DIST) {
+          s.to = pickNeighborIndex(s.from) ?? s.to;
+          s.progress = 0;
+          continue;
+        }
+
+        // Move at roughly constant pixel speed
+        s.progress += (s.speed * dt) / dist;
+        if (s.progress >= 1) {
+          s.from = s.to;
+          s.to = pickNeighborIndex(s.from) ?? ((s.from + 1) % particles.length);
+          s.progress = 0;
+          continue;
+        }
+
+        const ux = dx / dist;
+        const uy = dy / dist;
+        const px = fromP.x + dx * s.progress;
+        const py = fromP.y + dy * s.progress;
+
+        const trail = 28;
+        const sx = px - ux * trail;
+        const sy = py - uy * trail;
+
+        ctx.save();
+        ctx.globalCompositeOperation = "lighter";
+
+        const grad = ctx.createLinearGradient(sx, sy, px, py);
+        grad.addColorStop(0, "rgba(240, 244, 248, 0)");
+        grad.addColorStop(1, "rgba(240, 244, 248, 0.85)");
+
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 2.2;
+        ctx.shadowColor = "rgba(91, 163, 184, 0.9)";
+        ctx.shadowBlur = 16;
+        ctx.beginPath();
+        ctx.moveTo(sx, sy);
+        ctx.lineTo(px, py);
+        ctx.stroke();
+
+        ctx.fillStyle = "rgba(240, 244, 248, 0.95)";
+        ctx.fillRect(px - 1.6, py - 1.6, 3.2, 3.2);
+        ctx.restore();
+      }
 
       animationId = requestAnimationFrame(animate);
     };
