@@ -128,7 +128,9 @@ export function LabSection() {
 
             {/* CTA */}
             <a
-              href="#"
+              href="https://github.com/mitokawaguchi/5.LandingPageCreation-jy"
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex items-center gap-3 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 active:scale-95 transition-all duration-200"
             >
               <Github className="w-5 h-5" />
