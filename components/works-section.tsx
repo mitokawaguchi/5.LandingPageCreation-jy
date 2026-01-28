@@ -63,8 +63,8 @@ function WorkCard({
         <div className="hidden md:block absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <div className="absolute inset-0 gradient-animate opacity-35" />
           <div className="absolute inset-0 bg-black/35" />
-          <div className="relative h-full w-full p-4 flex items-end">
-            <div className="flex flex-wrap gap-2">
+          <div className="relative h-full w-full p-4 flex items-center justify-center">
+            <div className="flex flex-wrap gap-2 justify-center max-w-[90%]">
               {work.tags.map((tag) => (
                 <span
                   key={tag}
