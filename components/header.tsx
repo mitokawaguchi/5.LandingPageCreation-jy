@@ -64,7 +64,7 @@ export function Header() {
             <a
               href="#contact"
               onClick={(e) => handleNavClick(e, "#contact")}
-              className="btn-primary bg-primary text-primary-foreground px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-primary/90"
+              className="bg-primary text-primary-foreground px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-primary/90 hover:shadow-[0_0_24px_rgba(53,106,124,0.45)] transition-shadow"
             >
               Get in Touch
             </a>
@@ -104,7 +104,7 @@ export function Header() {
             <a
               href="#contact"
               onClick={(e) => handleNavClick(e, "#contact")}
-              className="btn-primary bg-primary text-primary-foreground px-6 py-3 rounded-lg text-sm font-medium inline-block hover:bg-primary/90"
+              className="bg-primary text-primary-foreground px-6 py-3 rounded-lg text-sm font-medium inline-block hover:bg-primary/90 hover:shadow-[0_0_24px_rgba(53,106,124,0.45)] transition-shadow"
             >
               Get in Touch
             </a>
