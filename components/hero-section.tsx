@@ -95,7 +95,7 @@ export function HeroSection() {
 
       {/* Scroll Indicator */}
       <div 
-        className={`absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center transition-all duration-700 delay-700 ${
+        className={`absolute bottom-10 left-1/2 -translate-x-1/2 z-20 pointer-events-none flex flex-col items-center transition-all duration-700 delay-700 ${
           mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
         }`}
       >
