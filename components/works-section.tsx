@@ -105,10 +105,6 @@ function WorkCard({
                 >
                   {work.category}
                 </span>
-                {/* Mobile: always show Japanese label */}
-                <span className="md:hidden text-xs text-muted-foreground mt-1">
-                  {work.jaCategory}
-                </span>
               </div>
             </div>
           </div>
