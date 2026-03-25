@@ -11,14 +11,14 @@ import '../globals.css';
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
-  weight: ['400', '600'],
+  weight: ['400', '600', '700', '800'],
   display: 'swap',
 });
 
 const notoSansJP = Noto_Sans_JP({
   subsets: ['latin'],
   variable: '--font-noto',
-  weight: ['400', '600'],
+  weight: ['400', '600', '700', '800'],
   display: 'swap',
 });
 

@@ -40,7 +40,7 @@ export function Header() {
     >
       <nav className="container mx-auto flex items-center justify-between px-6">
         <Link href="/" className="logo-animate group text-2xl font-bold tracking-tight">
-          <span className="logo-mit text-foreground transition-colors duration-300">Mit</span>
+          <span className="logo-mit text-foreground transition-colors duration-300">MIT</span>
           <span className="logo-tech text-primary">Tech</span>
           <span className="ml-1 text-sm font-normal text-muted-foreground">Studio</span>
         </Link>

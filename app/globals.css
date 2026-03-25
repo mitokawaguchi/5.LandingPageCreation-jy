@@ -167,6 +167,7 @@
 }
 
 .text-shimmer {
+  font-weight: 800;
   background: linear-gradient(90deg, #f0f4f8 0%, #356A7C 25%, #5ba3b8 50%, #356A7C 75%, #f0f4f8 100%);
   background-size: 200% auto;
   -webkit-background-clip: text;
@@ -367,4 +368,45 @@
     opacity: 1 !important;
     transform: none !important;
   }
+}
+
+/* Legal / policy documents */
+.legal-prose {
+  line-height: 1.85;
+}
+
+.legal-prose h2 {
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.legal-prose h2:first-child {
+  margin-top: 0;
+}
+
+.legal-prose p {
+  margin-bottom: 1rem;
+  font-size: 0.9375rem;
+  color: var(--muted-foreground);
+}
+
+.legal-prose ol {
+  margin-bottom: 1rem;
+  list-style: decimal;
+  padding-left: 1.35rem;
+  font-size: 0.9375rem;
+  color: var(--muted-foreground);
+}
+
+.legal-prose li {
+  margin-bottom: 0.35rem;
+}
+
+.legal-prose a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }

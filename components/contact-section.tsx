@@ -30,11 +30,12 @@ export function ContactSection() {
           </div>
 
           <h2
-            className={`mb-4 text-4xl font-bold tracking-tight text-foreground transition-all delay-100 duration-700 md:text-5xl ${
+            className={`mb-4 text-4xl font-extrabold tracking-tight text-foreground transition-all delay-100 duration-700 md:text-5xl ${
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
             }`}
           >
-            {t('title')} <span className="text-shimmer">{t('titleAccent')}</span>
+            <span className="text-foreground">{t('title')}</span>{' '}
+            <span className="text-shimmer">{t('titleAccent')}</span>
           </h2>
 
           <p

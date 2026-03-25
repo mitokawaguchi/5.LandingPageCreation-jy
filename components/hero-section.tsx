@@ -30,15 +30,15 @@ export function HeroSection() {
               <span className="text-sm font-medium text-muted-foreground">{t('badge')}</span>
             </div>
 
-            <h1 className="hero-fade-in hero-delay-1 mb-6 text-5xl font-bold leading-tight tracking-tight md:text-7xl">
+            <h1 className="hero-fade-in hero-delay-1 mb-6 text-5xl font-extrabold leading-tight tracking-tight md:text-7xl">
               <span className="text-foreground">{t('line1')}</span>
               <br />
-              <span className="text-3xl font-light text-muted-foreground md:text-5xl">{t('line2')}</span>
+              <span className="text-3xl font-semibold text-muted-foreground md:text-5xl">{t('line2')}</span>
               <br />
               <span className="text-shimmer">{t('line3')}</span>
             </h1>
 
-            <p className="hero-fade-in hero-delay-2 mx-auto mb-10 max-w-xl text-lg font-light leading-relaxed text-muted-foreground md:text-xl">
+            <p className="hero-fade-in hero-delay-2 mx-auto mb-10 max-w-xl text-lg font-normal leading-relaxed text-muted-foreground md:text-xl">
               {t('subtitle')}
             </p>
 
