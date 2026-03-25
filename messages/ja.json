@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "Mit Tech Studio | エンジニアリングとクリエイティビティ",
-    "description": "Web制作・開発スタジオ Mit Tech Studio のポートフォリオ。デザインとエンジニアリングの融合により、未来を創るWeb体験を提供します。"
+    "title": "MIT Tech Studio | エンジニアリングとクリエイティビティ",
+    "description": "Web制作・開発スタジオ MIT Tech Studio のポートフォリオ。デザインとエンジニアリングの融合により、未来を創るWeb体験を提供します。"
   },
   "nav": {
     "about": "About",
@@ -28,7 +28,7 @@
     "sinceSub": "Webをつくり続けて",
     "kicker": "About Us",
     "title": "デザインとエンジニアリングの境界をなくす。",
-    "body": "Mit Tech Studioは、単に綺麗なサイトを作るだけではありません。ビジネスの課題を解決するための「機能美」と、ユーザーの心を動かす「体験」を両立させます。",
+    "body": "MIT Tech Studioは、単に綺麗なサイトを作るだけではありません。ビジネスの課題を解決するための「機能美」と、ユーザーの心を動かす「体験」を両立させます。",
     "skills": [
       {
         "label": "UI/UXデザイン",
@@ -97,8 +97,24 @@
   },
   "footer": {
     "rights": "All rights reserved.",
-    "privacy": "プライバシー",
-    "terms": "利用規約"
+    "privacy": "プライバシーポリシー",
+    "terms": "利用規約",
+    "disclaimer": "免責事項",
+    "tokushoho": "特定商取引法に基づく表記",
+    "contactLegal": "お問い合わせ（窓口）",
+    "operator": "運営者情報",
+    "legalNav": "法務・ポリシー"
+  },
+  "legalMeta": {
+    "lastUpdatedPrefix": "最終更新日:",
+    "dateValue": "2026年3月25日",
+    "backToHome": "トップへ戻る",
+    "termsTitle": "利用規約",
+    "privacyTitle": "プライバシーポリシー",
+    "disclaimerTitle": "免責事項",
+    "tokushohoTitle": "特定商取引法に基づく表記",
+    "contactLegalTitle": "お問い合わせ",
+    "operatorTitle": "運営者情報"
   },
   "locale": {
     "ja": "日本語",

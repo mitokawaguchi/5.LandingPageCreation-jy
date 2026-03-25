@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "Mit Tech Studio | Engineering meets Creativity",
-    "description": "Portfolio of Mit Tech Studio — web design and development. We craft future-ready experiences where design meets engineering."
+    "title": "MIT Tech Studio | Engineering meets Creativity",
+    "description": "Portfolio of MIT Tech Studio — web design and development. We craft future-ready experiences where design meets engineering."
   },
   "nav": {
     "about": "About",
@@ -28,7 +28,7 @@
     "sinceSub": "Building the web",
     "kicker": "About Us",
     "title": "Erasing the line between design and engineering.",
-    "body": "Mit Tech Studio does more than pretty sites. We pair functional clarity that solves business problems with experiences that resonate with users.",
+    "body": "MIT Tech Studio does more than pretty sites. We pair functional clarity that solves business problems with experiences that resonate with users.",
     "skills": [
       {
         "label": "UI/UX Design",
@@ -97,8 +97,24 @@
   },
   "footer": {
     "rights": "All rights reserved.",
-    "privacy": "Privacy",
-    "terms": "Terms"
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "disclaimer": "Disclaimer",
+    "tokushoho": "Legal Notice on Specified Commercial Transactions",
+    "contactLegal": "Contact",
+    "operator": "Operator Information",
+    "legalNav": "Legal & policies"
+  },
+  "legalMeta": {
+    "lastUpdatedPrefix": "Last updated:",
+    "dateValue": "March 25, 2026",
+    "backToHome": "Back to home",
+    "termsTitle": "Terms of Service",
+    "privacyTitle": "Privacy Policy",
+    "disclaimerTitle": "Disclaimer",
+    "tokushohoTitle": "Specified Commercial Transactions Act Notice",
+    "contactLegalTitle": "Contact",
+    "operatorTitle": "Operator Information"
   },
   "locale": {
     "ja": "日本語",
