@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { Menu, X } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { LanguageSwitcher } from '@/components/language-switcher';
+import { HomeSectionLink } from '@/components/home-section-link';
 
 export function Header() {
   const t = useTranslations('nav');
@@ -19,18 +20,17 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navLinks = [
-    { href: '#about' as const, label: t('about') },
-    { href: '#works' as const, label: t('works') },
-    { href: '#lab' as const, label: t('lab') },
-    { href: '#contact' as const, label: t('contact') },
+  const navItems = [
+    { id: 'about' as const, label: t('about') },
+    { id: 'works' as const, label: t('works') },
+    { id: 'lab' as const, label: t('lab') },
+    { id: 'contact' as const, label: t('contact') },
   ];
 
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault();
-    setIsMobileMenuOpen(false);
-    document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
-  };
+  const linkClass =
+    'underline-animate text-sm font-medium text-muted-foreground transition-colors duration-300 hover:text-foreground';
+  const mobileLinkClass =
+    'block py-2 text-lg font-medium text-muted-foreground transition-colors hover:text-foreground';
 
   return (
     <header
@@ -46,28 +46,23 @@ export function Header() {
         </Link>
 
         <ul className="hidden items-center gap-6 md:flex">
-          {navLinks.map((link) => (
-            <li key={link.href}>
-              <a
-                href={link.href}
-                onClick={(e) => handleNavClick(e, link.href)}
-                className="underline-animate text-sm font-medium text-muted-foreground transition-colors duration-300 hover:text-foreground"
-              >
-                {link.label}
-              </a>
+          {navItems.map((item) => (
+            <li key={item.id}>
+              <HomeSectionLink sectionId={item.id} className={linkClass}>
+                {item.label}
+              </HomeSectionLink>
             </li>
           ))}
           <li>
             <LanguageSwitcher />
           </li>
           <li>
-            <a
-              href="#contact"
-              onClick={(e) => handleNavClick(e, '#contact')}
+            <HomeSectionLink
+              sectionId="contact"
               className="rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-shadow hover:bg-primary/90 hover:shadow-[0_0_24px_rgba(53,106,124,0.45)]"
             >
               {t('getInTouch')}
-            </a>
+            </HomeSectionLink>
           </li>
         </ul>
 
@@ -91,25 +86,25 @@ export function Header() {
         }`}
       >
         <ul className="container mx-auto flex flex-col gap-4 px-6 py-6">
-          {navLinks.map((link) => (
-            <li key={link.href}>
-              <a
-                href={link.href}
-                onClick={(e) => handleNavClick(e, link.href)}
-                className="block py-2 text-lg font-medium text-muted-foreground transition-colors hover:text-foreground"
+          {navItems.map((item) => (
+            <li key={item.id}>
+              <HomeSectionLink
+                sectionId={item.id}
+                className={mobileLinkClass}
+                onAfterNavigate={() => setIsMobileMenuOpen(false)}
               >
-                {link.label}
-              </a>
+                {item.label}
+              </HomeSectionLink>
             </li>
           ))}
           <li className="pt-4">
-            <a
-              href="#contact"
-              onClick={(e) => handleNavClick(e, '#contact')}
+            <HomeSectionLink
+              sectionId="contact"
               className="inline-block rounded-lg bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-shadow hover:bg-primary/90 hover:shadow-[0_0_24px_rgba(53,106,124,0.45)]"
+              onAfterNavigate={() => setIsMobileMenuOpen(false)}
             >
               {t('getInTouch')}
-            </a>
+            </HomeSectionLink>
           </li>
         </ul>
       </div>
