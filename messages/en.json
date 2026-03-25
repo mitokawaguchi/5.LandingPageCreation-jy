@@ -79,12 +79,26 @@
   "lab": {
     "kicker": "Lab",
     "title": "Experimental & Open Source",
-    "projectTitle": "Tech Blog Template",
-    "projectStack": "Next.js + Tailwind CSS",
-    "body": "A fast blog template for developers — SEO-ready, dark mode, and built for performance and accessibility.",
-    "lighthouse": "Lighthouse",
-    "accessibility": "Accessibility",
-    "viewGithub": "View on GitHub"
+    "intro": "Public repositories on GitHub (@mitokawaguchi). Stats and repo list match the public GitHub profile (update data/lab-github.ts when things change).",
+    "statsRepos": "Public repos",
+    "statsFollowers": "Followers",
+    "statsFollowing": "Following",
+    "viewProfile": "Open GitHub profile",
+    "viewRepo": "Repository",
+    "viewDemo": "Live demo",
+    "language": "Language",
+    "openIssues": "Open issues",
+    "repos": {
+      "landing": {
+        "desc": "Source for this portfolio site. Next.js + TypeScript. Deployed on Vercel."
+      },
+      "taskflow": {
+        "desc": "TaskFlow task app in JavaScript. Demo hosted on Vercel."
+      },
+      "profileReadme": {
+        "desc": "Profile README repository (same name as your username)."
+      }
+    }
   },
   "contact": {
     "title": "Ready to",
@@ -97,6 +111,8 @@
   },
   "footer": {
     "rights": "All rights reserved.",
+    "home": "Home",
+    "siteNav": "On this site",
     "privacy": "Privacy Policy",
     "terms": "Terms of Service",
     "disclaimer": "Disclaimer",

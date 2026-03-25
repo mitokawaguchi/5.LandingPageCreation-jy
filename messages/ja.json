@@ -79,12 +79,26 @@
   "lab": {
     "kicker": "Lab",
     "title": "実験・オープンソース",
-    "projectTitle": "テックブログテンプレート",
-    "projectStack": "Next.js + Tailwind CSS",
-    "body": "開発者向けの高速ブログテンプレート。SEO最適化済み、ダークモード対応。パフォーマンスとアクセシビリティに優れたモダンな設計。",
-    "lighthouse": "Lighthouse",
-    "accessibility": "アクセシビリティ",
-    "viewGithub": "GitHubで見る"
+    "intro": "GitHub（@mitokawaguchi）で公開しているリポジトリです。下記はプロフィールに基づく実データです。",
+    "statsRepos": "公開リポジトリ",
+    "statsFollowers": "フォロワー",
+    "statsFollowing": "フォロー中",
+    "viewProfile": "GitHubプロフィールを開く",
+    "viewRepo": "リポジトリ",
+    "viewDemo": "デモサイト",
+    "language": "言語",
+    "openIssues": "オープンIssue",
+    "repos": {
+      "landing": {
+        "desc": "このポートフォリオサイトのソース。Next.js + TypeScript。Vercel にデプロイ。"
+      },
+      "taskflow": {
+        "desc": "タスク管理アプリ（TaskFlow）。JavaScript。デモを Vercel で公開。"
+      },
+      "profileReadme": {
+        "desc": "GitHub プロフィール README 用の同名リポジトリ。"
+      }
+    }
   },
   "contact": {
     "title": "一緒に",
@@ -97,6 +111,8 @@
   },
   "footer": {
     "rights": "All rights reserved.",
+    "home": "トップ",
+    "siteNav": "サイト内",
     "privacy": "プライバシーポリシー",
     "terms": "利用規約",
     "disclaimer": "免責事項",

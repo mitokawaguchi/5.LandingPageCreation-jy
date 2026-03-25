@@ -1,6 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
+import { HashScrollOnMount } from '@/components/hash-scroll-on-mount';
 import { Header } from '@/components/header';
 import { HeroSection } from '@/components/hero-section';
 
@@ -32,6 +33,7 @@ const Footer = dynamic(() =>
 export function HomePageClient() {
   return (
     <main className="selection:bg-primary selection:text-primary-foreground">
+      <HashScrollOnMount />
       <ParticleCanvas />
       <Header />
       <HeroSection />
