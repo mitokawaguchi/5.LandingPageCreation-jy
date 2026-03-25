@@ -1,0 +1,107 @@
+{
+  "meta": {
+    "title": "Mit Tech Studio | エンジニアリングとクリエイティビティ",
+    "description": "Web制作・開発スタジオ Mit Tech Studio のポートフォリオ。デザインとエンジニアリングの融合により、未来を創るWeb体験を提供します。"
+  },
+  "nav": {
+    "about": "About",
+    "works": "Works",
+    "lab": "Lab",
+    "contact": "Contact",
+    "getInTouch": "お問い合わせ",
+    "toggleMenu": "メニューを開閉",
+    "language": "表示言語"
+  },
+  "hero": {
+    "badge": "Web開発・デザイン",
+    "line1": "Engineering",
+    "line2": "meets",
+    "line3": "Creativity",
+    "subtitle": "技術力とデザインの融合。精密かつエレガントなWeb体験を創造し、ビジネスの未来を加速させます。",
+    "viewWorks": "制作実績を見る",
+    "learnMore": "詳しく見る",
+    "scroll": "Scroll"
+  },
+  "about": {
+    "imageAlt": "スタジオのイメージ",
+    "since": "2020年〜",
+    "sinceSub": "Webをつくり続けて",
+    "kicker": "About Us",
+    "title": "デザインとエンジニアリングの境界をなくす。",
+    "body": "Mit Tech Studioは、単に綺麗なサイトを作るだけではありません。ビジネスの課題を解決するための「機能美」と、ユーザーの心を動かす「体験」を両立させます。",
+    "skills": [
+      {
+        "label": "UI/UXデザイン",
+        "stack": ["Figma", "デザインシステム", "プロトタイプ"]
+      },
+      {
+        "label": "フロントエンド開発",
+        "stack": ["HTML", "CSS", "JavaScript", "TypeScript", "React"]
+      },
+      {
+        "label": "Webアプリケーション",
+        "stack": ["Next.js", "API", "認証", "DB"]
+      },
+      {
+        "label": "テクニカルサポート",
+        "stack": ["Git", "CI/CD", "パフォーマンス", "アクセシビリティ"]
+      }
+    ]
+  },
+  "works": {
+    "kicker": "Portfolio",
+    "title": "Selected Works",
+    "disclaimer": "実績紹介（架空案件）",
+    "items": [
+      {
+        "title": "TaskFlow",
+        "category": "SaaSランディングページ",
+        "categoryAlt": "SaaS Landing Page",
+        "description": "マイクロインタラクションを重視したタスク管理ツールのLP。スムーズな操作感を視覚的に表現。",
+        "tags": ["Nuxt.js", "GSAP"]
+      },
+      {
+        "title": "LUMIÈRE",
+        "category": "ECサイト",
+        "categoryAlt": "EC Site",
+        "description": "オーガニックコスメのブランドサイト。余白を活かした高級感のあるレイアウト。",
+        "tags": ["Shopify", "Liquid"]
+      },
+      {
+        "title": "Sales Insight",
+        "category": "ダッシュボード",
+        "categoryAlt": "Dashboard",
+        "description": "業務管理用ダッシュボードUI。Reactを用いたリアルタイムなデータ可視化を実現。",
+        "tags": ["React", "TypeScript", "Recharts"]
+      }
+    ]
+  },
+  "lab": {
+    "kicker": "Lab",
+    "title": "実験・オープンソース",
+    "projectTitle": "テックブログテンプレート",
+    "projectStack": "Next.js + Tailwind CSS",
+    "body": "開発者向けの高速ブログテンプレート。SEO最適化済み、ダークモード対応。パフォーマンスとアクセシビリティに優れたモダンな設計。",
+    "lighthouse": "Lighthouse",
+    "accessibility": "アクセシビリティ",
+    "viewGithub": "GitHubで見る"
+  },
+  "contact": {
+    "title": "一緒に",
+    "titleAccent": "つくりませんか？",
+    "body": "新規プロジェクトのご相談、技術的なパートナーシップなど、お気軽にお問い合わせください。",
+    "cta": "お問い合わせ",
+    "instagram": "Instagram",
+    "threads": "Threads",
+    "github": "GitHub"
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "privacy": "プライバシー",
+    "terms": "利用規約"
+  },
+  "locale": {
+    "ja": "日本語",
+    "en": "English"
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "meta": {
+    "title": "Mit Tech Studio | Engineering meets Creativity",
+    "description": "Portfolio of Mit Tech Studio — web design and development. We craft future-ready experiences where design meets engineering."
+  },
+  "nav": {
+    "about": "About",
+    "works": "Works",
+    "lab": "Lab",
+    "contact": "Contact",
+    "getInTouch": "Get in Touch",
+    "toggleMenu": "Toggle menu",
+    "language": "Language"
+  },
+  "hero": {
+    "badge": "Web Development & Design",
+    "line1": "Engineering",
+    "line2": "meets",
+    "line3": "Creativity",
+    "subtitle": "Where technical depth meets refined design — we build precise, elegant web experiences that move your business forward.",
+    "viewWorks": "View Works",
+    "learnMore": "Learn More",
+    "scroll": "Scroll"
+  },
+  "about": {
+    "imageAlt": "Studio workspace",
+    "since": "Since 2020",
+    "sinceSub": "Building the web",
+    "kicker": "About Us",
+    "title": "Erasing the line between design and engineering.",
+    "body": "Mit Tech Studio does more than pretty sites. We pair functional clarity that solves business problems with experiences that resonate with users.",
+    "skills": [
+      {
+        "label": "UI/UX Design",
+        "stack": ["Figma", "Design System", "Prototyping"]
+      },
+      {
+        "label": "Front-end Dev",
+        "stack": ["HTML", "CSS", "JavaScript", "TypeScript", "React"]
+      },
+      {
+        "label": "Web Applications",
+        "stack": ["Next.js", "API", "Auth", "DB"]
+      },
+      {
+        "label": "Technical Support",
+        "stack": ["Git", "CI/CD", "Performance", "Accessibility"]
+      }
+    ]
+  },
+  "works": {
+    "kicker": "Portfolio",
+    "title": "Selected Works",
+    "disclaimer": "Sample projects (fictional)",
+    "items": [
+      {
+        "title": "TaskFlow",
+        "category": "SaaS Landing Page",
+        "categoryAlt": "SaaSランディングページ",
+        "description": "Landing page for a task app focused on micro-interactions and a smooth, tactile feel.",
+        "tags": ["Nuxt.js", "GSAP"]
+      },
+      {
+        "title": "LUMIÈRE",
+        "category": "EC Site",
+        "categoryAlt": "ECサイト",
+        "description": "Organic cosmetics brand site with generous whitespace and a premium layout.",
+        "tags": ["Shopify", "Liquid"]
+      },
+      {
+        "title": "Sales Insight",
+        "category": "Dashboard",
+        "categoryAlt": "ダッシュボード",
+        "description": "Operations dashboard UI with real-time data visualization in React.",
+        "tags": ["React", "TypeScript", "Recharts"]
+      }
+    ]
+  },
+  "lab": {
+    "kicker": "Lab",
+    "title": "Experimental & Open Source",
+    "projectTitle": "Tech Blog Template",
+    "projectStack": "Next.js + Tailwind CSS",
+    "body": "A fast blog template for developers — SEO-ready, dark mode, and built for performance and accessibility.",
+    "lighthouse": "Lighthouse",
+    "accessibility": "Accessibility",
+    "viewGithub": "View on GitHub"
+  },
+  "contact": {
+    "title": "Ready to",
+    "titleAccent": "create?",
+    "body": "New projects, technical partnerships — get in touch anytime.",
+    "cta": "Contact Us",
+    "instagram": "Instagram",
+    "threads": "Threads",
+    "github": "GitHub"
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "privacy": "Privacy",
+    "terms": "Terms"
+  },
+  "locale": {
+    "ja": "日本語",
+    "en": "English"
+  }
+}
