@@ -52,7 +52,8 @@
   "works": {
     "kicker": "Portfolio",
     "title": "Selected Works",
-    "disclaimer": "GitHubで公開している実在の制作物・開発事例です。"
+    "disclaimer": "GitHubで公開している実在の制作物・開発事例です。",
+    "contributionsAlt": "GitHubのコントリビューション履歴"
   },
   "lab": {
     "kicker": "Lab",

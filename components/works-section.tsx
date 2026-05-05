@@ -2,16 +2,11 @@
 
 import { useTranslations } from 'next-intl';
 import { useScrollReveal } from '@/hooks/use-scroll-reveal';
+import { Github } from 'lucide-react';
 import { WorkCard, type WorkItemMsg } from '@/components/work-card';
-import { LAB_REPOS } from '@/data/lab-github';
+import { LAB_GITHUB_PROFILE, LAB_REPOS } from '@/data/lab-github';
 
 const workColors = ['#356A7C', '#5ba3b8', '#7ec8e3'] as const;
-
-const workImages = [
-  'https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=600&h=400&fit=crop',
-  'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=600&h=400&fit=crop',
-  'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop',
-] as const;
 
 export function WorksSection() {
   const t = useTranslations('works');
@@ -32,6 +27,7 @@ export function WorksSection() {
     ],
     repoUrl: repo.htmlUrl,
     demoUrl: repo.homepage,
+    imageUrl: repo.imageUrl,
   }));
 
   return (
@@ -61,13 +57,81 @@ export function WorksSection() {
           </p>
         </div>
 
+        <div
+          className={`card-glow mb-10 rounded-2xl border border-border bg-secondary/70 p-6 transition-all delay-300 duration-700 md:p-8 ${
+            isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+          }`}
+        >
+          <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-center gap-4">
+              <img
+                src={LAB_GITHUB_PROFILE.avatarUrl}
+                alt={LAB_GITHUB_PROFILE.displayName}
+                width={64}
+                height={64}
+                className="h-16 w-16 shrink-0 rounded-full border border-border bg-muted object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+              <div>
+                <p className="text-lg font-semibold text-foreground">
+                  {LAB_GITHUB_PROFILE.displayName}
+                </p>
+                <p className="font-mono text-sm text-muted-foreground">
+                  @{LAB_GITHUB_PROFILE.login}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-6 text-sm md:justify-end">
+              <div>
+                <p className="text-xs text-muted-foreground">{lab('statsRepos')}</p>
+                <p className="text-xl font-semibold tabular-nums text-foreground">
+                  {LAB_GITHUB_PROFILE.publicRepos}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">{lab('statsFollowers')}</p>
+                <p className="text-xl font-semibold tabular-nums text-foreground">
+                  {LAB_GITHUB_PROFILE.followers}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">{lab('statsFollowing')}</p>
+                <p className="text-xl font-semibold tabular-nums text-foreground">
+                  {LAB_GITHUB_PROFILE.following}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <img
+            src={LAB_GITHUB_PROFILE.contributionGraphUrl}
+            alt={t('contributionsAlt')}
+            width={720}
+            height={120}
+            className="mt-6 h-auto w-full rounded-xl border border-border bg-background/80 p-3"
+            loading="lazy"
+            decoding="async"
+          />
+
+          <a
+            href={LAB_GITHUB_PROFILE.profileUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-background/80 py-3 text-sm font-semibold text-foreground transition-colors hover:border-primary hover:text-primary md:w-auto md:px-8"
+          >
+            <Github className="h-4 w-4" aria-hidden />
+            {lab('viewProfile')}
+          </a>
+        </div>
+
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {items.map((work, i) => (
             <WorkCard
               key={work.title}
               work={work}
               color={workColors[i % workColors.length]}
-              image={workImages[i % workImages.length]}
               index={i}
               isVisible={isVisible}
               labels={labels}

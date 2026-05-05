@@ -11,7 +11,19 @@ export type LabRepoRecord = {
   homepage: string | null;
   language: string | null;
   commitsCount: number;
+  imageUrl: string;
 };
+
+export const LAB_GITHUB_PROFILE = {
+  login: 'mitokawaguchi',
+  displayName: 'Mito',
+  avatarUrl: 'https://avatars.githubusercontent.com/u/143634747?v=4',
+  profileUrl: 'https://github.com/mitokawaguchi',
+  contributionGraphUrl: 'https://ghchart.rshah.org/356A7C/mitokawaguchi',
+  publicRepos: 3,
+  followers: 1,
+  following: 1,
+} as const;
 
 export const LAB_REPOS: LabRepoRecord[] = [
   {
@@ -21,6 +33,7 @@ export const LAB_REPOS: LabRepoRecord[] = [
     homepage: 'https://v0-mit-tech-studio.vercel.app',
     language: 'TypeScript',
     commitsCount: 19,
+    imageUrl: '/icon.svg',
   },
   {
     id: 'taskflow',
@@ -29,6 +42,7 @@ export const LAB_REPOS: LabRepoRecord[] = [
     homepage: 'https://taskflow-alpha-ebon.vercel.app',
     language: 'JavaScript',
     commitsCount: 136,
+    imageUrl: 'https://opengraph.githubassets.com/mit-tech-studio/mitokawaguchi/taskflow',
   },
   {
     id: 'profileReadme',
@@ -37,5 +51,6 @@ export const LAB_REPOS: LabRepoRecord[] = [
     homepage: null,
     language: null,
     commitsCount: 6,
+    imageUrl: 'https://opengraph.githubassets.com/mit-tech-studio/mitokawaguchi/mitokawaguchi',
   },
 ];
