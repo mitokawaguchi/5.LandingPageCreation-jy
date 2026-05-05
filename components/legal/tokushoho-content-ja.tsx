@@ -8,7 +8,7 @@ export function TokushohoContentJa() {
       </p>
 
       <h2 id="t1">販売事業者名</h2>
-      <p>［要記載：氏名または法人名］（MIT Tech Studio の運営者として表示する名称）</p>
+      <p>MIT Tech Studio</p>
 
       <h2 id="t2">代表者名</h2>
       <p>法人の場合に記載。個人の場合は省略または「個人事業主」等を記載。</p>

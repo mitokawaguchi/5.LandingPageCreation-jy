@@ -10,7 +10,7 @@ type LabRepoCardProps = {
     viewRepo: string;
     viewDemo: string;
     language: string;
-    openIssues: string;
+    commits: string;
   };
 };
 
@@ -27,10 +27,10 @@ export function LabRepoCard({ repo, description, labels }: LabRepoCardProps) {
             <dd className="text-foreground">{repo.language}</dd>
           </div>
         ) : null}
-        {repo.openIssues !== undefined && repo.openIssues > 0 ? (
+        {repo.commitsCount > 0 ? (
           <div className="flex gap-2">
-            <dt className="shrink-0 text-muted-foreground/80">{labels.openIssues}</dt>
-            <dd className="text-foreground">{repo.openIssues}</dd>
+            <dt className="shrink-0 text-muted-foreground/80">{labels.commits}</dt>
+            <dd className="text-foreground">{repo.commitsCount}</dd>
           </div>
         ) : null}
       </dl>

@@ -14,7 +14,7 @@ export function LabSection() {
     viewRepo: t('viewRepo'),
     viewDemo: t('viewDemo'),
     language: t('language'),
-    openIssues: t('openIssues'),
+    commits: t('commits'),
   };
 
   return (

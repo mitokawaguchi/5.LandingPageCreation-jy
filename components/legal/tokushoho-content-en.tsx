@@ -7,9 +7,9 @@ export function TokushohoContentEn() {
       </p>
       <h2 id="summary">Key points</h2>
       <p className="text-muted-foreground">
-        Operator name and address to be completed where marked. Contact:{' '}
-        <a href="mailto:contact@mittechstudio.com">contact@mittechstudio.com</a>. Phone on request.
-        Recommended browsers: current Chrome, Edge, Safari, or Firefox.
+        Operator: MIT Tech Studio. Address and phone disclosed on request. Contact:{' '}
+        <a href="mailto:contact@mittechstudio.com">contact@mittechstudio.com</a>. Recommended
+        browsers: current Chrome, Edge, Safari, or Firefox.
       </p>
     </>
   );
