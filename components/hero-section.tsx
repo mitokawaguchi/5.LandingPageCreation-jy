@@ -1,45 +1,11 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useTranslations } from 'next-intl';
 import { ChevronDown } from 'lucide-react';
 
-const codeSnippets = [
-  'const craft = design + engineering;',
-  'deploy("small, fast, accessible");',
-  'type Product = Idea & Execution;',
-] as const;
-
 export function HeroSection() {
   const t = useTranslations('hero');
-  const [snippetIndex, setSnippetIndex] = useState(0);
-  const [visibleLength, setVisibleLength] = useState(0);
-  const activeSnippet = codeSnippets[snippetIndex];
-  const typedSnippet = activeSnippet.slice(0, visibleLength);
-
-  useEffect(() => {
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) {
-      setVisibleLength(activeSnippet.length);
-      return;
-    }
-
-    const isComplete = visibleLength >= activeSnippet.length;
-    const timeout = window.setTimeout(
-      () => {
-        if (isComplete) {
-          setSnippetIndex((currentIndex) => (currentIndex + 1) % codeSnippets.length);
-          setVisibleLength(0);
-          return;
-        }
-
-        setVisibleLength((currentLength) => currentLength + 1);
-      },
-      isComplete ? 1200 : 42,
-    );
-
-    return () => window.clearTimeout(timeout);
-  }, [activeSnippet.length, visibleLength]);
 
   const handleScrollToWorks = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -52,22 +18,8 @@ export function HeroSection() {
       id="home"
     >
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="hero-orb hero-orb-1 absolute left-1/4 top-20 max-md:h-64 max-md:w-64 max-md:opacity-15 max-md:blur-[72px] h-96 w-96 rounded-full bg-primary opacity-20 blur-[120px] filter" />
-        <div className="hero-orb hero-orb-2 absolute bottom-20 right-1/4 max-md:h-56 max-md:w-56 max-md:opacity-12 max-md:blur-[60px] h-80 w-80 rounded-full bg-accent opacity-15 blur-[100px] filter" />
-        <div className="absolute left-1/2 top-28 hidden w-[min(520px,80vw)] -translate-x-1/2 rounded-2xl border border-border bg-card/50 p-4 text-left font-mono text-xs text-muted-foreground/80 shadow-2xl backdrop-blur md:block">
-          <div className="mb-3 flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-red-400/80" />
-            <span className="h-2.5 w-2.5 rounded-full bg-yellow-400/80" />
-            <span className="h-2.5 w-2.5 rounded-full bg-green-400/80" />
-            <span className="ml-2 text-[10px] uppercase tracking-wider text-muted-foreground">
-              live craft loop
-            </span>
-          </div>
-          <span className="text-accent">mito@studio</span>
-          <span className="text-muted-foreground">:~$ </span>
-          <span className="text-foreground">{typedSnippet}</span>
-          <span className="ml-1 inline-block h-4 w-2 translate-y-0.5 animate-pulse bg-primary" />
-        </div>
+        <div className="hero-orb hero-orb-1 absolute left-1/4 top-20 h-96 w-96 rounded-full bg-primary opacity-15 blur-[120px] filter" />
+        <div className="hero-orb hero-orb-2 absolute bottom-20 right-1/4 h-80 w-80 rounded-full bg-accent opacity-10 blur-[100px] filter" />
       </div>
 
       <div className="flex flex-1 items-center justify-center">
@@ -83,7 +35,7 @@ export function HeroSection() {
               <br />
               <span className="text-3xl font-semibold text-muted-foreground md:text-5xl">{t('line2')}</span>
               <br />
-              <span className="text-shimmer">{t('line3')}</span>
+              <span className="text-foreground">{t('line3')}</span>
             </h1>
 
             <p className="hero-fade-in hero-delay-2 mx-auto mb-10 max-w-xl text-lg font-normal leading-relaxed text-muted-foreground md:text-xl">

@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { useScrollReveal } from '@/hooks/use-scroll-reveal';
-import { GithubActivityCard } from '@/components/github-activity-card';
+import { LAB_GITHUB_PROFILE } from '@/data/lab-github';
 import { WorkCard, type WorkItemMsg } from '@/components/work-card';
 import { LAB_REPOS } from '@/data/lab-github';
 
@@ -16,24 +16,7 @@ export function WorksSection() {
     viewRepo: lab('viewRepo'),
     viewDemo: lab('viewDemo'),
   };
-  const activityLabels = {
-    statsRepos: lab('statsRepos'),
-    statsFollowers: lab('statsFollowers'),
-    statsFollowing: lab('statsFollowing'),
-    commits: lab('commits'),
-    viewProfile: lab('viewProfile'),
-    title: t('githubStatsTitle'),
-    body: t('githubStatsBody'),
-    languagesTitle: t('githubLanguagesTitle'),
-    workflowTitle: t('workflowTitle'),
-    monthlyUpdate: t('monthlyUpdate'),
-    monthlyUpdateBody: t('monthlyUpdateBody'),
-    build: t('build'),
-    buildBody: t('buildBody'),
-    deploy: t('deploy'),
-    deployBody: t('deployBody'),
-    projectUnit: t('projectUnit'),
-  };
+  const totalCommits = LAB_REPOS.reduce((sum, repo) => sum + repo.commitsCount, 0);
   const items: WorkItemMsg[] = LAB_REPOS.map((repo) => ({
     title: repo.name,
     category: repo.language ?? 'Profile',
@@ -75,7 +58,23 @@ export function WorksSection() {
           </p>
         </div>
 
-        <GithubActivityCard labels={activityLabels} isVisible={isVisible} />
+        <div
+          className={`mb-10 grid grid-cols-2 gap-3 rounded-2xl border border-border bg-card p-4 transition-all delay-300 duration-700 md:grid-cols-4 ${
+            isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+          }`}
+        >
+          {[
+            [lab('statsRepos'), LAB_GITHUB_PROFILE.publicRepos],
+            [lab('commits'), totalCommits],
+            [lab('statsFollowers'), LAB_GITHUB_PROFILE.followers],
+            [lab('statsFollowing'), LAB_GITHUB_PROFILE.following],
+          ].map(([label, value]) => (
+            <div key={label} className="rounded-lg border border-border bg-background px-3 py-2 text-left">
+              <p className="text-xs text-muted-foreground">{label}</p>
+              <p className="text-lg font-semibold tabular-nums text-foreground">{value}</p>
+            </div>
+          ))}
+        </div>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {items.map((work, i) => (
