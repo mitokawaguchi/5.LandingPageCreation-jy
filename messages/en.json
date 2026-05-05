@@ -56,10 +56,13 @@
     "githubStatsTitle": "GitHub Activity",
     "githubStatsBody": "A compact view of public repository activity and profile metrics.",
     "githubLanguagesTitle": "Tech Stack",
-    "timelineTitle": "Recent Build Log",
+    "workflowTitle": "How This Portfolio Runs",
     "build": "Build",
+    "buildBody": "Updated with Next.js and TypeScript checks so changes stay reliable.",
     "deploy": "Deploy",
+    "deployBody": "Every push flows through GitHub and can ship to Vercel.",
     "monthlyUpdate": "Auto Update",
+    "monthlyUpdateBody": "Public GitHub stats are refreshed monthly by Actions.",
     "projectUnit": "projects"
   },
   "lab": {

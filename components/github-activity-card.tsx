@@ -13,10 +13,13 @@ type GithubActivityCardProps = {
     title: string;
     body: string;
     languagesTitle: string;
-    timelineTitle: string;
+    workflowTitle: string;
     monthlyUpdate: string;
+    monthlyUpdateBody: string;
     build: string;
+    buildBody: string;
     deploy: string;
+    deployBody: string;
     projectUnit: string;
   };
   isVisible: boolean;
@@ -29,9 +32,9 @@ const languageSummaries = [
 ] as const;
 
 const timelineItems = [
-  { labelKey: 'build' as const, value: 'Next.js 16 / TypeScript' },
-  { labelKey: 'deploy' as const, value: 'Vercel Preview Ready' },
-  { labelKey: 'monthlyUpdate' as const, value: 'GitHub Actions' },
+  { titleKey: 'build' as const, bodyKey: 'buildBody' as const, value: 'Next.js 16 / TypeScript' },
+  { titleKey: 'deploy' as const, bodyKey: 'deployBody' as const, value: 'Vercel' },
+  { titleKey: 'monthlyUpdate' as const, bodyKey: 'monthlyUpdateBody' as const, value: 'GitHub Actions' },
 ] as const;
 
 export function GithubActivityCard({ labels, isVisible }: GithubActivityCardProps) {
@@ -115,12 +118,19 @@ export function GithubActivityCard({ labels, isVisible }: GithubActivityCardProp
       </div>
 
       <div className="mt-4 rounded-xl border border-border bg-background/80 p-5">
-        <h3 className="text-sm font-semibold text-foreground">{labels.timelineTitle}</h3>
+        <h3 className="text-sm font-semibold text-foreground">{labels.workflowTitle}</h3>
         <div className="mt-4 grid gap-3 md:grid-cols-3">
-          {timelineItems.map((item) => (
-            <div key={item.labelKey} className="rounded-lg border border-border bg-secondary/60 p-3">
-              <p className="text-xs text-accent">{labels[item.labelKey]}</p>
-              <p className="mt-1 font-mono text-xs text-foreground">{item.value}</p>
+          {timelineItems.map((item, index) => (
+            <div key={item.titleKey} className="rounded-lg border border-border bg-secondary/60 p-3">
+              <div className="mb-2 flex items-center justify-between gap-2">
+                <p className="text-xs font-semibold text-accent">
+                  {index + 1}. {labels[item.titleKey]}
+                </p>
+                <span className="rounded-full bg-primary/15 px-2 py-0.5 font-mono text-[10px] text-primary">
+                  {item.value}
+                </span>
+              </div>
+              <p className="text-xs leading-relaxed text-muted-foreground">{labels[item.bodyKey]}</p>
             </div>
           ))}
         </div>

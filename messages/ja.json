@@ -56,10 +56,13 @@
     "githubStatsTitle": "GitHub Activity",
     "githubStatsBody": "公開リポジトリの活動量とプロフィール指標をまとめています。",
     "githubLanguagesTitle": "Tech Stack",
-    "timelineTitle": "Recent Build Log",
+    "workflowTitle": "How This Portfolio Runs",
     "build": "Build",
+    "buildBody": "Next.js と TypeScript で型チェックし、壊れにくい構成で更新しています。",
     "deploy": "Deploy",
+    "deployBody": "GitHub への push から Vercel で公開までつながる運用です。",
     "monthlyUpdate": "Auto Update",
+    "monthlyUpdateBody": "GitHub の公開データは月1回 Actions で更新します。",
     "projectUnit": "projects"
   },
   "lab": {

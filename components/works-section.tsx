@@ -25,10 +25,13 @@ export function WorksSection() {
     title: t('githubStatsTitle'),
     body: t('githubStatsBody'),
     languagesTitle: t('githubLanguagesTitle'),
-    timelineTitle: t('timelineTitle'),
+    workflowTitle: t('workflowTitle'),
     monthlyUpdate: t('monthlyUpdate'),
+    monthlyUpdateBody: t('monthlyUpdateBody'),
     build: t('build'),
+    buildBody: t('buildBody'),
     deploy: t('deploy'),
+    deployBody: t('deployBody'),
     projectUnit: t('projectUnit'),
   };
   const items: WorkItemMsg[] = LAB_REPOS.map((repo) => ({
