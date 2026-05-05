@@ -31,7 +31,7 @@ export function HeroSection() {
 
   return (
     <section
-      className="relative flex min-h-screen flex-col overflow-hidden bg-background bg-grid"
+      className="relative flex min-h-screen flex-col overflow-hidden bg-background bg-grid bg-grid-motion"
       id="home"
     >
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
