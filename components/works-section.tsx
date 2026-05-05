@@ -105,15 +105,26 @@ export function WorksSection() {
             </div>
           </div>
 
-          <img
-            src={LAB_GITHUB_PROFILE.contributionGraphUrl}
-            alt={t('contributionsAlt')}
-            width={720}
-            height={120}
-            className="mt-6 h-auto w-full rounded-xl border border-border bg-background/80 p-3"
-            loading="lazy"
-            decoding="async"
-          />
+          <div className="mt-6 grid gap-4 lg:grid-cols-[1.25fr_1fr]">
+            <img
+              src={LAB_GITHUB_PROFILE.statsCardUrl}
+              alt={t('githubStatsAlt')}
+              width={495}
+              height={195}
+              className="h-full w-full rounded-xl border border-border bg-background/80 p-3"
+              loading="lazy"
+              decoding="async"
+            />
+            <img
+              src={LAB_GITHUB_PROFILE.languagesCardUrl}
+              alt={t('githubLanguagesAlt')}
+              width={360}
+              height={195}
+              className="h-full w-full rounded-xl border border-border bg-background/80 p-3"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
 
           <a
             href={LAB_GITHUB_PROFILE.profileUrl}
