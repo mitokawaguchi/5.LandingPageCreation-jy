@@ -18,10 +18,6 @@ const WorksSection = dynamic(() =>
   import('@/components/works-section').then((m) => ({ default: m.WorksSection })),
 );
 
-const LabSection = dynamic(() =>
-  import('@/components/lab-section').then((m) => ({ default: m.LabSection })),
-);
-
 const WritingSection = dynamic(() =>
   import('@/components/writing-section').then((m) => ({ default: m.WritingSection })),
 );
@@ -43,7 +39,6 @@ export function HomePageClient() {
       <HeroSection />
       <AboutSection />
       <WorksSection />
-      <LabSection />
       <WritingSection />
       <ContactSection />
       <Footer />

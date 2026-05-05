@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { HomeSectionLink } from '@/components/home-section-link';
 
-const sectionIds = ['about', 'works', 'lab', 'contact'] as const;
+const sectionIds = ['about', 'works', 'articles', 'contact'] as const;
 
 const linkClass =
   'underline-animate text-xs text-muted-foreground transition-colors hover:text-primary md:text-sm';
