@@ -8,12 +8,12 @@ export type WorkItemMsg = {
   tags: string[];
   repoUrl: string;
   demoUrl: string | null;
+  imageUrl: string;
 };
 
 type WorkCardProps = {
   work: WorkItemMsg;
   color: string;
-  image: string;
   index: number;
   isVisible: boolean;
   labels: {
@@ -22,7 +22,7 @@ type WorkCardProps = {
   };
 };
 
-export function WorkCard({ work, color, image, index, isVisible, labels }: WorkCardProps) {
+export function WorkCard({ work, color, index, isVisible, labels }: WorkCardProps) {
   return (
     <article
       className={`group card-glow flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all duration-500 ${
@@ -32,9 +32,9 @@ export function WorkCard({ work, color, image, index, isVisible, labels }: WorkC
     >
       <div className="relative aspect-[4/3] overflow-hidden">
         <img
-          src={image}
+          src={work.imageUrl}
           alt={work.title}
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          className="h-full w-full bg-secondary object-contain p-6 transition-transform duration-500 group-hover:scale-105"
           width={600}
           height={450}
           loading="lazy"
