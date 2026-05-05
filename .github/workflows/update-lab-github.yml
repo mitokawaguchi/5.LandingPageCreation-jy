@@ -1,0 +1,111 @@
+name: Update Lab GitHub stats
+
+on:
+  schedule:
+    - cron: '0 0 1 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Update GitHub stats
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs/promises');
+
+          const owner = 'mitokawaguchi';
+          const targetPath = 'data/lab-github.ts';
+          const headers = {
+            Accept: 'application/vnd.github+json',
+            Authorization: `Bearer ${process.env.GH_TOKEN}`,
+            'X-GitHub-Api-Version': '2022-11-28',
+          };
+
+          const getJson = async (url) => {
+            const response = await fetch(url, { headers });
+            if (!response.ok) {
+              throw new Error(`GitHub API failed: ${response.status} ${url}`);
+            }
+            return response.json();
+          };
+
+          const getCommitCount = async (repoName) => {
+            const url = `https://api.github.com/repos/${owner}/${repoName}/commits?per_page=1`;
+            const response = await fetch(url, { headers });
+            if (!response.ok) {
+              throw new Error(`Commit API failed: ${response.status} ${repoName}`);
+            }
+
+            const link = response.headers.get('link') ?? '';
+            const lastPage = link.match(/[?&]page=(\d+)>;\s*rel="last"/);
+            if (lastPage) {
+              return Number(lastPage[1]);
+            }
+
+            const commits = await response.json();
+            return Array.isArray(commits) ? commits.length : 0;
+          };
+
+          const replaceConstNumber = (source, key, value) => {
+            return source.replace(new RegExp(`${key}: \\d+`), `${key}: ${value}`);
+          };
+
+          const escapeRegExp = (value) => {
+            return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          };
+
+          const replaceRepoCommits = (source, repoName, value) => {
+            const pattern = new RegExp(
+              `(name: '${escapeRegExp(repoName)}',[\\s\\S]*?commitsCount: )\\d+`,
+              'm',
+            );
+            return source.replace(pattern, `$1${value}`);
+          };
+
+          const profile = await getJson(`https://api.github.com/users/${owner}`);
+          const repos = ['5.LandingPageCreation-jy', 'taskflow', 'mitokawaguchi'];
+          const commitCounts = await Promise.all(
+            repos.map(async (repoName) => [repoName, await getCommitCount(repoName)]),
+          );
+
+          const now = new Intl.DateTimeFormat('ja-JP', {
+            timeZone: 'Asia/Tokyo',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+          }).format(new Date());
+
+          let source = await fs.readFile(targetPath, 'utf8');
+          source = source.replace(/更新日: .*? 時点/, `更新日: ${now} 時点`);
+          source = replaceConstNumber(source, 'publicRepos', profile.public_repos);
+          source = replaceConstNumber(source, 'followers', profile.followers);
+          source = replaceConstNumber(source, 'following', profile.following);
+
+          for (const [repoName, count] of commitCounts) {
+            source = replaceRepoCommits(source, repoName, count);
+          }
+
+          await fs.writeFile(targetPath, source);
+          NODE
+
+      - name: Commit changed stats
+        run: |
+          if git diff --quiet -- data/lab-github.ts; then
+            echo "No GitHub stats changes."
+            exit 0
+          fi
+
+          git add data/lab-github.ts
+          git -c user.name="github-actions[bot]" \
+            -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -m "chore: update GitHub stats"
+          git push
