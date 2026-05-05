@@ -6,6 +6,8 @@ export type WorkItemMsg = {
   categoryAlt: string;
   description: string;
   tags: string[];
+  repoUrl: string;
+  demoUrl: string | null;
 };
 
 type WorkCardProps = {
@@ -14,12 +16,16 @@ type WorkCardProps = {
   image: string;
   index: number;
   isVisible: boolean;
+  labels: {
+    viewRepo: string;
+    viewDemo: string;
+  };
 };
 
-export function WorkCard({ work, color, image, index, isVisible }: WorkCardProps) {
+export function WorkCard({ work, color, image, index, isVisible, labels }: WorkCardProps) {
   return (
     <article
-      className={`group card-glow overflow-hidden rounded-2xl border border-border bg-card transition-all duration-500 ${
+      className={`group card-glow flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all duration-500 ${
         isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
       }`}
       style={{ transitionDelay: `${index * 100}ms` }}
@@ -53,12 +59,18 @@ export function WorkCard({ work, color, image, index, isVisible }: WorkCardProps
           </div>
         </div>
 
-        <div className="absolute right-4 top-4 flex h-10 w-10 translate-y-2 items-center justify-center rounded-full bg-primary/90 opacity-0 backdrop-blur transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+        <a
+          href={work.repoUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="absolute right-4 top-4 flex h-10 w-10 translate-y-2 items-center justify-center rounded-full bg-primary/90 opacity-0 backdrop-blur transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100"
+          aria-label={`${work.title} ${labels.viewRepo}`}
+        >
           <ArrowUpRight className="h-5 w-5 text-primary-foreground" />
-        </div>
+        </a>
       </div>
 
-      <div className="p-5">
+      <div className="flex flex-1 flex-col p-5">
         <div className="mb-2">
           <h3 className="text-lg font-semibold text-foreground transition-colors group-hover:text-primary">
             {work.title}
@@ -74,7 +86,7 @@ export function WorkCard({ work, color, image, index, isVisible }: WorkCardProps
 
         <p className="mb-4 line-clamp-2 text-sm text-muted-foreground">{work.description}</p>
 
-        <div className="flex flex-wrap gap-2 md:hidden">
+        <div className="flex flex-wrap gap-2">
           {work.tags.map((tag) => (
             <span
               key={tag}
@@ -83,6 +95,29 @@ export function WorkCard({ work, color, image, index, isVisible }: WorkCardProps
               {tag}
             </span>
           ))}
+        </div>
+
+        <div className="mt-5 flex flex-wrap gap-2">
+          <a
+            href={work.repoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background/80 px-3 py-2 text-xs font-medium text-foreground transition-colors hover:border-primary hover:text-primary"
+          >
+            <ArrowUpRight className="h-3.5 w-3.5" aria-hidden />
+            {labels.viewRepo}
+          </a>
+          {work.demoUrl ? (
+            <a
+              href={work.demoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-primary/15 px-3 py-2 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary/25"
+            >
+              <ArrowUpRight className="h-3.5 w-3.5" aria-hidden />
+              {labels.viewDemo}
+            </a>
+          ) : null}
         </div>
       </div>
     </article>

@@ -1,5 +1,5 @@
 /**
- * GitHub 公開 API に基づくプロフィール・リポジトリ情報（更新日: 2026-03-25 時点）。
+ * GitHub 公開 API に基づくリポジトリ情報（更新日: 2026-03-25 時点）。
  * リポジトリが増えたらこのファイルと messages の lab.repos を更新してください。
  */
 export type LabRepoId = 'landing' | 'taskflow' | 'profileReadme';
@@ -12,16 +12,6 @@ export type LabRepoRecord = {
   language: string | null;
   commitsCount: number;
 };
-
-export const LAB_GITHUB_PROFILE = {
-  login: 'mitokawaguchi',
-  displayName: 'Mito',
-  avatarUrl: 'https://avatars.githubusercontent.com/u/143634747?v=4',
-  profileUrl: 'https://github.com/mitokawaguchi',
-  publicRepos: 3,
-  followers: 1,
-  following: 1,
-} as const;
 
 export const LAB_REPOS: LabRepoRecord[] = [
   {

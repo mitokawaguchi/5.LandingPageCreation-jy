@@ -52,30 +52,7 @@
   "works": {
     "kicker": "Portfolio",
     "title": "Selected Works",
-    "disclaimer": "実績紹介（架空案件）",
-    "items": [
-      {
-        "title": "TaskFlow",
-        "category": "SaaSランディングページ",
-        "categoryAlt": "SaaS Landing Page",
-        "description": "マイクロインタラクションを重視したタスク管理ツールのLP。スムーズな操作感を視覚的に表現。",
-        "tags": ["Nuxt.js", "GSAP"]
-      },
-      {
-        "title": "LUMIÈRE",
-        "category": "ECサイト",
-        "categoryAlt": "EC Site",
-        "description": "オーガニックコスメのブランドサイト。余白を活かした高級感のあるレイアウト。",
-        "tags": ["Shopify", "Liquid"]
-      },
-      {
-        "title": "Sales Insight",
-        "category": "ダッシュボード",
-        "categoryAlt": "Dashboard",
-        "description": "業務管理用ダッシュボードUI。Reactを用いたリアルタイムなデータ可視化を実現。",
-        "tags": ["React", "TypeScript", "Recharts"]
-      }
-    ]
+    "disclaimer": "GitHubで公開している実在の制作物・開発事例です。"
   },
   "lab": {
     "kicker": "Lab",
