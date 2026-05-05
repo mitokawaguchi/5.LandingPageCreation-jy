@@ -53,8 +53,10 @@
     "kicker": "Portfolio",
     "title": "Selected Works",
     "disclaimer": "Real projects and development examples published on GitHub.",
-    "githubStatsAlt": "GitHub stats summary",
-    "githubLanguagesAlt": "GitHub language summary"
+    "githubStatsTitle": "GitHub Activity",
+    "githubStatsBody": "A compact view of public repository activity and profile metrics.",
+    "githubLanguagesTitle": "Tech Stack",
+    "projectUnit": "projects"
   },
   "lab": {
     "kicker": "Lab",

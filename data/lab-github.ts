@@ -19,10 +19,6 @@ export const LAB_GITHUB_PROFILE = {
   displayName: 'Mito',
   avatarUrl: 'https://avatars.githubusercontent.com/u/143634747?v=4',
   profileUrl: 'https://github.com/mitokawaguchi',
-  statsCardUrl:
-    'https://github-readme-stats.vercel.app/api?username=mitokawaguchi&show_icons=true&theme=transparent&hide_border=true&title_color=356A7C&text_color=94A3B8&icon_color=5BA3B8',
-  languagesCardUrl:
-    'https://github-readme-stats.vercel.app/api/top-langs/?username=mitokawaguchi&layout=compact&theme=transparent&hide_border=true&title_color=356A7C&text_color=94A3B8',
   publicRepos: 3,
   followers: 1,
   following: 1,
