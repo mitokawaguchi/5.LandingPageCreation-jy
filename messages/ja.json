@@ -53,7 +53,8 @@
     "kicker": "Portfolio",
     "title": "Selected Works",
     "disclaimer": "GitHubで公開している実在の制作物・開発事例です。",
-    "contributionsAlt": "GitHubのコントリビューション履歴"
+    "githubStatsAlt": "GitHubの統計サマリー",
+    "githubLanguagesAlt": "GitHubの使用言語サマリー"
   },
   "lab": {
     "kicker": "Lab",
