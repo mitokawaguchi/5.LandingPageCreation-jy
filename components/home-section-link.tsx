@@ -3,7 +3,7 @@
 import type { MouseEvent, ReactNode } from 'react';
 import { Link, usePathname } from '@/i18n/navigation';
 
-type SectionId = 'about' | 'works' | 'lab' | 'contact';
+type SectionId = 'about' | 'works' | 'lab' | 'articles' | 'contact';
 
 type HomeSectionLinkProps = {
   sectionId: SectionId;

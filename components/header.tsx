@@ -24,6 +24,7 @@ export function Header() {
     { id: 'about' as const, label: t('about') },
     { id: 'works' as const, label: t('works') },
     { id: 'lab' as const, label: t('lab') },
+    { id: 'articles' as const, label: t('articles') },
     { id: 'contact' as const, label: t('contact') },
   ];
 

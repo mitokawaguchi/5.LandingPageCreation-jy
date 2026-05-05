@@ -4,6 +4,9 @@ import type { SVGProps } from 'react';
 import { useTranslations } from 'next-intl';
 import { useScrollReveal } from '@/hooks/use-scroll-reveal';
 import { Github, Instagram, Mail } from 'lucide-react';
+import { QiitaIcon } from '@/components/qiita-icon';
+import { ZennIcon } from '@/components/zenn-icon';
+import { WRITING_PROFILES } from '@/data/writing-profiles';
 
 function ThreadsIcon(props: SVGProps<SVGSVGElement>) {
   return (
@@ -88,6 +91,24 @@ export function ContactSection() {
             >
               <span className="sr-only">{t('github')}</span>
               <Github className="h-5 w-5" />
+            </a>
+            <a
+              href={WRITING_PROFILES.zenn.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-secondary text-muted-foreground transition-all duration-200 hover:bg-primary/20 hover:text-primary active:scale-95"
+            >
+              <span className="sr-only">{t('zenn')}</span>
+              <ZennIcon className="h-5 w-5" />
+            </a>
+            <a
+              href={WRITING_PROFILES.qiita.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-secondary text-muted-foreground transition-all duration-200 hover:bg-primary/20 hover:text-primary active:scale-95"
+            >
+              <span className="sr-only">{t('qiita')}</span>
+              <QiitaIcon className="h-5 w-5" />
             </a>
           </div>
         </div>

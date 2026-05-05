@@ -9,11 +9,17 @@ interface Node {
   opacity: number;
 }
 
+type NavigatorWithConnection = Navigator & {
+  connection?: {
+    saveData?: boolean;
+  };
+};
+
 function getConnectionSaveData(): boolean {
   if (typeof navigator === 'undefined') {
     return false;
   }
-  const c = navigator.connection;
+  const c = (navigator as NavigatorWithConnection).connection;
   return Boolean(c && 'saveData' in c && c.saveData);
 }
 

@@ -7,6 +7,7 @@
     "about": "About",
     "works": "Works",
     "lab": "Lab",
+    "articles": "Articles",
     "contact": "Contact",
     "getInTouch": "Get in Touch",
     "toggleMenu": "Toggle menu",
@@ -87,7 +88,7 @@
     "viewRepo": "Repository",
     "viewDemo": "Live demo",
     "language": "Language",
-    "openIssues": "Open issues",
+    "commits": "Commits",
     "repos": {
       "landing": {
         "desc": "Source for this portfolio site. Next.js + TypeScript. Deployed on Vercel."
@@ -107,7 +108,33 @@
     "cta": "Contact Us",
     "instagram": "Instagram",
     "threads": "Threads",
-    "github": "GitHub"
+    "github": "GitHub",
+    "zenn": "Zenn",
+    "qiita": "Qiita"
+  },
+  "writing": {
+    "kicker": "Writing",
+    "title": "Articles",
+    "intro": "Technical articles published on Zenn and Qiita, ranked by likes or impressions and shown up to three items.",
+    "more": "More",
+    "loading": "Loading articles.",
+    "empty": "No public articles yet.",
+    "error": "Could not load articles. Please try again later.",
+    "likes": "Like",
+    "impressions": "Imp",
+    "bookmarks": "Saved",
+    "readArticle": "Read article"
+  },
+  "articlesPage": {
+    "kicker": "Writing Archive",
+    "title": "Article Archive",
+    "description": "Technical articles published on Zenn and Qiita.",
+    "intro": "Published articles are sorted by engagement. Zenn shows likes and bookmarks; Qiita also shows impressions when the public API returns them.",
+    "empty": "No public articles yet.",
+    "likes": "Like",
+    "impressions": "Imp",
+    "bookmarks": "Saved",
+    "readArticle": "Read article"
   },
   "footer": {
     "rights": "All rights reserved.",

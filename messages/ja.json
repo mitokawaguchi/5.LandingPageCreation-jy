@@ -7,6 +7,7 @@
     "about": "About",
     "works": "Works",
     "lab": "Lab",
+    "articles": "Articles",
     "contact": "Contact",
     "getInTouch": "お問い合わせ",
     "toggleMenu": "メニューを開閉",
@@ -87,7 +88,7 @@
     "viewRepo": "リポジトリ",
     "viewDemo": "デモサイト",
     "language": "言語",
-    "openIssues": "オープンIssue",
+    "commits": "コミット数",
     "repos": {
       "landing": {
         "desc": "このポートフォリオサイトのソース。Next.js + TypeScript。Vercel にデプロイ。"
@@ -107,7 +108,33 @@
     "cta": "お問い合わせ",
     "instagram": "Instagram",
     "threads": "Threads",
-    "github": "GitHub"
+    "github": "GitHub",
+    "zenn": "Zenn",
+    "qiita": "Qiita"
+  },
+  "writing": {
+    "kicker": "Writing",
+    "title": "執筆記事",
+    "intro": "Zenn と Qiita に公開している技術記事を、いいね数またはインプレッション数の高い順に最大3件表示します。",
+    "more": "More",
+    "loading": "記事を読み込み中です。",
+    "empty": "公開記事はまだありません。",
+    "error": "記事を取得できませんでした。時間をおいて再度お試しください。",
+    "likes": "Like",
+    "impressions": "Imp",
+    "bookmarks": "保存",
+    "readArticle": "記事を読む"
+  },
+  "articlesPage": {
+    "kicker": "Writing Archive",
+    "title": "記事一覧",
+    "description": "Zenn と Qiita に公開している技術記事の一覧です。",
+    "intro": "公開記事をエンゲージメント順にまとめています。Zenn はいいね・保存、Qiita は取得できる場合にインプレッションも表示します。",
+    "empty": "公開記事はまだありません。",
+    "likes": "Like",
+    "impressions": "Imp",
+    "bookmarks": "保存",
+    "readArticle": "記事を読む"
   },
   "footer": {
     "rights": "All rights reserved.",
