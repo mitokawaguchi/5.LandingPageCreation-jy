@@ -52,30 +52,7 @@
   "works": {
     "kicker": "Portfolio",
     "title": "Selected Works",
-    "disclaimer": "Sample projects (fictional)",
-    "items": [
-      {
-        "title": "TaskFlow",
-        "category": "SaaS Landing Page",
-        "categoryAlt": "SaaSランディングページ",
-        "description": "Landing page for a task app focused on micro-interactions and a smooth, tactile feel.",
-        "tags": ["Nuxt.js", "GSAP"]
-      },
-      {
-        "title": "LUMIÈRE",
-        "category": "EC Site",
-        "categoryAlt": "ECサイト",
-        "description": "Organic cosmetics brand site with generous whitespace and a premium layout.",
-        "tags": ["Shopify", "Liquid"]
-      },
-      {
-        "title": "Sales Insight",
-        "category": "Dashboard",
-        "categoryAlt": "ダッシュボード",
-        "description": "Operations dashboard UI with real-time data visualization in React.",
-        "tags": ["React", "TypeScript", "Recharts"]
-      }
-    ]
+    "disclaimer": "Real projects and development examples published on GitHub."
   },
   "lab": {
     "kicker": "Lab",
