@@ -30,65 +30,32 @@ export function WorkCard({ work, color, index, isVisible, labels }: WorkCardProp
       }`}
       style={{ transitionDelay: `${index * 100}ms` }}
     >
-      <div className="relative aspect-[4/3] overflow-hidden">
-        <div className="h-full w-full bg-secondary p-4">
-          <div className="flex h-full flex-col overflow-hidden rounded-xl border border-border bg-background/90 shadow-2xl transition-transform duration-500 group-hover:scale-[1.03]">
-            <div className="flex items-center gap-1.5 border-b border-border bg-card px-3 py-2">
-              <span className="h-2.5 w-2.5 rounded-full bg-red-400/80" />
-              <span className="h-2.5 w-2.5 rounded-full bg-yellow-400/80" />
-              <span className="h-2.5 w-2.5 rounded-full bg-green-400/80" />
-              <span className="ml-2 truncate font-mono text-[10px] text-muted-foreground">
-                {work.demoUrl ?? work.repoUrl}
-              </span>
-            </div>
-            <div className="flex flex-1 items-center justify-center p-6">
-              <img
-                src={work.imageUrl}
-                alt={work.title}
-                className="max-h-full max-w-full object-contain"
-                width={520}
-                height={320}
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
-          </div>
+      <div className="relative aspect-[4/3] overflow-hidden bg-secondary p-4">
+        <div className="flex h-full items-center justify-center rounded-xl border border-border bg-background transition-transform duration-300 group-hover:scale-[1.01]">
+          <img
+            src={work.imageUrl}
+            alt={work.title}
+            className="max-h-full max-w-full object-contain p-4"
+            width={520}
+            height={320}
+            loading="lazy"
+            decoding="async"
+          />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-
-        <div className="absolute inset-0 hidden opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:block">
-          <div className="gradient-animate absolute inset-0 opacity-35" />
-          <div className="absolute inset-0 bg-black/35" />
-          <div className="relative flex h-full w-full items-center justify-center p-4">
-            <div className="flex max-w-[90%] flex-wrap justify-center gap-2">
-              {work.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-md border border-border bg-secondary/80 px-2.5 py-1 text-xs font-medium text-foreground backdrop-blur"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-
         <a
           href={work.repoUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="absolute right-4 top-4 flex h-10 w-10 translate-y-2 items-center justify-center rounded-full bg-primary/90 opacity-0 backdrop-blur transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100"
+          className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background/90 transition-colors duration-200 hover:border-primary hover:text-primary"
           aria-label={`${work.title} ${labels.viewRepo}`}
         >
-          <ArrowUpRight className="h-5 w-5 text-primary-foreground" />
+          <ArrowUpRight className="h-5 w-5" />
         </a>
       </div>
 
       <div className="flex flex-1 flex-col p-5">
         <div className="mb-2">
-          <h3 className="text-lg font-semibold text-foreground transition-colors group-hover:text-primary">
-            {work.title}
-          </h3>
+          <h3 className="text-lg font-semibold text-foreground">{work.title}</h3>
           <span
             className="rounded-full px-2 py-0.5 text-xs font-medium"
             style={{ background: `${color}20`, color }}
