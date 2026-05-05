@@ -76,7 +76,7 @@ export function WorksSection() {
   }));
 
   return (
-    <section ref={ref} id="works" className="bg-background bg-grid py-24 md:py-32">
+    <section ref={ref} id="works" className="bg-background bg-grid bg-grid-motion py-24 md:py-32">
       <div className="container mx-auto px-6">
         <div className="mb-16 text-center">
           <span
