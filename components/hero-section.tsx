@@ -4,6 +4,12 @@ import React from 'react';
 import { useTranslations } from 'next-intl';
 import { ChevronDown } from 'lucide-react';
 
+const codeSnippets = [
+  'const craft = design + engineering;',
+  'deploy("small, fast, accessible");',
+  'type Product = Idea & Execution;',
+] as const;
+
 export function HeroSection() {
   const t = useTranslations('hero');
 
@@ -20,6 +26,15 @@ export function HeroSection() {
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="hero-orb hero-orb-1 absolute left-1/4 top-20 max-md:h-64 max-md:w-64 max-md:opacity-15 max-md:blur-[72px] h-96 w-96 rounded-full bg-primary opacity-20 blur-[120px] filter" />
         <div className="hero-orb hero-orb-2 absolute bottom-20 right-1/4 max-md:h-56 max-md:w-56 max-md:opacity-12 max-md:blur-[60px] h-80 w-80 rounded-full bg-accent opacity-15 blur-[100px] filter" />
+        <div className="absolute left-6 top-28 hidden max-w-xs rotate-[-4deg] rounded-xl border border-border bg-card/40 px-4 py-3 font-mono text-xs text-muted-foreground/70 backdrop-blur md:block">
+          {codeSnippets[0]}
+        </div>
+        <div className="absolute right-8 top-40 hidden max-w-xs rotate-3 rounded-xl border border-border bg-card/40 px-4 py-3 font-mono text-xs text-muted-foreground/70 backdrop-blur lg:block">
+          {codeSnippets[1]}
+        </div>
+        <div className="absolute bottom-36 left-10 hidden max-w-xs rotate-2 rounded-xl border border-border bg-card/40 px-4 py-3 font-mono text-xs text-muted-foreground/70 backdrop-blur lg:block">
+          {codeSnippets[2]}
+        </div>
       </div>
 
       <div className="flex flex-1 items-center justify-center">

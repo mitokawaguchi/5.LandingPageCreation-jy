@@ -31,16 +31,30 @@ export function WorkCard({ work, color, index, isVisible, labels }: WorkCardProp
       style={{ transitionDelay: `${index * 100}ms` }}
     >
       <div className="relative aspect-[4/3] overflow-hidden">
-        <img
-          src={work.imageUrl}
-          alt={work.title}
-          className="h-full w-full bg-secondary object-contain p-6 transition-transform duration-500 group-hover:scale-105"
-          width={600}
-          height={450}
-          loading="lazy"
-          decoding="async"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+        <div className="h-full w-full bg-secondary p-4">
+          <div className="flex h-full flex-col overflow-hidden rounded-xl border border-border bg-background/90 shadow-2xl transition-transform duration-500 group-hover:scale-[1.03]">
+            <div className="flex items-center gap-1.5 border-b border-border bg-card px-3 py-2">
+              <span className="h-2.5 w-2.5 rounded-full bg-red-400/80" />
+              <span className="h-2.5 w-2.5 rounded-full bg-yellow-400/80" />
+              <span className="h-2.5 w-2.5 rounded-full bg-green-400/80" />
+              <span className="ml-2 truncate font-mono text-[10px] text-muted-foreground">
+                {work.demoUrl ?? work.repoUrl}
+              </span>
+            </div>
+            <div className="flex flex-1 items-center justify-center p-6">
+              <img
+                src={work.imageUrl}
+                alt={work.title}
+                className="max-h-full max-w-full object-contain"
+                width={520}
+                height={320}
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          </div>
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
         <div className="absolute inset-0 hidden opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:block">
           <div className="gradient-animate absolute inset-0 opacity-35" />
