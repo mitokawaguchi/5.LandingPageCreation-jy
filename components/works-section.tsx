@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useScrollReveal } from '@/hooks/use-scroll-reveal';
 import { LAB_GITHUB_PROFILE } from '@/data/lab-github';
@@ -7,6 +8,43 @@ import { WorkCard, type WorkItemMsg } from '@/components/work-card';
 import { LAB_REPOS } from '@/data/lab-github';
 
 const workColors = ['#356A7C', '#5ba3b8', '#7ec8e3'] as const;
+
+type AnimatedStatProps = {
+  label: string;
+  value: number;
+  isVisible: boolean;
+};
+
+function AnimatedStat({ label, value, isVisible }: AnimatedStatProps) {
+  const [displayValue, setDisplayValue] = useState(0);
+
+  useEffect(() => {
+    if (!isVisible) {
+      return;
+    }
+    let frameId = 0;
+    const durationMs = 700;
+    const startTime = performance.now();
+
+    const tick = (now: number) => {
+      const progress = Math.min((now - startTime) / durationMs, 1);
+      setDisplayValue(Math.round(value * progress));
+      if (progress < 1) {
+        frameId = window.requestAnimationFrame(tick);
+      }
+    };
+
+    frameId = window.requestAnimationFrame(tick);
+    return () => window.cancelAnimationFrame(frameId);
+  }, [isVisible, value]);
+
+  return (
+    <div className="rounded-lg border border-border bg-background px-3 py-2 text-left">
+      <p className="text-xs text-muted-foreground">{label}</p>
+      <p className="text-lg font-semibold tabular-nums text-foreground">{displayValue}</p>
+    </div>
+  );
+}
 
 export function WorksSection() {
   const t = useTranslations('works');
@@ -17,6 +55,12 @@ export function WorksSection() {
     viewDemo: lab('viewDemo'),
   };
   const totalCommits = LAB_REPOS.reduce((sum, repo) => sum + repo.commitsCount, 0);
+  const stats: ReadonlyArray<{ label: string; value: number }> = [
+    { label: lab('statsRepos'), value: LAB_GITHUB_PROFILE.publicRepos },
+    { label: lab('commits'), value: totalCommits },
+    { label: lab('statsFollowers'), value: LAB_GITHUB_PROFILE.followers },
+    { label: lab('statsFollowing'), value: LAB_GITHUB_PROFILE.following },
+  ];
   const items: WorkItemMsg[] = LAB_REPOS.map((repo) => ({
     title: repo.name,
     category: repo.language ?? 'Profile',
@@ -63,16 +107,13 @@ export function WorksSection() {
             isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
           }`}
         >
-          {[
-            [lab('statsRepos'), LAB_GITHUB_PROFILE.publicRepos],
-            [lab('commits'), totalCommits],
-            [lab('statsFollowers'), LAB_GITHUB_PROFILE.followers],
-            [lab('statsFollowing'), LAB_GITHUB_PROFILE.following],
-          ].map(([label, value]) => (
-            <div key={label} className="rounded-lg border border-border bg-background px-3 py-2 text-left">
-              <p className="text-xs text-muted-foreground">{label}</p>
-              <p className="text-lg font-semibold tabular-nums text-foreground">{value}</p>
-            </div>
+          {stats.map((stat) => (
+            <AnimatedStat
+              key={stat.label}
+              label={stat.label}
+              value={stat.value}
+              isVisible={isVisible}
+            />
           ))}
         </div>
 

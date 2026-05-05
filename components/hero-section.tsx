@@ -1,11 +1,28 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { ChevronDown } from 'lucide-react';
 
+const livePhrases = [
+  'Design system tuning in progress.',
+  'Shipping small, polished improvements.',
+  'Accessibility and performance first.',
+] as const;
+
 export function HeroSection() {
   const t = useTranslations('hero');
+  const [phraseIndex, setPhraseIndex] = useState(0);
+
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return;
+    }
+    const timer = window.setInterval(() => {
+      setPhraseIndex((prevIndex) => (prevIndex + 1) % livePhrases.length);
+    }, 2400);
+    return () => window.clearInterval(timer);
+  }, []);
 
   const handleScrollToWorks = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -41,6 +58,15 @@ export function HeroSection() {
             <p className="hero-fade-in hero-delay-2 mx-auto mb-10 max-w-xl text-lg font-normal leading-relaxed text-muted-foreground md:text-xl">
               {t('subtitle')}
             </p>
+
+            <div className="hero-fade-in hero-delay-2 mb-8 flex justify-center">
+              <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-xs text-muted-foreground">
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
+                <span key={livePhrases[phraseIndex]} className="animate-fade-in">
+                  {livePhrases[phraseIndex]}
+                </span>
+              </div>
+            </div>
 
             <div className="hero-fade-in hero-delay-3 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <a
