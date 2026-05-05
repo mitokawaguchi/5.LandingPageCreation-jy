@@ -2,7 +2,7 @@ export function OperatorContentJa() {
   return (
     <>
       <h2 id="o1">運営者名</h2>
-      <p>［要記載：氏名または法人名］（MIT Tech Studio）</p>
+      <p>MIT Tech Studio</p>
 
       <h2 id="o2">所在地</h2>
       <p>請求があった場合に遅滞なく開示します。</p>
@@ -19,7 +19,7 @@ export function OperatorContentJa() {
       <p>Webサイトの企画・デザイン・開発、関連する技術コンサルティングおよびポートフォリオの掲載。</p>
 
       <h2 id="o5">サービス開始日</h2>
-      <p>2020年（サイトの公開時期は運営者の実情に合わせて記載してください）</p>
+      <p>2026年7月1日 ※予定</p>
 
       <h2 id="o6">備考</h2>
       <p>

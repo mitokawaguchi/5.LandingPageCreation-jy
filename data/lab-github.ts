@@ -10,7 +10,7 @@ export type LabRepoRecord = {
   htmlUrl: string;
   homepage: string | null;
   language: string | null;
-  openIssues?: number;
+  commitsCount: number;
 };
 
 export const LAB_GITHUB_PROFILE = {
@@ -30,6 +30,7 @@ export const LAB_REPOS: LabRepoRecord[] = [
     htmlUrl: 'https://github.com/mitokawaguchi/5.LandingPageCreation-jy',
     homepage: 'https://v0-mit-tech-studio.vercel.app',
     language: 'TypeScript',
+    commitsCount: 19,
   },
   {
     id: 'taskflow',
@@ -37,7 +38,7 @@ export const LAB_REPOS: LabRepoRecord[] = [
     htmlUrl: 'https://github.com/mitokawaguchi/taskflow',
     homepage: 'https://taskflow-alpha-ebon.vercel.app',
     language: 'JavaScript',
-    openIssues: 5,
+    commitsCount: 136,
   },
   {
     id: 'profileReadme',
@@ -45,5 +46,6 @@ export const LAB_REPOS: LabRepoRecord[] = [
     htmlUrl: 'https://github.com/mitokawaguchi/mitokawaguchi',
     homepage: null,
     language: null,
+    commitsCount: 6,
   },
 ];
