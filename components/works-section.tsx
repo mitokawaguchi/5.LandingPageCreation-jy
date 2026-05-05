@@ -7,6 +7,11 @@ import { WorkCard, type WorkItemMsg } from '@/components/work-card';
 import { LAB_GITHUB_PROFILE, LAB_REPOS } from '@/data/lab-github';
 
 const workColors = ['#356A7C', '#5ba3b8', '#7ec8e3'] as const;
+const totalCommits = LAB_REPOS.reduce((sum, repo) => sum + repo.commitsCount, 0);
+const languageSummaries = [
+  { label: 'TypeScript', count: 1, percent: 50 },
+  { label: 'JavaScript', count: 1, percent: 50 },
+] as const;
 
 export function WorksSection() {
   const t = useTranslations('works');
@@ -105,25 +110,65 @@ export function WorksSection() {
             </div>
           </div>
 
-          <div className="mt-6 grid gap-4 lg:grid-cols-[1.25fr_1fr]">
-            <img
-              src={LAB_GITHUB_PROFILE.statsCardUrl}
-              alt={t('githubStatsAlt')}
-              width={495}
-              height={195}
-              className="h-full w-full rounded-xl border border-border bg-background/80 p-3"
-              loading="lazy"
-              decoding="async"
-            />
-            <img
-              src={LAB_GITHUB_PROFILE.languagesCardUrl}
-              alt={t('githubLanguagesAlt')}
-              width={360}
-              height={195}
-              className="h-full w-full rounded-xl border border-border bg-background/80 p-3"
-              loading="lazy"
-              decoding="async"
-            />
+          <div className="mt-6 grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
+            <div className="rounded-xl border border-border bg-background/80 p-5">
+              <div className="mb-5 flex items-center justify-between gap-4">
+                <div>
+                  <h3 className="text-sm font-semibold text-foreground">{t('githubStatsTitle')}</h3>
+                  <p className="mt-1 text-xs text-muted-foreground">{t('githubStatsBody')}</p>
+                </div>
+                <Github className="h-5 w-5 text-primary" aria-hidden />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                <div className="rounded-lg border border-border bg-secondary/60 p-3">
+                  <p className="text-xs text-muted-foreground">{lab('statsRepos')}</p>
+                  <p className="mt-1 text-xl font-semibold tabular-nums text-foreground">
+                    {LAB_GITHUB_PROFILE.publicRepos}
+                  </p>
+                </div>
+                <div className="rounded-lg border border-border bg-secondary/60 p-3">
+                  <p className="text-xs text-muted-foreground">{lab('commits')}</p>
+                  <p className="mt-1 text-xl font-semibold tabular-nums text-foreground">
+                    {totalCommits}
+                  </p>
+                </div>
+                <div className="rounded-lg border border-border bg-secondary/60 p-3">
+                  <p className="text-xs text-muted-foreground">{lab('statsFollowers')}</p>
+                  <p className="mt-1 text-xl font-semibold tabular-nums text-foreground">
+                    {LAB_GITHUB_PROFILE.followers}
+                  </p>
+                </div>
+                <div className="rounded-lg border border-border bg-secondary/60 p-3">
+                  <p className="text-xs text-muted-foreground">{lab('statsFollowing')}</p>
+                  <p className="mt-1 text-xl font-semibold tabular-nums text-foreground">
+                    {LAB_GITHUB_PROFILE.following}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-xl border border-border bg-background/80 p-5">
+              <h3 className="text-sm font-semibold text-foreground">{t('githubLanguagesTitle')}</h3>
+              <div className="mt-5 space-y-4">
+                {languageSummaries.map((language) => (
+                  <div key={language.label}>
+                    <div className="mb-2 flex items-center justify-between text-xs">
+                      <span className="font-medium text-foreground">{language.label}</span>
+                      <span className="text-muted-foreground">
+                        {language.count} {t('projectUnit')}
+                      </span>
+                    </div>
+                    <div className="h-2 overflow-hidden rounded-full bg-secondary">
+                      <div
+                        className="h-full rounded-full bg-primary"
+                        style={{ width: `${language.percent}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
 
           <a

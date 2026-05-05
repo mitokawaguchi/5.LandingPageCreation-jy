@@ -53,8 +53,10 @@
     "kicker": "Portfolio",
     "title": "Selected Works",
     "disclaimer": "GitHubで公開している実在の制作物・開発事例です。",
-    "githubStatsAlt": "GitHubの統計サマリー",
-    "githubLanguagesAlt": "GitHubの使用言語サマリー"
+    "githubStatsTitle": "GitHub Activity",
+    "githubStatsBody": "公開リポジトリの活動量とプロフィール指標をまとめています。",
+    "githubLanguagesTitle": "Tech Stack",
+    "projectUnit": "projects"
   },
   "lab": {
     "kicker": "Lab",
