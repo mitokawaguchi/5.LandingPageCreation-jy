@@ -56,6 +56,10 @@
     "githubStatsTitle": "GitHub Activity",
     "githubStatsBody": "A compact view of public repository activity and profile metrics.",
     "githubLanguagesTitle": "Tech Stack",
+    "timelineTitle": "Recent Build Log",
+    "build": "Build",
+    "deploy": "Deploy",
+    "monthlyUpdate": "Auto Update",
     "projectUnit": "projects"
   },
   "lab": {

@@ -56,6 +56,10 @@
     "githubStatsTitle": "GitHub Activity",
     "githubStatsBody": "公開リポジトリの活動量とプロフィール指標をまとめています。",
     "githubLanguagesTitle": "Tech Stack",
+    "timelineTitle": "Recent Build Log",
+    "build": "Build",
+    "deploy": "Deploy",
+    "monthlyUpdate": "Auto Update",
     "projectUnit": "projects"
   },
   "lab": {
