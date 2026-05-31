@@ -127,65 +127,76 @@ function PinnedHead() {
 
   const title = 'デザインとエンジニアリングの境界をなくす。';
   const chars = title.split('');
-  const subtitleOpacity = progress > 0.72 ? Math.min(1, (progress - 0.72) / 0.18) : 0;
+  const n = chars.length;
+
+  // Characters brighten across the first 72% of the scroll; a descending
+  // "front" sweeps through so that by ~72% every glyph is fully resolved.
+  const front = (progress / 0.72) * (n + 9);
+
+  // Subtitle fades in over the last stretch, after the title has resolved.
+  const subProgress = Math.min(1, Math.max(0, (progress - 0.72) / 0.2));
 
   return (
     <div ref={sectionRef} style={{ height: '210vh', position: 'relative' }}>
       <div style={{
         position: 'sticky', top: 0, height: '100vh',
-        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-        padding: '0 56px',
+        display: 'flex', flexDirection: 'column', justifyContent: 'center',
       }}>
-        {/* Kicker */}
-        <p style={{
-          fontFamily: 'var(--font-mono)', fontSize: 13, color: T.accent,
-          letterSpacing: '0.1em', marginBottom: 28, textTransform: 'uppercase',
-        }}>
-          §02 — Studio brief
-        </p>
-
-        {/* Title */}
-        <h2 style={{
-          fontSize: 'clamp(44px, 6.2vw, 104px)', fontWeight: 600,
-          lineHeight: 1.25, textAlign: 'center', maxWidth: 1100,
-          fontFamily: '"Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif',
-        }}>
-          {chars.map((ch, i) => {
-            const charProgress = Math.min(1, Math.max(0, (progress * chars.length - i) / 6));
-            return (
-              <span key={i} style={{
-                opacity: 0.13 + 0.87 * charProgress,
-                filter: `blur(${(1 - charProgress) * 4}px)`,
-                transition: 'none',
-                color: T.ink,
-              }}>{ch}</span>
-            );
-          })}
-        </h2>
-
-        {/* Subtitle */}
-        <p style={{
-          marginTop: 32, fontSize: 17, color: T.sub,
-          fontFamily: 'var(--font-mono)', letterSpacing: '0.02em',
-          opacity: subtitleOpacity, transition: 'opacity 0.3s',
-          textAlign: 'center',
-        }}>
-          {SUBTITLE}
-        </p>
-
-        {/* Scroll indicator */}
         <div style={{
-          position: 'absolute', bottom: 40,
-          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
-          opacity: 1 - progress * 3,
+          maxWidth: 1320, margin: '0 auto', padding: '0 56px',
+          width: '100%', boxSizing: 'border-box',
         }}>
-          <span style={{
-            width: 28, height: 28, borderRadius: '50%',
-            border: `1px solid ${T.dim}`, display: 'flex',
-            alignItems: 'center', justifyContent: 'center',
-            fontSize: 11, color: T.dim,
-          }}>↓</span>
-          <span style={{ fontSize: 10, color: T.dim, fontFamily: 'var(--font-mono)', letterSpacing: '0.1em' }}>scroll</span>
+          {/* Kicker */}
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 14,
+            fontFamily: 'var(--font-mono)', fontSize: 12, color: T.accent,
+            letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: 32,
+          }}>
+            <span>§02</span>
+            <span style={{ width: 28, height: 1, background: T.accent }} />
+            <span>Studio brief</span>
+          </div>
+
+          {/* Title */}
+          <div style={{
+            fontFamily: '"Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif',
+            fontSize: 'clamp(44px, 6.2vw, 104px)', fontWeight: 600,
+            color: T.ink, letterSpacing: '-0.03em', lineHeight: 1.18,
+            fontFeatureSettings: '"palt"', maxWidth: '16ch',
+          }}>
+            {chars.map((ch, i) => {
+              const cp = Math.min(1, Math.max(0, (front - i) / 9));
+              return (
+                <span key={i} style={{
+                  display: 'inline-block', whiteSpace: 'pre',
+                  opacity: 0.13 + 0.87 * cp,
+                  filter: cp > 0.96 ? 'none' : `blur(${(1 - cp) * 4}px)`,
+                  willChange: 'opacity, filter',
+                }}>{ch}</span>
+              );
+            })}
+          </div>
+
+          {/* Subtitle */}
+          <div style={{
+            marginTop: 30, fontFamily: 'var(--font-sans)', fontSize: 18,
+            color: T.sub, lineHeight: 1.7, letterSpacing: '-0.004em', maxWidth: 680,
+            opacity: subProgress,
+            transform: `translateY(${(1 - subProgress) * 18}px)`,
+          }}>
+            {SUBTITLE}
+          </div>
+
+          {/* Scroll indicator */}
+          <div style={{
+            marginTop: 44, fontFamily: 'var(--font-mono)', fontSize: 11,
+            color: T.dim, letterSpacing: '0.14em', textTransform: 'uppercase',
+            display: 'flex', alignItems: 'center', gap: 10,
+            opacity: Math.max(0, 1 - progress * 3),
+          }}>
+            <span style={{ width: 7, height: 7, border: `1px solid ${T.dim}`, borderRadius: '50%' }} />
+            scroll
+          </div>
         </div>
       </div>
     </div>
