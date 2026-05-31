@@ -12,10 +12,13 @@ interface StudioIntroProps {
 }
 
 const STUDIO_NAME = 'MIT Tech Studio';
+// How much larger than the docked nav logo the opening lockup sits.
+const BIG = 3;
 
 export function StudioIntro({ onExitStart, onDone }: StudioIntroProps) {
   const [phase, setPhase] = useState<'enter' | 'fly' | 'fade' | 'done'>('enter');
   const lockupRef = useRef<HTMLDivElement>(null);
+  const markRef = useRef<HTMLDivElement>(null);
   const [flyTransform, setFlyTransform] = useState<string>('');
   const skipReady = useRef(false);
   const hasExited = useRef(false);
@@ -41,17 +44,30 @@ export function StudioIntro({ onExitStart, onDone }: StudioIntroProps) {
     if (hasExited.current) return;
     hasExited.current = true;
 
-    // Compute fly transform to nav logo dock
+    // Compute fly transform to nav logo dock.
+    //
+    // Position: align the lockup CENTER to the dock center. The lockup is
+    // scaled with transform-origin:center, so its center is invariant under
+    // scaling — measuring it at scale(BIG) gives the right target for any
+    // final scale.
+    //
+    // Scale: derive from the "M" mark, not the whole lockup. The mark has an
+    // identical 36px base in both the intro lockup and the nav dock, so this
+    // resolves to ~1.0 regardless of sub-pixel text-width differences — the
+    // docked logo ends at exactly the nav logo's size with no visible pop.
     const dock = document.querySelector<HTMLElement>('[data-logo-dock]');
+    const dockMark = dock?.firstElementChild as HTMLElement | undefined;
     const lockup = lockupRef.current;
+    const mark = markRef.current;
 
-    if (dock && lockup) {
+    if (dock && dockMark && lockup && mark) {
       const dockRect = dock.getBoundingClientRect();
       const lockupRect = lockup.getBoundingClientRect();
+      const dockMarkRect = dockMark.getBoundingClientRect();
+      const markRect = mark.getBoundingClientRect();
 
-      const scaleX = dockRect.width / lockupRect.width;
-      const scaleY = dockRect.height / lockupRect.height;
-      const s = Math.min(scaleX, scaleY);
+      const naturalMark = markRect.width / BIG;
+      const s = naturalMark > 0 ? dockMarkRect.width / naturalMark : 1;
 
       const dx = dockRect.left + dockRect.width / 2 - (lockupRect.left + lockupRect.width / 2);
       const dy = dockRect.top + dockRect.height / 2 - (lockupRect.top + lockupRect.height / 2);
@@ -134,10 +150,11 @@ export function StudioIntro({ onExitStart, onDone }: StudioIntroProps) {
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: 16,
+          gap: 10,
+          transformOrigin: 'center center',
           transform:
             phase === 'enter'
-              ? 'scale(3)'
+              ? `scale(${BIG})`
               : phase === 'fly' || phase === 'fade'
                 ? flyTransform
                 : 'none',
@@ -147,30 +164,25 @@ export function StudioIntro({ onExitStart, onDone }: StudioIntroProps) {
               : undefined,
         }}
       >
-        {/* Logo "M" square */}
+        {/* Logo "M" square — matches the nav dock exactly */}
         <div
+          ref={markRef}
           style={{
             width: 36,
             height: 36,
             background: T.accent,
-            borderRadius: 8,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             flexShrink: 0,
+            fontFamily: 'var(--font-mono)',
+            fontWeight: 800,
+            fontSize: 18,
+            color: T.bg,
+            lineHeight: 1,
           }}
         >
-          <span
-            style={{
-              fontFamily: 'var(--font-sans)',
-              fontWeight: 800,
-              fontSize: 20,
-              color: T.bg,
-              lineHeight: 1,
-            }}
-          >
-            M
-          </span>
+          M
         </div>
 
         {/* Text lockup */}
@@ -178,18 +190,16 @@ export function StudioIntro({ onExitStart, onDone }: StudioIntroProps) {
           style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: 2,
+            lineHeight: 1.2,
           }}
         >
           {/* "MIT Tech Studio" with staggered character reveal */}
           <span
             style={{
               fontFamily: 'var(--font-sans)',
-              fontWeight: 700,
-              fontSize: 20,
+              fontWeight: 600,
+              fontSize: 15,
               color: T.ink,
-              letterSpacing: '-0.02em',
-              lineHeight: 1.1,
               display: 'flex',
             }}
           >
@@ -215,14 +225,12 @@ export function StudioIntro({ onExitStart, onDone }: StudioIntroProps) {
             ))}
           </span>
 
-          {/* Subtitle */}
+          {/* Subtitle — matches the nav dock exactly */}
           <span
             style={{
               fontFamily: 'var(--font-mono)',
-              fontSize: 11,
+              fontSize: 12,
               color: T.sub,
-              letterSpacing: '0.06em',
-              textTransform: 'uppercase' as const,
               opacity: 0,
               animation: 'introSubFade 0.6s ease 900ms both',
             }}
