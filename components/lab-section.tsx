@@ -230,22 +230,6 @@ function GitLog() {
 
       {/* Graph rail + rows */}
       <div className="gitlog-rows" style={{ position: 'relative' }}>
-        {/* Vertical rail connecting commit dots */}
-        <div
-          aria-hidden
-          style={{
-            position: 'absolute',
-            left: 6.5,
-            top: 22,
-            bottom: 22,
-            width: 1.5,
-            background: `linear-gradient(${T.accent}, ${T.purple})`,
-            opacity: 0.45,
-            transformOrigin: 'top',
-            transform: started ? 'scaleY(1)' : 'scaleY(0)',
-            transition: 'transform 1s cubic-bezier(0.2,0.7,0.2,1) 0.15s',
-          }}
-        />
 
         {GIT_ROWS.map(([sha, msg, time, author, color], i) => {
           const typed = msg.slice(0, charCounts[i]);
