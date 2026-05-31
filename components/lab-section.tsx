@@ -209,7 +209,7 @@ function GitLog() {
       </div>
 
       {/* Graph rail + rows */}
-      <div style={{ position: 'relative', paddingLeft: 24 }}>
+      <div className="gitlog-rows" style={{ position: 'relative', paddingLeft: 24 }}>
         {/* Vertical rail */}
         <div
           style={{
@@ -230,6 +230,7 @@ function GitLog() {
           return (
             <div
               key={sha}
+              className="git-row"
               style={{
                 display: 'grid',
                 gridTemplateColumns: '14px 84px 1fr 120px 60px',
@@ -252,7 +253,7 @@ function GitLog() {
                 }}
               />
               {/* SHA */}
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: T.dim }}>
+              <span className="git-sha" style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: T.dim }}>
                 {sha}
               </span>
               {/* Message */}
@@ -375,12 +376,12 @@ function SectionHead() {
 /* ─── Main Section ─── */
 export function LabSection() {
   return (
-    <section id="lab" style={{ padding: '180px 0' }}>
-      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '0 56px' }}>
+    <section id="lab" className="sect" style={{ padding: '180px 0' }}>
+      <div className="studio-container" style={{ maxWidth: 1320, margin: '0 auto', padding: '0 56px' }}>
         <SectionHead />
 
         {/* 12-col grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 20 }}>
+        <div className="bento-12" style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 20 }}>
           {/* Left: Language bars (span 6) */}
           <div
             style={{
@@ -435,7 +436,7 @@ export function LabSection() {
                 live
               </span>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: 24 }}>
+            <div className="lh-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 16, marginBottom: 24 }}>
               {LIGHTHOUSE.map((lh) => (
                 <RingGauge key={lh.label} label={lh.label} score={lh.score} color={lh.color} />
               ))}

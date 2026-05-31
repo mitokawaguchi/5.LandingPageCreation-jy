@@ -14,7 +14,7 @@ const NAV_LINKS: { label: string; href: string }[] = [
 export function NavHeader() {
   return (
     <header style={{ borderBottom: `1px solid ${T.border}` }}>
-      <div style={{
+      <div className="studio-container" style={{
         maxWidth: 1320,
         margin: '0 auto',
         padding: '0 56px',
@@ -52,7 +52,7 @@ export function NavHeader() {
         <div style={{ flex: 1 }} />
 
         {/* Center nav */}
-        <div style={{ display: 'flex', gap: 4 }}>
+        <div className="nav-links" style={{ display: 'flex', gap: 4 }}>
           {NAV_LINKS.map((link) => (
             <a
               key={link.label}

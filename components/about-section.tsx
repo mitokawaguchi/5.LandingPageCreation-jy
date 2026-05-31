@@ -161,7 +161,7 @@ function PinnedHead() {
         position: 'sticky', top: 0, height: '100vh',
         display: 'flex', flexDirection: 'column', justifyContent: 'center',
       }}>
-        <div style={{
+        <div className="studio-container" style={{
           maxWidth: 1320, margin: '0 auto', padding: '0 56px',
           width: '100%', boxSizing: 'border-box',
         }}>
@@ -590,7 +590,7 @@ function SkillCarousel() {
 /* ─── Main Export ─── */
 export function AboutSection() {
   return (
-    <section id="about" style={{ background: T.bg }}>
+    <section id="about" className="sect" style={{ padding: '0 0 180px' }}>
       <style>{ABOUT_STYLES}{`
         .studio-marquee:hover .studio-marquee-track {
           animation-play-state: paused;
@@ -601,13 +601,15 @@ export function AboutSection() {
       <PinnedHead />
 
       {/* 2. Content Grid */}
-      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '0 56px 180px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '7fr 5fr', gap: 48 }}>
+      <div className="studio-container" style={{ maxWidth: 1320, margin: '0 auto', padding: '0 56px' }}>
+        <div className="bento-12" style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 20 }}>
           {/* Left: studio note */}
-          <StudioNoteCard />
+          <div style={{ gridColumn: 'span 7' }}>
+            <StudioNoteCard />
+          </div>
 
           {/* Right: widgets */}
-          <div>
+          <div style={{ gridColumn: 'span 5' }}>
             <NowPlaying />
             <MapDot />
           </div>

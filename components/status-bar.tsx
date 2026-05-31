@@ -78,7 +78,7 @@ export function StatusBar() {
         WebkitBackdropFilter: 'blur(10px)',
         borderBottom: `1px solid ${T.border}`,
       }}>
-        <div style={{
+        <div className="studio-container" style={{
           maxWidth: 1320,
           margin: '0 auto',
           padding: '0 56px',
@@ -96,16 +96,16 @@ export function StatusBar() {
           {/* Right side */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
             {/* Clocks */}
-            <span>
-              JST <span style={{ color: T.ink }}>{jst}</span>
+            <span className="sb-clocks" style={{ display: 'inline-flex', alignItems: 'center', gap: 18 }}>
+              <span>
+                JST <span style={{ color: T.ink }}>{jst}</span>
+              </span>
+              <span style={{ color: T.dim }}>·</span>
+              <span>
+                UTC <span style={{ color: T.ink }}>{utc}</span>
+              </span>
+              <span style={{ width: 1, height: 12, background: T.border, display: 'inline-block' }} />
             </span>
-            <span style={{ color: T.dim }}>·</span>
-            <span>
-              UTC <span style={{ color: T.ink }}>{utc}</span>
-            </span>
-
-            {/* Separator */}
-            <span style={{ width: 1, height: 14, background: T.border, display: 'inline-block' }} />
 
             {/* Command palette */}
             <button
@@ -125,15 +125,15 @@ export function StatusBar() {
               ⌘ K palette
             </button>
 
-            {/* Separator */}
-            <span style={{ width: 1, height: 14, background: T.border, display: 'inline-block' }} />
-
             {/* Deploy status */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ width: 6, height: 6, borderRadius: '50%', background: T.green, display: 'inline-block' }} />
-              <span style={{ color: T.ink }}>{DEPLOY_INFO.status}</span>
-              <span style={{ color: T.dim }}>· {DEPLOY_INFO.platform} · {DEPLOY_INFO.when}</span>
-            </div>
+            <span className="sb-deploy" style={{ display: 'inline-flex', alignItems: 'center', gap: 18 }}>
+              <span style={{ width: 1, height: 12, background: T.border, display: 'inline-block' }} />
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                <span style={{ width: 6, height: 6, borderRadius: '50%', background: T.green, display: 'inline-block' }} />
+                <span style={{ color: T.ink }}>{DEPLOY_INFO.status}</span>
+                <span style={{ color: T.dim }}>· {DEPLOY_INFO.platform} · {DEPLOY_INFO.when}</span>
+              </span>
+            </span>
           </div>
         </div>
       </div>
