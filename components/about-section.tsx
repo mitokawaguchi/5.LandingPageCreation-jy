@@ -104,37 +104,72 @@ const ABOUT_STYLES = `
 `;
 
 /* ─── PinnedHead ─── */
+const PINNED_TITLE = 'デザインとエンジニアリングの境界をなくす。';
+
 function PinnedHead() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const [progress, setProgress] = useState(0);
+  const charRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const subRef = useRef<HTMLDivElement>(null);
+  const cueRef = useRef<HTMLDivElement>(null);
+
+  const chars = [...PINNED_TITLE];
+  const n = chars.length;
 
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
 
-    const onScroll = () => {
-      const rect = section.getBoundingClientRect();
-      const total = section.offsetHeight - window.innerHeight;
-      if (total <= 0) return;
-      const scrolled = -rect.top;
-      setProgress(Math.min(1, Math.max(0, scrolled / total)));
+    const settle = () => {
+      charRefs.current.forEach((c) => {
+        if (c) { c.style.opacity = '1'; c.style.filter = 'none'; }
+      });
+      if (subRef.current) { subRef.current.style.opacity = '1'; subRef.current.style.transform = 'none'; }
+      if (cueRef.current) cueRef.current.style.opacity = '0';
     };
 
+    // Respect reduced-motion: resolve everything immediately, no scroll work.
+    const reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    if (reduced) { settle(); return; }
+
+    let raf = 0;
+    const apply = () => {
+      raf = 0;
+      const rect = section.getBoundingClientRect();
+      const total = section.offsetHeight - window.innerHeight;
+      const p = total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 1;
+
+      // A descending "front" sweeps through the glyphs; every character is
+      // fully resolved (opacity 1 / no blur) by ~72% of the scroll.
+      const front = (p / 0.72) * (n + 9);
+      for (let i = 0; i < n; i++) {
+        const c = charRefs.current[i];
+        if (!c) continue;
+        const cp = Math.min(1, Math.max(0, (front - i) / 9));
+        c.style.opacity = String(0.13 + cp * 0.87);
+        c.style.filter = cp > 0.96 ? 'none' : `blur(${(1 - cp) * 4}px)`;
+      }
+
+      // Subtitle fades in across p = 0.72 → 0.92.
+      const sp = Math.min(1, Math.max(0, (p - 0.72) / 0.2));
+      if (subRef.current) {
+        subRef.current.style.opacity = String(sp);
+        subRef.current.style.transform = `translateY(${(1 - sp) * 18}px)`;
+      }
+      if (cueRef.current) cueRef.current.style.opacity = String(Math.max(0, 1 - p * 3));
+    };
+
+    // Throttle scroll/resize work to one rAF per frame.
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(apply); };
     window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+    window.addEventListener('resize', onScroll, { passive: true });
+    apply();
 
-  const title = 'デザインとエンジニアリングの境界をなくす。';
-  const chars = title.split('');
-  const n = chars.length;
-
-  // Characters brighten across the first 72% of the scroll; a descending
-  // "front" sweeps through so that by ~72% every glyph is fully resolved.
-  const front = (progress / 0.72) * (n + 9);
-
-  // Subtitle fades in over the last stretch, after the title has resolved.
-  const subProgress = Math.min(1, Math.max(0, (progress - 0.72) / 0.2));
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [n]);
 
   return (
     <div ref={sectionRef} style={{ height: '210vh', position: 'relative' }}>
@@ -164,36 +199,39 @@ function PinnedHead() {
             color: T.ink, letterSpacing: '-0.03em', lineHeight: 1.18,
             fontFeatureSettings: '"palt"', maxWidth: '16ch',
           }}>
-            {chars.map((ch, i) => {
-              const cp = Math.min(1, Math.max(0, (front - i) / 9));
-              return (
-                <span key={i} style={{
+            {chars.map((ch, i) => (
+              <span
+                key={i}
+                ref={(el) => { charRefs.current[i] = el; }}
+                style={{
                   display: 'inline-block', whiteSpace: 'pre',
-                  opacity: 0.13 + 0.87 * cp,
-                  filter: cp > 0.96 ? 'none' : `blur(${(1 - cp) * 4}px)`,
-                  willChange: 'opacity, filter',
-                }}>{ch}</span>
-              );
-            })}
+                  opacity: 0.13, willChange: 'opacity, filter',
+                }}
+              >{ch}</span>
+            ))}
           </div>
 
           {/* Subtitle */}
-          <div style={{
-            marginTop: 30, fontFamily: 'var(--font-sans)', fontSize: 18,
-            color: T.sub, lineHeight: 1.7, letterSpacing: '-0.004em', maxWidth: 680,
-            opacity: subProgress,
-            transform: `translateY(${(1 - subProgress) * 18}px)`,
-          }}>
+          <div
+            ref={subRef}
+            style={{
+              marginTop: 30, fontFamily: 'var(--font-sans)', fontSize: 18,
+              color: T.sub, lineHeight: 1.7, letterSpacing: '-0.004em', maxWidth: 680,
+              opacity: 0, transform: 'translateY(18px)',
+            }}
+          >
             {SUBTITLE}
           </div>
 
           {/* Scroll indicator */}
-          <div style={{
-            marginTop: 44, fontFamily: 'var(--font-mono)', fontSize: 11,
-            color: T.dim, letterSpacing: '0.14em', textTransform: 'uppercase',
-            display: 'flex', alignItems: 'center', gap: 10,
-            opacity: Math.max(0, 1 - progress * 3),
-          }}>
+          <div
+            ref={cueRef}
+            style={{
+              marginTop: 44, fontFamily: 'var(--font-mono)', fontSize: 11,
+              color: T.dim, letterSpacing: '0.14em', textTransform: 'uppercase',
+              display: 'flex', alignItems: 'center', gap: 10,
+            }}
+          >
             <span style={{ width: 7, height: 7, border: `1px solid ${T.dim}`, borderRadius: '50%' }} />
             scroll
           </div>

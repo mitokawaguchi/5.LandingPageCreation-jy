@@ -23,6 +23,15 @@ export function StudioIntro({ onExitStart, onDone }: StudioIntroProps) {
   const skipReady = useRef(false);
   const hasExited = useRef(false);
 
+  // Keep the latest callbacks in refs so the exit logic can stay dependency-
+  // free. (The parent passes fresh inline callbacks each render; depending on
+  // them directly would re-create the auto-exit timer every render and the
+  // intro could never finish — leaving the page's scroll lock stuck on.)
+  const onExitStartRef = useRef(onExitStart);
+  const onDoneRef = useRef(onDone);
+  onExitStartRef.current = onExitStart;
+  onDoneRef.current = onDone;
+
   // Allow skip after 1200ms
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -31,12 +40,12 @@ export function StudioIntro({ onExitStart, onDone }: StudioIntroProps) {
     return () => clearTimeout(timer);
   }, []);
 
-  // Body overflow
+  // Lock body scroll during the intro; always restore it to the scrollable
+  // default on unmount so the page can never get stuck non-scrollable.
   useEffect(() => {
-    const prev = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     return () => {
-      document.body.style.overflow = prev;
+      document.body.style.overflow = '';
     };
   }, []);
 
@@ -77,11 +86,11 @@ export function StudioIntro({ onExitStart, onDone }: StudioIntroProps) {
       setFlyTransform('scale(0.3) translate(-60vw, -44vh)');
     }
 
-    onExitStart?.();
+    onExitStartRef.current?.();
     setPhase('fly');
-  }, [onExitStart]);
+  }, []);
 
-  // Auto exit after 2600ms
+  // Auto exit after 2600ms — fires exactly once.
   useEffect(() => {
     const timer = setTimeout(triggerExit, 2600);
     return () => clearTimeout(timer);
@@ -120,11 +129,11 @@ export function StudioIntro({ onExitStart, onDone }: StudioIntroProps) {
     if (phase === 'fade') {
       const timer = setTimeout(() => {
         setPhase('done');
-        onDone?.();
+        onDoneRef.current?.();
       }, 560);
       return () => clearTimeout(timer);
     }
-  }, [phase, onDone]);
+  }, [phase]);
 
   if (phase === 'done') return null;
 
