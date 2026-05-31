@@ -85,6 +85,24 @@
 
 html {
   scroll-behavior: smooth;
+  scrollbar-gutter: stable;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: 'ss01', 'cv11';
+}
+
+/* ─── Cross-section grain (very subtle) ─── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: .04;
+  background-image: radial-gradient(rgba(255,255,255,.6) 1px, transparent 1px);
+  background-size: 3px 3px;
 }
 
 /* ─── Custom Scrollbar ─── */
@@ -114,85 +132,60 @@ html {
 
 /* ─── Animations: studioPulse ─── */
 @keyframes studioPulse {
-  0%, 100% {
-    box-shadow: 0 0 8px rgba(181, 251, 107, 0.15);
-  }
-  50% {
-    box-shadow: 0 0 24px rgba(181, 251, 107, 0.4), 0 0 48px rgba(181, 251, 107, 0.15);
-  }
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: .45; transform: scale(.85); }
 }
 
 .studio-pulse {
-  animation: studioPulse 3s ease-in-out infinite;
+  animation: studioPulse 1.6s ease-in-out infinite;
 }
 
 /* ─── Animations: studioBarFill ─── */
 @keyframes studioBarFill {
-  from {
-    width: 0%;
-  }
-  to {
-    width: var(--bar-width, 100%);
-  }
+  from { width: 0; }
 }
 
 .studio-bar-fill {
-  animation: studioBarFill 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: studioBarFill 1.6s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
 }
 
 /* ─── Animations: aboutChar (character pop-in) ─── */
 @keyframes aboutChar {
-  0% {
-    opacity: 0;
-    transform: translateY(8px) scale(0.8);
-  }
-  60% {
-    opacity: 1;
-    transform: translateY(-2px) scale(1.05);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+  0% { opacity: 0; transform: translateY(12px) rotateX(-40deg); filter: blur(6px); }
+  100% { opacity: 1; transform: none; filter: blur(0); }
 }
 
 .about-char {
   display: inline-block;
   opacity: 0;
-  animation: aboutChar 0.4s ease-out forwards;
+  animation: aboutChar 0.52s cubic-bezier(.16,1,.3,1) both;
 }
 
 /* ─── Animations: gitCursor (terminal cursor blink) ─── */
 @keyframes gitCursor {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0;
-  }
+  0%, 50% { opacity: 1; }
+  50.01%, 100% { opacity: 0; }
 }
 
 .git-cursor {
-  animation: gitCursor 1s step-end infinite;
+  animation: gitCursor 1.05s steps(1) infinite;
+}
+
+/* ─── Ticker Animation ─── */
+@keyframes tickerScroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
 
 /* ─── Marquee Animation ─── */
 @keyframes marquee {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 @keyframes marquee-reverse {
-  0% {
-    transform: translateX(-50%);
-  }
-  100% {
-    transform: translateX(0);
-  }
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
 }
 
 .animate-marquee {
@@ -207,6 +200,22 @@ html {
   animation: marquee 50s linear infinite;
 }
 
+/* ─── Studio Marquee (seamless card marquee) ─── */
+.studio-marquee {
+  overflow: hidden;
+  position: relative;
+}
+
+.studio-marquee-track {
+  display: inline-flex;
+  will-change: transform;
+  animation: tickerScroll linear infinite;
+}
+
+.studio-marquee:hover .studio-marquee-track {
+  animation-play-state: paused;
+}
+
 /* Pause marquee on hover */
 .marquee-container:hover .animate-marquee,
 .marquee-container:hover .animate-marquee-reverse,
@@ -216,113 +225,153 @@ html {
 
 /* ─── Studio Tile Hover ─── */
 .studio-tile {
-  border: 1px solid var(--border);
   transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .studio-tile:hover {
-  border-color: var(--border-strong);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  border-color: #2c3340 !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(181, 251, 107, 0.08);
 }
 
 /* ─── CTA Hover ─── */
-.cta-btn {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+.studio-cta-primary {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.cta-btn:hover {
-  transform: scale(1.03);
-  box-shadow: 0 0 20px rgba(181, 251, 107, 0.3), 0 0 40px rgba(181, 251, 107, 0.1);
+.studio-cta-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 28px rgba(181, 251, 107, 0.32);
 }
 
-.cta-btn:active {
-  transform: scale(0.98);
+.studio-cta-ghost {
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
 }
 
-/* ─── Nav Link Hover (underline appear) ─── */
-.nav-link {
-  position: relative;
-  transition: color 0.2s ease;
+.studio-cta-ghost:hover {
+  border-color: #b5fb6b !important;
+  color: #b5fb6b !important;
+  background: rgba(181, 251, 107, 0.04);
 }
 
-.nav-link::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
-  height: 1.5px;
-  background: var(--accent);
-  transition: width 0.25s ease;
+/* ─── Nav Link Hover ─── */
+.studio-nav-link {
+  transition: color 0.15s ease, background 0.15s ease;
 }
 
-.nav-link:hover {
+.studio-nav-link:hover {
   color: var(--ink);
+  background: var(--surface3);
 }
 
-.nav-link:hover::after {
-  width: 100%;
-}
+/* ─── CmdK ─── */
+@keyframes cmdkFade { from { opacity: 0 } to { opacity: 1 } }
+@keyframes cmdkPop { from { opacity: 0; transform: translateY(-10px) scale(.98) } to { opacity: 1; transform: none } }
 
-/* ─── Intro Overlay Animation ─── */
-@keyframes introFadeOut {
-  0% {
-    opacity: 1;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-  }
-  100% {
-    opacity: 0;
-    backdrop-filter: blur(0px);
-    -webkit-backdrop-filter: blur(0px);
-    pointer-events: none;
-  }
-}
+.cmdk-item:hover { background: var(--surface3); color: var(--accent); }
+.cmdk-btn:hover { border-color: var(--accent); color: var(--accent); }
 
+/* ─── NowPlaying ─── */
+@keyframes nowSwap { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: none } }
+@keyframes nowBar { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+/* ─── Intro Overlay ─── */
 .intro-overlay {
-  animation: introFadeOut 0.8s ease-out 1.5s forwards;
+  background: #06070a;
+  transition: background .56s ease;
+  will-change: background;
+}
+
+.intro-overlay.out {
+  background: transparent;
 }
 
 /* ─── Skill Flip Card (3D) ─── */
-.skill-flip-card {
-  perspective: 800px;
+.skill-flip {
+  flex: 0 0 360px;
+  width: 360px;
+  height: 252px;
+  margin-right: 20px;
+  perspective: 1600px;
 }
 
 .skill-flip-inner {
   position: relative;
   width: 100%;
   height: 100%;
-  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.62s cubic-bezier(0.2, 0.75, 0.2, 1);
   transform-style: preserve-3d;
 }
 
-.skill-flip-card:hover .skill-flip-inner {
+.skill-flip:hover .skill-flip-inner {
   transform: rotateY(180deg);
 }
 
-.skill-flip-front,
-.skill-flip-back {
+.skill-face {
   position: absolute;
   inset: 0;
+  box-sizing: border-box;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  background: #0a0c10;
+  border: 1px solid #1a1f28;
+  transition: border-color .25s, box-shadow .25s;
 }
 
-.skill-flip-back {
+.skill-flip:hover .skill-face {
+  border-color: #2c3340;
+  box-shadow: 0 12px 32px rgba(0,0,0,.4), 0 0 0 1px rgba(181,251,107,.08);
+}
+
+.skill-face-back {
   transform: rotateY(180deg);
+}
+
+/* ─── Repo card accent line ─── */
+.repo-card {
+  overflow: hidden;
+}
+
+.repo-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(90deg, #b5fb6b, rgba(181,251,107,0));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .5s cubic-bezier(.2,.7,.2,1);
+}
+
+.repo-card:hover::after {
+  transform: scaleX(1);
+}
+
+/* ─── Git row hover ─── */
+.git-row {
+  border-radius: 4px;
+  transition: background .18s ease;
+}
+
+.git-row:hover {
+  background: rgba(181,251,107,.05);
+}
+
+.git-row:hover .git-sha {
+  color: #b5fb6b;
 }
 
 /* ─── Channel Row Hover ─── */
 .channel-row {
-  transition: background-color 0.2s ease, border-color 0.2s ease;
-  border-left: 2px solid transparent;
+  transition: color 0.2s ease;
 }
 
 .channel-row:hover {
-  background-color: var(--surface2);
-  border-left-color: var(--accent);
+  color: var(--accent);
 }
 
 /* ─── Glassmorphism ─── */
@@ -343,24 +392,6 @@ html {
 /* ─── Text Glow ─── */
 .text-glow {
   text-shadow: 0 0 20px rgba(181, 251, 107, 0.4), 0 0 40px rgba(181, 251, 107, 0.2);
-}
-
-/* ─── Gradient Border ─── */
-.gradient-border {
-  position: relative;
-}
-
-.gradient-border::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(135deg, var(--accent), var(--blue), var(--accent));
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
 }
 
 /* ─── Scroll Reveal ─── */
@@ -407,7 +438,8 @@ html {
 
   .animate-marquee,
   .animate-marquee-reverse,
-  .animate-marquee-slow {
+  .animate-marquee-slow,
+  .studio-marquee-track {
     animation: none !important;
   }
 }

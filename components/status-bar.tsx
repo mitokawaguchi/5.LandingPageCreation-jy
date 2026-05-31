@@ -1,6 +1,18 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+
+/* ─── Design Tokens ─── */
+const T = { bg:'#06070a', surface:'#0a0c10', surface2:'#0e1116', surface3:'#13171e', border:'#1a1f28', borderStrong:'#252b35', ink:'#e9edf2', sub:'#8a93a0', dim:'#3d4654', accent:'#b5fb6b', accentDim:'#7da848', warn:'#ffb648', pink:'#ff5da2', blue:'#5ecfff', green:'#69e6a6', red:'#ff5a64', purple:'#b48cff' };
+
+/* ─── Editing States ─── */
+const EDITING_STATES = [
+  { file: 'components/hero-section.tsx', action: 'refining', time: 'now' },
+  { file: 'styles/tokens.css', action: 'tweaking', time: '2m ago' },
+  { file: 'data/lab-github.ts', action: 'syncing', time: '4m ago' },
+  { file: 'app/(site)/page.tsx', action: 'restructuring', time: '7m ago' },
+  { file: 'messages/ja.json', action: 'editing copy', time: '12m ago' },
+];
 
 function formatTime(date: Date, tz: string): string {
   return date.toLocaleTimeString('en-GB', {
@@ -12,6 +24,39 @@ function formatTime(date: Date, tz: string): string {
   });
 }
 
+/* ─── EditingStatus ─── */
+function EditingStatus() {
+  const [idx, setIdx] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setIdx((prev) => (prev + 1) % EDITING_STATES.length);
+    }, 4200);
+    return () => clearInterval(id);
+  }, []);
+
+  const state = EDITING_STATES[idx];
+
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+      <span style={{
+        width: 6,
+        height: 6,
+        borderRadius: '50%',
+        background: T.accent,
+        animation: 'statusPulse 2s infinite',
+        display: 'inline-block',
+      }} />
+      <span style={{ color: T.ink, fontFamily: 'var(--font-mono)', fontSize: 11 }}>{state.action}</span>
+      <span style={{ color: T.dim }}>·</span>
+      <span style={{ color: T.sub, fontFamily: 'var(--font-mono)', fontSize: 11 }}>{state.file}</span>
+      <span style={{ color: T.dim }}>·</span>
+      <span style={{ color: T.sub, fontFamily: 'var(--font-mono)', fontSize: 11 }}>{state.time}</span>
+    </div>
+  );
+}
+
+/* ─── Main StatusBar ─── */
 export function StatusBar() {
   const [now, setNow] = useState<Date | null>(null);
 
@@ -24,33 +69,6 @@ export function StatusBar() {
   const jst = now ? formatTime(now, 'Asia/Tokyo') : '--:--:--';
   const utc = now ? formatTime(now, 'UTC') : '--:--:--';
 
-  const barStyle: React.CSSProperties = {
-    position: 'sticky',
-    top: 0,
-    zIndex: 110,
-    height: 36,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '0 56px',
-    background: 'rgba(6,7,10,.85)',
-    backdropFilter: 'blur(10px)',
-    WebkitBackdropFilter: 'blur(10px)',
-    borderBottom: '1px solid #1a1f28',
-    fontFamily: 'var(--font-mono)',
-    fontSize: 11,
-    color: '#8a93a0',
-  };
-
-  const dotStyle: React.CSSProperties = {
-    width: 6,
-    height: 6,
-    borderRadius: '50%',
-    background: '#69e6a6',
-    boxShadow: '0 0 4px #69e6a6',
-    animation: 'statusPulse 2s infinite',
-  };
-
   return (
     <>
       <style>{`
@@ -59,47 +77,72 @@ export function StatusBar() {
           50% { opacity: 0.4; }
         }
       `}</style>
-      <div style={barStyle}>
-        {/* Left: deploy status */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <div style={dotStyle} />
-          <span>deployed</span>
-          <span style={{ color: '#3d4654' }}>·</span>
-          <span>vercel</span>
-          <span style={{ color: '#3d4654' }}>·</span>
-          <span>4m</span>
-        </div>
+      <div style={{
+        position: 'sticky',
+        top: 0,
+        zIndex: 50,
+        background: 'rgba(6,7,10,.85)',
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
+        borderBottom: `1px solid ${T.border}`,
+      }}>
+        <div style={{
+          maxWidth: 1320,
+          margin: '0 auto',
+          padding: '0 56px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          height: 36,
+          fontFamily: 'var(--font-mono)',
+          fontSize: 11,
+          color: T.sub,
+        }}>
+          {/* Left: EditingStatus */}
+          <EditingStatus />
 
-        {/* Right: clocks + palette + status */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-          <span>
-            JST <span style={{ color: '#e9edf2' }}>{jst}</span>
-          </span>
-          <span style={{ color: '#3d4654' }}>|</span>
-          <span>
-            UTC <span style={{ color: '#e9edf2' }}>{utc}</span>
-          </span>
-          <span style={{ color: '#3d4654' }}>|</span>
-          <button
-            type="button"
-            style={{
-              background: 'none',
-              border: '1px solid #252b35',
-              borderRadius: 4,
-              padding: '2px 8px',
-              fontFamily: 'var(--font-mono)',
-              fontSize: 11,
-              color: '#8a93a0',
-              cursor: 'pointer',
-              transition: 'border-color .2s',
-            }}
-            onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#b5fb6b'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#252b35'; }}
-          >
-            ⌘ K palette
-          </button>
-          <span style={{ color: '#3d4654' }}>|</span>
-          <span style={{ color: '#69e6a6' }}>● live</span>
+          {/* Right side */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            {/* Clocks */}
+            <span>
+              JST <span style={{ color: T.ink }}>{jst}</span>
+            </span>
+            <span style={{ color: T.dim }}>·</span>
+            <span>
+              UTC <span style={{ color: T.ink }}>{utc}</span>
+            </span>
+
+            {/* Separator */}
+            <span style={{ width: 1, height: 14, background: T.border, display: 'inline-block' }} />
+
+            {/* Command palette */}
+            <button
+              type="button"
+              style={{
+                background: 'none',
+                border: `1px solid ${T.border}`,
+                borderRadius: 4,
+                padding: '2px 8px',
+                fontFamily: 'var(--font-mono)',
+                fontSize: 11,
+                color: T.sub,
+                cursor: 'pointer',
+                transition: 'border-color .2s',
+              }}
+            >
+              ⌘ K palette
+            </button>
+
+            {/* Separator */}
+            <span style={{ width: 1, height: 14, background: T.border, display: 'inline-block' }} />
+
+            {/* Deploy status */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ width: 6, height: 6, borderRadius: '50%', background: T.green, display: 'inline-block' }} />
+              <span style={{ color: T.ink }}>deployed</span>
+              <span style={{ color: T.dim }}>· vercel · 4m</span>
+            </div>
+          </div>
         </div>
       </div>
     </>
