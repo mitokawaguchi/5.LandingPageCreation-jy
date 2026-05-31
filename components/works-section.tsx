@@ -192,7 +192,7 @@ function FeaturedCard({ repo }: { repo: (typeof LAB_REPOS)[number] }) {
       </div>
 
       {/* Grid layout: 1.5fr 1fr */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 32, alignItems: 'start' }}>
+      <div className="grid-feat" style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 56, alignItems: 'flex-end' }}>
         {/* Left */}
         <div>
           <h3
@@ -454,14 +454,15 @@ function CommitHeatmap() {
       </div>
 
       {/* Grid */}
+      <div className="heatmap-scroll">
       <div
+        className="heatmap-grid"
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(52, 14px)',
           gridTemplateRows: 'repeat(7, 14px)',
           gap: 3,
           gridAutoFlow: 'column',
-          overflowX: 'auto',
           paddingBottom: 8,
         }}
       >
@@ -481,6 +482,7 @@ function CommitHeatmap() {
             );
           })
         )}
+      </div>
       </div>
 
       {/* Footer */}
@@ -562,15 +564,15 @@ export function WorksSection() {
   const otherRepos = LAB_REPOS.slice(1);
 
   return (
-    <section id="works" style={{ background: T.surface2, padding: '180px 0' }}>
-      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '0 56px' }}>
+    <section id="works" className="sect" style={{ background: T.surface2, padding: '180px 0' }}>
+      <div className="studio-container" style={{ maxWidth: 1320, margin: '0 auto', padding: '0 56px' }}>
         <SectionHead />
 
         {/* Featured repo */}
         <FeaturedCard repo={featuredRepo} />
 
         {/* Other repos grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 20, marginTop: 20 }}>
+        <div className="grid-2" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 20, marginTop: 20 }}>
           {otherRepos.map((repo) => (
             <RepoCard key={repo.id} repo={repo} />
           ))}
@@ -580,7 +582,7 @@ export function WorksSection() {
         <CommitHeatmap />
 
         {/* Workflow row */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20, marginTop: 20 }}>
+        <div className="grid-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20, marginTop: 20 }}>
           {WORKFLOW_CARDS.map((card) => (
             <WorkflowCard
               key={card.num}

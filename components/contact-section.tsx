@@ -8,13 +8,13 @@ const T = { bg:'#06070a', surface:'#0a0c10', surface2:'#0e1116', surface3:'#1317
 /* ─── Main Section ─── */
 export function ContactSection() {
   return (
-    <section id="contact" style={{ padding: '180px 0' }}>
-      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '0 56px' }}>
+    <section id="contact" className="sect" style={{ padding: '180px 0' }}>
+      <div className="studio-container" style={{ maxWidth: 1320, margin: '0 auto', padding: '0 56px' }}>
         {/* 12-col grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 20, alignItems: 'flex-start' }}>
+        <div className="bento-12" style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 20, alignItems: 'flex-start' }}>
 
           {/* Left: span 8 */}
-          <div style={{
+          <div className="contact-card" style={{
             gridColumn: 'span 8',
             background: T.surface,
             border: `1px solid ${T.border}`,
@@ -43,7 +43,7 @@ export function ContactSection() {
             </div>
 
             {/* Title */}
-            <h2 style={{
+            <h2 className="contact-h2" style={{
               fontSize: 88,
               fontWeight: 600,
               fontFamily: '"Geist", "Noto Sans JP", sans-serif',

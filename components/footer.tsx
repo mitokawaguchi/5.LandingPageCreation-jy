@@ -55,7 +55,7 @@ function PixelMonogram() {
 export function Footer() {
   return (
     <footer style={{ background: T.surface2, borderTop: `1px solid ${T.border}`, padding: '64px 0 32px' }}>
-      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '0 56px' }}>
+      <div className="studio-container" style={{ maxWidth: 1320, margin: '0 auto', padding: '0 56px' }}>
 
         {/* Top section: grid auto 1fr */}
         <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: 'clamp(28px,4vw,56px)', alignItems: 'flex-start', marginBottom: 56 }}>
@@ -105,7 +105,7 @@ export function Footer() {
         </div>
 
         {/* Colophon (4-col grid) */}
-        <div style={{
+        <div className="grid-4" style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(4, 1fr)',
           gap: 1,
@@ -126,7 +126,7 @@ export function Footer() {
         </div>
 
         {/* 3-col links */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 48, marginBottom: 56, borderBottom: `1px solid ${T.border}`, paddingBottom: 56 }}>
+        <div className="foot-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 32, marginBottom: 36, borderBottom: `1px solid ${T.border}`, paddingBottom: 36 }}>
           {/* Studio */}
           <div>
             <span style={{ display: 'block', fontSize: 10, color: T.dim, fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 16 }}>

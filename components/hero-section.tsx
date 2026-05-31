@@ -99,6 +99,7 @@ export function HeroSection() {
       }}
     >
       <div
+        className="studio-container"
         style={{
           maxWidth: 1320,
           margin: '0 auto',
@@ -254,6 +255,7 @@ export function HeroSection() {
 
         {/* Subtitle + CTA layout */}
         <div
+          className="hero-type-grid"
           style={{
             marginTop: 80,
             display: 'grid',

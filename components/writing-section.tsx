@@ -45,10 +45,9 @@ function ArticleCard({ article, idx }: { article: typeof ARTICLES[number]; idx: 
   const sparkColor = article.source === 'Zenn' ? T.blue : T.green;
 
   return (
-    <div style={{
-      width: 380,
+    <div className="studio-tile writing-card" style={{
+      flex: '0 0 380px',
       minHeight: 320,
-      flexShrink: 0,
       background: T.surface,
       border: `1px solid ${T.border}`,
       borderRadius: 0,
@@ -151,8 +150,8 @@ function ArticlesMarquee() {
 /* ─── Main Section ─── */
 export function WritingSection() {
   return (
-    <section id="writing" style={{ background: T.surface2, padding: '180px 0' }}>
-      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '0 56px' }}>
+    <section id="writing" className="sect" style={{ background: T.surface2, padding: '180px 0' }}>
+      <div className="studio-container" style={{ maxWidth: 1320, margin: '0 auto', padding: '0 56px' }}>
         {/* SectionHead */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 16 }}>
           <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: T.dim, letterSpacing: '0.08em' }}>§05 — Writing</span>
