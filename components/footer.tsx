@@ -1,5 +1,12 @@
 'use client';
 
+import {
+  FOOTER_LEGAL_LINKS as LEGAL_LINKS,
+  FOOTER_STACK_ITEMS as STACK_ITEMS,
+  FOOTER_COLOPHON,
+  FOOTER_META,
+} from '@/data/site-content';
+
 /* ─── Design Tokens ─── */
 const T = { bg:'#06070a', surface:'#0a0c10', surface2:'#0e1116', surface3:'#13171e', border:'#1a1f28', borderStrong:'#252b35', ink:'#e9edf2', sub:'#8a93a0', dim:'#3d4654', accent:'#b5fb6b', accentDim:'#7da848', warn:'#ffb648', pink:'#ff5da2', blue:'#5ecfff', green:'#69e6a6', red:'#ff5a64', purple:'#b48cff' };
 
@@ -10,22 +17,6 @@ const STUDIO_LINKS = [
   { label: 'Lab', href: '#lab' },
   { label: 'Notes', href: '#writing' },
   { label: 'Contact', href: '#contact' },
-];
-
-const LEGAL_LINKS = [
-  'プライバシーポリシー',
-  '利用規約',
-  '免責事項',
-  '特定商取引法に基づく表記',
-  'お問い合わせ（窓口）',
-  '運営者情報',
-];
-
-const STACK_ITEMS = [
-  'Next.js 16 · React 19',
-  'TypeScript · Tailwind',
-  'Vercel · Edge runtime',
-  'next-intl / ja · en',
 ];
 
 /* ─── Pixel Monogram SVG ─── */
@@ -107,7 +98,7 @@ export function Footer() {
             }}>
               STUDIO
               <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 400, color: T.dim, letterSpacing: '0.02em' }}>
-                ● Tokyo · 35.68°N
+                {FOOTER_META.location}
               </span>
             </div>
           </div>
@@ -122,12 +113,7 @@ export function Footer() {
           overflow: 'hidden',
           marginBottom: 56,
         }}>
-          {[
-            { label: 'Set in', value: 'Geist · Geist Mono · Noto Sans JP' },
-            { label: 'Printed on', value: '12-col CSS Grid · 1320 px · 20 gap' },
-            { label: 'Built in', value: 'Tokyo · 35.68°N / 139.69°E' },
-            { label: 'Revision', value: 'rev. 06 · MMXXVI · build #2148' },
-          ].map((item) => (
+          {FOOTER_COLOPHON.map((item) => (
             <div key={item.label} style={{ background: T.surface, padding: '20px 24px' }}>
               <span style={{ display: 'block', fontSize: 10, color: T.dim, fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>
                 {item.label}
@@ -191,14 +177,14 @@ export function Footer() {
               <span style={{ width: 6, height: 6, borderRadius: '50%', background: T.green, display: 'inline-block' }} />
               <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: T.ink }}>all systems normal</span>
             </div>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: T.dim }}>build #2148</span>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: T.dim }}>commit a3f9c12</span>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: T.dim }}>{FOOTER_META.build}</span>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: T.dim }}>{FOOTER_META.commit}</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: T.dim }}>
-              &copy; 2026 MIT Tech Studio
+              {FOOTER_META.copyright}
             </span>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: T.dim }}>All rights reserved.</span>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: T.dim }}>{FOOTER_META.rights}</span>
           </div>
         </div>
       </div>

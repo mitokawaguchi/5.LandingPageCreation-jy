@@ -3,6 +3,7 @@
 import { useMemo } from 'react';
 import { LAB_REPOS, LAB_GITHUB_PROFILE } from '@/data/lab-github';
 import { Sparkline } from '@/components/sparkline';
+import { REPO_DESCRIPTIONS, HEATMAP_META, WORKFLOW_CARDS } from '@/data/site-content';
 
 /* ─── Design Tokens ─── */
 const T = {
@@ -29,15 +30,7 @@ const SPARK_VALUES = [2, 5, 3, 8, 6, 9, 4, 7, 11, 8, 13, 10, 15, 12, 9, 14];
 
 const HEATMAP_COLORS = [T.border, '#2d3a22', '#6b8f3a', T.accent];
 
-/* ─── Descriptions for repos ─── */
-const REPO_DESCRIPTIONS: Record<string, string> = {
-  '5.LandingPageCreation-jy':
-    'Dark-themed portfolio landing page built with Next.js, TypeScript, and custom design system. Real-time GitHub integration and performance-optimized animations.',
-  taskflow:
-    'Full-stack task management app with drag-and-drop Kanban board, real-time updates and Vercel deployment.',
-  mitokawaguchi:
-    'GitHub profile README with dynamic stats, contribution graph, and auto-updated skill badges.',
-};
+/* リポジトリ説明 / ヒートマップ注記 / ワークフローは data/site-content.ts に集約 */
 
 /* ─── Heatmap Data (deterministic) ─── */
 function generateHeatmap(): number[][] {
@@ -510,8 +503,8 @@ function CommitHeatmap() {
           <span>more</span>
         </div>
         <div style={{ display: 'flex', gap: 20 }}>
-          <span>peak: Tue 14:00 JST</span>
-          <span style={{ color: T.green }}>streak: 18d</span>
+          <span>{HEATMAP_META.peak}</span>
+          <span style={{ color: T.green }}>{HEATMAP_META.streak}</span>
         </div>
       </div>
     </div>
@@ -588,24 +581,15 @@ export function WorksSection() {
 
         {/* Workflow row */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20, marginTop: 20 }}>
-          <WorkflowCard
-            num="01"
-            title="Build"
-            body="TypeScript strict, ESLint, Prettier &#x2014; zero warnings policy"
-            color={T.green}
-          />
-          <WorkflowCard
-            num="02"
-            title="Deploy"
-            body="Vercel Preview on PR, Production on merge to main"
-            color={T.blue}
-          />
-          <WorkflowCard
-            num="03"
-            title="Auto Update"
-            body="Dependabot + automated security patches weekly"
-            color={T.purple}
-          />
+          {WORKFLOW_CARDS.map((card) => (
+            <WorkflowCard
+              key={card.num}
+              num={card.num}
+              title={card.title}
+              body={card.body}
+              color={card.color}
+            />
+          ))}
         </div>
       </div>
 

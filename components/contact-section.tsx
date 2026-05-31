@@ -1,17 +1,9 @@
 'use client';
 
+import { CONTACT_CHANNELS as CHANNELS, CONTACT_STATUS, CONTACT_EMAIL, CAPACITY } from '@/data/site-content';
+
 /* ─── Design Tokens ─── */
 const T = { bg:'#06070a', surface:'#0a0c10', surface2:'#0e1116', surface3:'#13171e', border:'#1a1f28', borderStrong:'#252b35', ink:'#e9edf2', sub:'#8a93a0', dim:'#3d4654', accent:'#b5fb6b', accentDim:'#7da848', warn:'#ffb648', pink:'#ff5da2', blue:'#5ecfff', green:'#69e6a6', red:'#ff5a64', purple:'#b48cff' };
-
-/* ─── Channels Data ─── */
-const CHANNELS: [string, string][] = [
-  ['contact@mittechstudio.com', T.accent],
-  ['@mitokawaguchi · GitHub', T.warn],
-  ['@mito_112_ · Instagram', T.pink],
-  ['@mito_112_ · Threads', T.purple],
-  ['Zenn · @mitokawaguchi', T.blue],
-  ['Qiita · @mitokawaguchi', T.green],
-];
 
 /* ─── Main Section ─── */
 export function ContactSection() {
@@ -44,7 +36,7 @@ export function ContactSection() {
                   display: 'inline-block',
                 }} />
                 <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: T.sub, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                  ACCEPTING-WORK · response &lt; 24h
+                  {CONTACT_STATUS}
                 </span>
               </div>
               <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: T.dim }}>§ 06</span>
@@ -83,7 +75,7 @@ export function ContactSection() {
             {/* CTAs */}
             <div style={{ display: 'flex', gap: 16, marginTop: 'auto' }}>
               <a
-                href="mailto:contact@mittechstudio.com"
+                href={`mailto:${CONTACT_EMAIL}`}
                 className="studio-cta-primary"
                 style={{
                   display: 'inline-flex',
@@ -135,20 +127,20 @@ export function ContactSection() {
               padding: '28px 28px',
             }}>
               <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: T.dim, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                Capacity · Q2 2026
+                {CAPACITY.label}
               </span>
 
               <div style={{ fontSize: 44, fontWeight: 700, color: T.ink, fontFamily: 'var(--font-mono)', marginTop: 16, marginBottom: 16 }}>
-                2 / 3 <span style={{ fontSize: 16, fontWeight: 400, color: T.dim }}>slots</span>
+                {CAPACITY.filled} / {CAPACITY.total} <span style={{ fontSize: 16, fontWeight: 400, color: T.dim }}>slots</span>
               </div>
 
               {/* Progress bar */}
               <div style={{ width: '100%', height: 6, background: T.surface3, marginBottom: 12, overflow: 'hidden' }}>
-                <div style={{ width: '66%', height: '100%', background: T.accent }} />
+                <div style={{ width: `${CAPACITY.percent}%`, height: '100%', background: T.accent }} />
               </div>
 
               <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: T.sub }}>
-                1 slot available · from 2026.05
+                {CAPACITY.note}
               </span>
             </div>
 

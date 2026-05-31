@@ -2,16 +2,12 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Sparkline } from '@/components/sparkline';
+import { ARTICLES } from '@/data/site-content';
 
 /* ─── Design Tokens ─── */
 const T = { bg:'#06070a', surface:'#0a0c10', surface2:'#0e1116', surface3:'#13171e', border:'#1a1f28', borderStrong:'#252b35', ink:'#e9edf2', sub:'#8a93a0', dim:'#3d4654', accent:'#b5fb6b', accentDim:'#7da848', warn:'#ffb648', pink:'#ff5da2', blue:'#5ecfff', green:'#69e6a6', red:'#ff5a64', purple:'#b48cff' };
 
-/* ─── Articles Data ─── */
-const ARTICLES = [
-  { source: 'Zenn' as const, title: 'Next.js App Router で next-intl を使い倒す', likes: 42, impressions: 1280, date: '2026-02-18' },
-  { source: 'Qiita' as const, title: 'デザインシステムを CSS Variables だけで構築する', likes: 28, impressions: 980, date: '2026-01-09' },
-  { source: 'Zenn' as const, title: 'TypeScript で堅牢な i18n を設計する', likes: 19, impressions: 612, date: '2025-12-22' },
-];
+/* 記事データ（source/title/likes/impressions/date/url）は data/site-content.ts に集約 */
 
 const series = (seed: number, n = 28, base = 50, amp = 30) =>
   Array.from({ length: n }, (_, i) => base + Math.sin(i * 0.4 + seed) * amp + Math.cos(i * 0.7 + seed * 1.3) * amp * 0.4);
