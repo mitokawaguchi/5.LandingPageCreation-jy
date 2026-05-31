@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { CountUp } from '@/components/count-up';
+import { LANGUAGES, LIGHTHOUSE, GIT_LOG as GIT_ROWS, GIT_LOG_TOTAL, LIGHTHOUSE_TARGET } from '@/data/site-content';
 
 /* ─── Design Tokens ─── */
 const T = {
@@ -24,31 +25,7 @@ const T = {
   purple: '#b48cff',
 } as const;
 
-/* ─── Language data ─── */
-const LANGUAGES = [
-  { name: 'TypeScript', pct: 52, color: '#3178c6' },
-  { name: 'CSS', pct: 22, color: T.pink },
-  { name: 'JavaScript', pct: 18, color: '#f1e05a' },
-  { name: 'Markdown', pct: 8, color: T.purple },
-];
-
-/* ─── Lighthouse data ─── */
-const LIGHTHOUSE = [
-  { label: 'Perf', score: 99, color: T.green },
-  { label: 'A11y', score: 100, color: T.green },
-  { label: 'BP', score: 96, color: T.warn },
-  { label: 'SEO', score: 100, color: T.green },
-];
-
-/* ─── Git log data ─── */
-const GIT_ROWS: [string, string, string, string, string][] = [
-  ['a3f9c12', 'feat(hero): add type-on-mount live phrase rotation', '2h', 'mito', T.accent],
-  ['b9c41a8', 'refactor(about-section): split skill tiles into atoms', '1d', 'mito', T.warn],
-  ['c1d873f', 'chore(deps): bump next, react and tailwind', '3d', 'dependabot', T.sub],
-  ['e4a02bb', 'fix(a11y): respect prefers-reduced-motion in hero', '5d', 'mito', T.green],
-  ['f70e923', 'docs(readme): expand auto-deploy notes', '1w', 'mito', T.sub],
-  ['2bc1077', 'feat(i18n): wire next-intl for /ja and /en', '2w', 'mito', T.purple],
-];
+/* データ（言語比率 / Lighthouse / git log）は data/site-content.ts に集約 */
 
 /* ─── Ring Gauge ─── */
 function RingGauge({ score, color, label }: { score: number; color: string; label: string }) {
@@ -227,7 +204,7 @@ function GitLog() {
           </span>
         </div>
         <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: T.dim }}>
-          showing 6 of 168
+          showing {GIT_ROWS.length} of {GIT_LOG_TOTAL}
         </span>
       </div>
 
@@ -472,7 +449,7 @@ export function LabSection() {
                 textAlign: 'center',
               }}
             >
-              測定: v0-mit-tech-studio.vercel.app &middot; モバイル / スロットル
+              測定: {LIGHTHOUSE_TARGET}
             </p>
           </div>
 

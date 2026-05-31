@@ -1,18 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { EDITING_STATES, DEPLOY_INFO } from '@/data/site-content';
 
 /* ─── Design Tokens ─── */
 const T = { bg:'#06070a', surface:'#0a0c10', surface2:'#0e1116', surface3:'#13171e', border:'#1a1f28', borderStrong:'#252b35', ink:'#e9edf2', sub:'#8a93a0', dim:'#3d4654', accent:'#b5fb6b', accentDim:'#7da848', warn:'#ffb648', pink:'#ff5da2', blue:'#5ecfff', green:'#69e6a6', red:'#ff5a64', purple:'#b48cff' };
-
-/* ─── Editing States ─── */
-const EDITING_STATES = [
-  { file: 'components/hero-section.tsx', action: 'refining', time: 'now' },
-  { file: 'styles/tokens.css', action: 'tweaking', time: '2m ago' },
-  { file: 'data/lab-github.ts', action: 'syncing', time: '4m ago' },
-  { file: 'app/(site)/page.tsx', action: 'restructuring', time: '7m ago' },
-  { file: 'messages/ja.json', action: 'editing copy', time: '12m ago' },
-];
 
 function formatTime(date: Date, tz: string): string {
   return date.toLocaleTimeString('en-GB', {
@@ -139,8 +131,8 @@ export function StatusBar() {
             {/* Deploy status */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               <span style={{ width: 6, height: 6, borderRadius: '50%', background: T.green, display: 'inline-block' }} />
-              <span style={{ color: T.ink }}>deployed</span>
-              <span style={{ color: T.dim }}>· vercel · 4m</span>
+              <span style={{ color: T.ink }}>{DEPLOY_INFO.status}</span>
+              <span style={{ color: T.dim }}>· {DEPLOY_INFO.platform} · {DEPLOY_INFO.when}</span>
             </div>
           </div>
         </div>

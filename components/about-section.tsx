@@ -1,6 +1,15 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import {
+  ACTIVITIES,
+  SKILLS,
+  STUDIO_NOTE,
+  STUDIO_STATS,
+  MAP_LOCATION,
+  ABOUT_HEADLINE,
+  ABOUT_SUBTITLE,
+} from '@/data/site-content';
 
 /* ─── Design Tokens ─── */
 const T = {
@@ -10,28 +19,8 @@ const T = {
   pink: '#ff5da2', blue: '#5ecfff', green: '#69e6a6', red: '#ff5a64', purple: '#b48cff',
 } as const;
 
-/* ─── Data ─── */
-const ACTIVITIES = [
-  { kind: 'CODE', label: 'Refining hero section', src: 'mit-tech-studio · main', icon: '⌥' },
-  { kind: 'READ', label: 'Next.js App Router で next-intl', src: 'Zenn · @mitokawaguchi', icon: '⌥' },
-  { kind: 'LISTEN', label: 'Lo-Fi Programming Beats', src: 'Spotify · 02:14 / 04:36', icon: '♪' },
-  { kind: 'BUILD', label: 'Deploy to Vercel · production', src: 'github actions · #2148', icon: '↗' },
-  { kind: 'WRITE', label: '"i18n for TypeScript" draft', src: 'Zenn · article-draft-08', icon: '✎' },
-];
-
-const SKILLS = [
-  { label: 'UI/UXデザイン', stack: ['Figma', 'デザインシステム', 'プロトタイプ'],
-    langs: ['Figma', 'Adobe XD', 'Photoshop', 'Illustrator', 'Framer', 'デザインシステム', 'プロトタイピング', 'Auto Layout', 'Design Tokens', 'アクセシビリティ'] },
-  { label: 'フロントエンド開発', stack: ['HTML', 'CSS', 'JavaScript', 'TypeScript', 'React'],
-    langs: ['HTML', 'CSS', 'Sass', 'JavaScript', 'TypeScript', 'React', 'Vue', 'Tailwind CSS', 'Framer Motion', 'GSAP', 'Three.js'] },
-  { label: 'Webアプリケーション', stack: ['Next.js', 'API', '認証', 'DB'],
-    langs: ['Next.js', 'Node.js', 'Express', 'REST API', 'GraphQL', 'Prisma', 'PostgreSQL', 'Supabase', 'Auth.js', 'Stripe'] },
-  { label: 'テクニカルサポート', stack: ['Git', 'CI/CD', 'パフォーマンス', 'アクセシビリティ'],
-    langs: ['Git', 'GitHub Actions', 'Docker', 'Vercel', 'CI/CD', 'Vitest', 'Playwright', 'Lighthouse', 'Web Vitals', 'Sentry'] },
-];
-
-const SKILL_COLORS = [T.accent, T.warn, T.blue, T.purple];
-const SKILL_SCORES = [92, 88, 81, 76];
+/* セクションの実データ（Now Playing / Skills / Studio note / 統計 / 拠点）は
+ * data/site-content.ts に集約。下記の land[] は地図の形状（演出）なのでここに残す。 */
 
 const land = [
   '                       #      ',
@@ -72,11 +61,6 @@ const land = [
 ];
 const TOKYO_X = 20, TOKYO_Y = 22;
 
-const JP_TEXT = '私たちは、単に美しいだけのサイトはつくりません。課題を解決する「機能美」と、人の心を動かす「体験」を、ひとつに両立させます。';
-const EN_TEXT = "We don't just build beautiful websites. We balance functional beauty that solves real problems with experiences that genuinely move people.";
-
-const SUBTITLE = 'Bridging design and engineering — one pixel, one function at a time.';
-
 /* ─── Styles (injected) ─── */
 const ABOUT_STYLES = `
 @keyframes aboutChar {
@@ -104,7 +88,7 @@ const ABOUT_STYLES = `
 `;
 
 /* ─── PinnedHead ─── */
-const PINNED_TITLE = 'デザインとエンジニアリングの境界をなくす。';
+const PINNED_TITLE = ABOUT_HEADLINE;
 
 function PinnedHead() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -220,7 +204,7 @@ function PinnedHead() {
               opacity: 0, transform: 'translateY(18px)',
             }}
           >
-            {SUBTITLE}
+            {ABOUT_SUBTITLE}
           </div>
 
           {/* Scroll indicator */}
@@ -315,9 +299,9 @@ function MapDot() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <span style={{ width: 6, height: 6, borderRadius: '50%', background: T.accent }} />
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: T.ink, fontWeight: 500 }}>HQ · Tokyo, JP</span>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: T.ink, fontWeight: 500 }}>{MAP_LOCATION.label}</span>
         </div>
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: T.dim }}>35.68°N 139.69°E</span>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: T.dim }}>{MAP_LOCATION.coord}</span>
       </div>
 
       {/* SVG map */}
@@ -360,8 +344,8 @@ function MapDot() {
         marginTop: 14, fontFamily: 'var(--font-mono)', fontSize: 11, color: T.dim,
       }}>
         <div style={{ display: 'flex', gap: 16 }}>
-          <span>ping 18ms</span>
-          <span>uptime 99.98%</span>
+          <span>{MAP_LOCATION.ping}</span>
+          <span>{MAP_LOCATION.uptime}</span>
         </div>
         <span style={{ color: T.accent }}>● live</span>
       </div>
@@ -373,7 +357,7 @@ function MapDot() {
 function StudioNoteCard() {
   const [langMode, setLangMode] = useState<'jp' | 'en'>('jp');
   const [animKey, setAnimKey] = useState(0);
-  const text = langMode === 'jp' ? JP_TEXT : EN_TEXT;
+  const text = langMode === 'jp' ? STUDIO_NOTE.jp : STUDIO_NOTE.en;
 
   const toggleLang = useCallback((l: 'jp' | 'en') => {
     setLangMode(l);
@@ -393,7 +377,7 @@ function StudioNoteCard() {
           §01 — Studio note
         </span>
         <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: T.dim }}>
-          2026 · rev.06
+          {STUDIO_NOTE.revision}
         </span>
       </div>
 
@@ -436,7 +420,7 @@ function StudioNoteCard() {
       <p style={{
         fontFamily: 'var(--font-mono)', fontSize: 12, color: T.dim, marginBottom: 40,
       }}>
-        — Mito Kawaguchi · Founder, MIT Tech Studio
+        {STUDIO_NOTE.attribution}
       </p>
 
       {/* stats grid */}
@@ -444,11 +428,7 @@ function StudioNoteCard() {
         display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 0,
         borderTop: `1px solid ${T.border}`,
       }}>
-        {[
-          { label: 'Since', value: '2025.08.18' },
-          { label: 'Engineers', value: '1', note: '+collaborators' },
-          { label: 'Tools', value: '12+', note: 'TS · React · Next' },
-        ].map((s, i) => (
+        {STUDIO_STATS.map((s, i) => (
           <div key={s.label} style={{
             padding: '20px 0',
             borderRight: i < 2 ? `1px solid ${T.border}` : 'none',
@@ -476,8 +456,8 @@ function StudioNoteCard() {
 /* ─── SkillCard (flip card) ─── */
 function SkillCard({ skill, index }: { skill: typeof SKILLS[number]; index: number }) {
   const [flipped, setFlipped] = useState(false);
-  const color = SKILL_COLORS[index % SKILL_COLORS.length];
-  const score = SKILL_SCORES[index % SKILL_SCORES.length];
+  const color = skill.color;
+  const score = skill.score;
 
   return (
     <div

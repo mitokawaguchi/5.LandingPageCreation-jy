@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { HERO_META } from '@/data/site-content';
 
 const T = {
   bg: '#06070a', surface: '#0a0c10', surface2: '#0e1116', surface3: '#13171e',
@@ -140,7 +141,7 @@ export function HeroSection() {
             {t('badge')}
           </span>
           <span style={{ color: T.dim }}>/</span>
-          <span>OVR–001 · primary thesis</span>
+          <span>{HERO_META.thesis}</span>
           {/* Horizontal rule */}
           <span
             style={{
@@ -149,9 +150,9 @@ export function HeroSection() {
               background: T.border,
             }}
           />
-          <span>v 6.0.0</span>
+          <span>{HERO_META.version}</span>
           <span style={{ color: T.dim }}>·</span>
-          <span>mitokawaguchi</span>
+          <span>{HERO_META.handle}</span>
         </div>
 
         {/* KineticTitle */}
