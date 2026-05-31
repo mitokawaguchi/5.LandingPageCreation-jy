@@ -130,6 +130,13 @@ export function StudioIntro({ onExitStart, onDone }: StudioIntroProps) {
 
   const studioChars = STUDIO_NAME.split('');
 
+  // Per-character reveal timing. The subtitle ("Tokyo · since 2025") only
+  // starts once the final "o" of "MIT Tech Studio" has emerged.
+  const CHAR_BASE = 360;
+  const CHAR_STEP = 42;
+  const lastCharDelay = CHAR_BASE + (studioChars.length - 1) * CHAR_STEP;
+  const subDelay = lastCharDelay + 140;
+
   return (
     <div
       style={{
@@ -215,7 +222,7 @@ export function StudioIntro({ onExitStart, onDone }: StudioIntroProps) {
                   className="intro-char"
                   style={{
                     display: 'inline-block',
-                    animation: `introCharReveal 0.7s cubic-bezier(.2,.86,.24,1.04) ${360 + i * 42}ms both`,
+                    animation: `introCharReveal 0.7s cubic-bezier(.2,.86,.24,1.04) ${CHAR_BASE + i * CHAR_STEP}ms both`,
                     whiteSpace: ch === ' ' ? 'pre' : undefined,
                   }}
                 >
@@ -232,7 +239,7 @@ export function StudioIntro({ onExitStart, onDone }: StudioIntroProps) {
               fontSize: 12,
               color: T.sub,
               opacity: 0,
-              animation: 'introSubFade 0.6s ease 900ms both',
+              animation: `introSubFade 0.6s ease ${subDelay}ms both`,
             }}
           >
             Tokyo · since 2025
