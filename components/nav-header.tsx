@@ -13,7 +13,7 @@ const NAV_LINKS: { label: string; href: string }[] = [
 
 export function NavHeader() {
   return (
-    <header style={{ borderBottom: `1px solid ${T.border}` }}>
+    <div style={{ borderBottom: `1px solid ${T.border}` }}>
       <div className="studio-container" style={{
         maxWidth: 1320,
         margin: '0 auto',
@@ -22,29 +22,29 @@ export function NavHeader() {
         alignItems: 'center',
         height: 72,
       }}>
-        {/* Logo */}
-        <div data-logo-dock style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{
+        {/* Logo dock */}
+        <div data-logo-dock style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+          <span style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
             width: 36,
             height: 36,
             background: T.accent,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontFamily: 'var(--font-mono)',
+            color: '#0a0c10',
             fontWeight: 800,
             fontSize: 18,
-            color: '#06070a',
+            fontFamily: 'var(--font-sans)',
           }}>
             M
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2 }}>
-            <span style={{ fontFamily: 'var(--font-sans)', fontWeight: 600, fontSize: 15, color: T.ink }}>
+          </span>
+          <div>
+            <div style={{ fontFamily: 'var(--font-sans)', fontSize: 15, fontWeight: 600, color: T.ink, letterSpacing: '-0.01em' }}>
               MIT Tech Studio
-            </span>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: T.sub }}>
+            </div>
+            <div style={{ fontFamily: 'var(--font-sans)', fontSize: 12, color: T.sub, letterSpacing: '-0.005em' }}>
               Tokyo · since 2025
-            </span>
+            </div>
           </div>
         </div>
 
@@ -60,12 +60,12 @@ export function NavHeader() {
               className="studio-nav-link"
               style={{
                 padding: '8px 14px',
+                fontFamily: 'var(--font-sans)',
                 fontSize: 14,
                 color: T.sub,
                 textDecoration: 'none',
                 borderRadius: 4,
-                transition: 'color 0.2s, background 0.2s',
-                fontFamily: 'var(--font-sans)',
+                transition: 'color .15s, background .15s',
               }}
             >
               {link.label}
@@ -77,26 +77,27 @@ export function NavHeader() {
         <div style={{ flex: 1 }} />
 
         {/* CTA */}
-        <a
-          href="#contact"
-          className="studio-cta-primary"
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 6,
-            background: T.accent,
-            color: '#06070a',
-            fontFamily: 'var(--font-sans)',
-            fontSize: 13,
-            fontWeight: 600,
-            padding: '10px 18px',
-            textDecoration: 'none',
-            transition: 'opacity 0.2s',
-          }}
-        >
-          ↗ Contact
-        </a>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <a
+            href="#contact"
+            className="studio-cta-primary"
+            style={{
+              padding: '10px 18px',
+              background: T.accent,
+              color: '#0a0c10',
+              fontFamily: 'var(--font-sans)',
+              fontSize: 13,
+              fontWeight: 600,
+              textDecoration: 'none',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 8,
+            }}
+          >
+            ↗ Contact
+          </a>
+        </div>
       </div>
-    </header>
+    </div>
   );
 }

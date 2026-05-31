@@ -111,47 +111,54 @@ export function HeroSection() {
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: 12,
+            gap: 16,
             marginBottom: 56,
             fontFamily: 'var(--font-mono)',
-            fontSize: 13,
+            fontSize: 11,
             color: T.sub,
+            letterSpacing: 0.4,
+            flexWrap: 'wrap',
           }}
         >
-          {/* Green pulse dot */}
-          <span
-            style={{
-              width: 6,
-              height: 6,
-              borderRadius: '50%',
-              background: T.green,
-              boxShadow: `0 0 6px ${T.green}`,
-              animation: 'studioPulse 1.6s infinite',
-              flexShrink: 0,
-            }}
-          />
-          {/* Badge */}
-          <span
-            style={{
-              color: T.accent,
-              fontSize: 13,
-              fontWeight: 600,
-              fontFamily: 'var(--font-mono)',
-            }}
-          >
-            {t('badge')}
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+            {/* Accent pulse dot */}
+            <span
+              style={{
+                width: 6,
+                height: 6,
+                borderRadius: 3,
+                background: T.accent,
+                boxShadow: `0 0 8px ${T.accent}`,
+                animation: 'studioPulse 1.6s ease-in-out infinite',
+              }}
+            />
+            {/* Badge */}
+            <span
+              style={{
+                color: T.accent,
+                fontFamily: 'var(--font-sans)',
+                fontSize: 13,
+                fontWeight: 600,
+                letterSpacing: '-0.005em',
+              }}
+            >
+              {t('badge')}
+            </span>
           </span>
           <span style={{ color: T.dim }}>/</span>
           <span>{HERO_META.thesis}</span>
-          {/* Horizontal rule */}
+          {/* Flexible rule */}
           <span
             style={{
               flex: 1,
-              height: 1,
+              minHeight: 1,
               background: T.border,
+              alignSelf: 'center',
             }}
           />
-          <span>{HERO_META.version}</span>
+          <span>
+            <span style={{ color: T.dim }}>v</span> 6.0.0
+          </span>
           <span style={{ color: T.dim }}>·</span>
           <span>{HERO_META.handle}</span>
         </div>
@@ -175,46 +182,51 @@ export function HeroSection() {
             />
           )}
 
-          <h1 style={{ margin: 0, padding: 0 }}>
+          <h1
+            style={{
+              margin: 0,
+              fontFamily: 'var(--font-sans)',
+              color: T.ink,
+              fontSize: 'clamp(96px, 11vw, 184px)',
+              fontWeight: 700,
+              letterSpacing: '-0.055em',
+              lineHeight: 0.9,
+              maxWidth: '13ch',
+              position: 'relative',
+            }}
+          >
             {/* Line 1 */}
-            <span
-              style={{
-                display: 'block',
-                fontFamily: 'var(--font-sans)',
-                fontWeight: 700,
-                fontSize: 'clamp(96px, 11vw, 184px)',
-                color: T.ink,
-                letterSpacing: '-0.055em',
-                lineHeight: 0.9,
-              }}
-            >
-              {renderChars(line1, 0)}
-            </span>
+            <span style={{ display: 'block' }}>{renderChars(line1, 0)}</span>
 
             {/* Line 2 */}
             <span
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: 24,
-                fontFamily: 'var(--font-sans)',
-                fontWeight: 400,
-                fontStyle: 'italic',
-                fontSize: 'clamp(57.6px, 6.6vw, 110.4px)',
-                color: T.ink,
-                opacity: 0.62,
-                letterSpacing: '-0.055em',
-                lineHeight: 0.9,
-                margin: '8px 0',
+                gap: 22,
+                margin: '14px 0 10px',
+                paddingLeft: '0.08em',
               }}
             >
-              <span>{renderChars(line2, 1)}</span>
+              <span
+                style={{
+                  fontStyle: 'italic',
+                  fontWeight: 400,
+                  color: T.ink,
+                  fontSize: '0.6em',
+                  letterSpacing: '-0.04em',
+                  lineHeight: 1,
+                  opacity: 0.62,
+                }}
+              >
+                {renderChars(line2, 1)}
+              </span>
               <span
                 className="kt-rule"
                 style={{
                   flex: 1,
                   height: 1,
-                  background: T.borderStrong,
+                  background: T.border,
                   transform: 'scaleX(0)',
                   transformOrigin: 'left',
                   transition: 'transform 0.8s cubic-bezier(.16,1,.3,1)',
@@ -225,13 +237,9 @@ export function HeroSection() {
             {/* Line 3 */}
             <span
               style={{
-                display: 'block',
-                fontFamily: 'var(--font-sans)',
-                fontWeight: 700,
-                fontSize: 'clamp(96px, 11vw, 184px)',
+                position: 'relative',
+                display: 'inline-block',
                 color: T.accent,
-                letterSpacing: '-0.055em',
-                lineHeight: 0.9,
                 animation: playing ? 'ktGlow 3s ease-in-out infinite' : undefined,
               }}
             >
@@ -274,85 +282,98 @@ export function HeroSection() {
               color: T.sub,
               maxWidth: 580,
               fontWeight: 400,
+              letterSpacing: '-0.004em',
             }}
           >
             {t('subtitle')}
           </p>
 
           {/* Right: CTA group */}
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'flex-end',
-              gap: 12,
-            }}
-          >
-            <div style={{ display: 'flex', gap: 12 }}>
-              <a
-                href="#works"
-                onClick={handleScrollToWorks}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 8,
-                  background: T.accent,
-                  color: T.bg,
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: 14,
-                  fontWeight: 600,
-                  padding: '12px 28px',
-                  borderRadius: 8,
-                  textDecoration: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  transition: 'opacity .2s, transform .15s',
-                }}
-                onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.9'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}
-              >
-                <span style={{ fontFamily: 'var(--font-mono)', marginRight: 2 }}>▸</span>
-                {t('viewWorks')}
-              </a>
-              <a
-                href="#about"
-                onClick={handleScrollToAbout}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 8,
-                  background: 'transparent',
-                  color: T.ink,
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: 14,
-                  fontWeight: 500,
-                  padding: '12px 28px',
-                  borderRadius: 8,
-                  border: `1px solid ${T.borderStrong}`,
-                  textDecoration: 'none',
-                  cursor: 'pointer',
-                  transition: 'border-color .2s, background .2s',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = T.accent;
-                  e.currentTarget.style.background = 'rgba(181,251,107,0.04)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = T.borderStrong;
-                  e.currentTarget.style.background = 'transparent';
-                }}
-              >
-                {t('learnMore')}
-              </a>
-            </div>
-            <span
+          <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+            <a
+              href="#works"
+              onClick={handleScrollToWorks}
               style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: 12,
-                color: T.dim,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 10,
+                padding: '16px 24px',
+                background: T.accent,
+                color: '#0a0c10',
+                fontFamily: 'var(--font-sans)',
+                fontSize: 14,
+                fontWeight: 600,
+                letterSpacing: '-0.005em',
+                textDecoration: 'none',
+                cursor: 'pointer',
+                position: 'relative',
+                transition: 'transform .15s, box-shadow .15s',
               }}
             >
-              or press ⌘K / Ctrl K
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 13, opacity: 0.65 }}>▸</span>
+              {t('viewWorks')}
+            </a>
+            <a
+              href="#about"
+              onClick={handleScrollToAbout}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 10,
+                padding: '16px 24px',
+                border: `1px solid ${T.border}`,
+                color: T.ink,
+                fontFamily: 'var(--font-sans)',
+                fontSize: 14,
+                fontWeight: 500,
+                textDecoration: 'none',
+                cursor: 'pointer',
+                transition: 'border-color .15s, background .15s',
+              }}
+            >
+              {t('learnMore')}
+            </a>
+            <span
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                marginLeft: 8,
+                fontFamily: 'var(--font-sans)',
+                fontSize: 12,
+                color: T.sub,
+                letterSpacing: '-0.003em',
+              }}
+            >
+              <span>or press</span>
+              <span
+                style={{
+                  padding: '4px 9px',
+                  border: `1px solid ${T.border}`,
+                  borderRadius: 4,
+                  color: T.ink,
+                  fontFamily: 'var(--font-sans)',
+                  fontSize: 11,
+                  fontWeight: 500,
+                  fontVariantNumeric: 'tabular-nums',
+                }}
+              >
+                ⌘K
+              </span>
+              <span style={{ color: T.dim }}>/</span>
+              <span
+                style={{
+                  padding: '4px 9px',
+                  border: `1px solid ${T.border}`,
+                  borderRadius: 4,
+                  color: T.ink,
+                  fontFamily: 'var(--font-sans)',
+                  fontSize: 11,
+                  fontWeight: 500,
+                }}
+              >
+                Ctrl K
+              </span>
             </span>
           </div>
         </div>

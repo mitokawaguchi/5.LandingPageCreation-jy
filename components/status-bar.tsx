@@ -16,7 +16,35 @@ function formatTime(date: Date, tz: string): string {
   });
 }
 
-/* ─── EditingStatus ─── */
+/* ─── Clock (JST + UTC, ticking seconds) ─── */
+function Clock({ zone, tz }: { zone: string; tz: string }) {
+  const [now, setNow] = useState<Date | null>(null);
+
+  useEffect(() => {
+    setNow(new Date());
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const time = now ? formatTime(now, tz) : '--:--:--';
+
+  return (
+    <span style={{
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: 6,
+      fontFamily: 'var(--font-mono)',
+      fontSize: 11,
+      color: T.sub,
+      fontVariantNumeric: 'tabular-nums',
+    }}>
+      <span style={{ color: T.dim }}>{zone}</span>
+      <span style={{ color: T.ink }}>{time}</span>
+    </span>
+  );
+}
+
+/* ─── EditingStatus (rotates) ─── */
 function EditingStatus() {
   const [idx, setIdx] = useState(0);
 
@@ -30,43 +58,39 @@ function EditingStatus() {
   const state = EDITING_STATES[idx];
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+    <span style={{
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: 8,
+      fontFamily: 'var(--font-mono)',
+      fontSize: 11,
+      color: T.sub,
+    }}>
       <span style={{
         width: 6,
         height: 6,
-        borderRadius: '50%',
+        borderRadius: 3,
         background: T.accent,
-        animation: 'statusPulse 2s infinite',
-        display: 'inline-block',
+        boxShadow: `0 0 8px ${T.accent}`,
+        animation: 'studioPulse 1.6s ease-in-out infinite',
       }} />
-      <span style={{ color: T.ink, fontFamily: 'var(--font-mono)', fontSize: 11 }}>{state.action}</span>
+      <span style={{ color: T.ink }}>{state.action}</span>
       <span style={{ color: T.dim }}>·</span>
-      <span style={{ color: T.sub, fontFamily: 'var(--font-mono)', fontSize: 11 }}>{state.file}</span>
+      <span style={{ color: T.sub, fontFamily: 'inherit' }}>{state.file}</span>
       <span style={{ color: T.dim }}>·</span>
-      <span style={{ color: T.sub, fontFamily: 'var(--font-mono)', fontSize: 11 }}>{state.time}</span>
-    </div>
+      <span style={{ color: T.sub }}>{state.time}</span>
+    </span>
   );
 }
 
 /* ─── Main StatusBar ─── */
 export function StatusBar() {
-  const [now, setNow] = useState<Date | null>(null);
-
-  useEffect(() => {
-    setNow(new Date());
-    const id = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(id);
-  }, []);
-
-  const jst = now ? formatTime(now, 'Asia/Tokyo') : '--:--:--';
-  const utc = now ? formatTime(now, 'UTC') : '--:--:--';
-
   return (
     <>
       <style>{`
-        @keyframes statusPulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.4; }
+        @keyframes studioPulse {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.4; transform: scale(0.85); }
         }
       `}</style>
       <div style={{
@@ -84,57 +108,55 @@ export function StatusBar() {
           padding: '0 56px',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between',
+          gap: 18,
           height: 36,
           fontFamily: 'var(--font-mono)',
           fontSize: 11,
           color: T.sub,
         }}>
-          {/* Left: EditingStatus */}
           <EditingStatus />
 
-          {/* Right side */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            {/* Clocks */}
-            <span className="sb-clocks" style={{ display: 'inline-flex', alignItems: 'center', gap: 18 }}>
-              <span>
-                JST <span style={{ color: T.ink }}>{jst}</span>
-              </span>
-              <span style={{ color: T.dim }}>·</span>
-              <span>
-                UTC <span style={{ color: T.ink }}>{utc}</span>
-              </span>
-              <span style={{ width: 1, height: 12, background: T.border, display: 'inline-block' }} />
-            </span>
+          <span style={{ flex: 1 }} />
 
-            {/* Command palette */}
-            <button
-              type="button"
-              style={{
-                background: 'none',
-                border: `1px solid ${T.border}`,
-                borderRadius: 4,
-                padding: '2px 8px',
-                fontFamily: 'var(--font-mono)',
-                fontSize: 11,
-                color: T.sub,
-                cursor: 'pointer',
-                transition: 'border-color .2s',
-              }}
-            >
-              ⌘ K palette
-            </button>
+          {/* Clocks */}
+          <span className="sb-clocks" style={{ display: 'inline-flex', alignItems: 'center', gap: 18 }}>
+            <Clock zone="JST" tz="Asia/Tokyo" />
+            <span style={{ color: T.dim, fontFamily: 'var(--font-mono)', fontSize: 11 }}>·</span>
+            <Clock zone="UTC" tz="UTC" />
+            <span style={{ width: 1, height: 12, background: T.border }} />
+          </span>
 
-            {/* Deploy status */}
-            <span className="sb-deploy" style={{ display: 'inline-flex', alignItems: 'center', gap: 18 }}>
-              <span style={{ width: 1, height: 12, background: T.border, display: 'inline-block' }} />
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                <span style={{ width: 6, height: 6, borderRadius: '50%', background: T.green, display: 'inline-block' }} />
-                <span style={{ color: T.ink }}>{DEPLOY_INFO.status}</span>
-                <span style={{ color: T.dim }}>· {DEPLOY_INFO.platform} · {DEPLOY_INFO.when}</span>
-              </span>
+          {/* Command palette */}
+          <button
+            type="button"
+            className="cmdk-btn"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 8,
+              background: 'transparent',
+              border: `1px solid ${T.border}`,
+              padding: '4px 10px',
+              cursor: 'pointer',
+              fontFamily: 'var(--font-mono)',
+              fontSize: 11,
+              color: T.sub,
+              transition: 'border-color .15s, color .15s',
+            }}
+          >
+            <span>⌘ K</span>
+            <span style={{ color: T.dim }}>palette</span>
+          </button>
+
+          {/* Deploy status */}
+          <span className="sb-deploy" style={{ display: 'inline-flex', alignItems: 'center', gap: 18 }}>
+            <span style={{ width: 1, height: 12, background: T.border }} />
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: 'var(--font-mono)', fontSize: 11, color: T.sub }}>
+              <span style={{ width: 6, height: 6, borderRadius: 3, background: T.green, boxShadow: `0 0 6px ${T.green}` }} />
+              <span style={{ color: T.ink }}>{DEPLOY_INFO.status}</span>
+              <span style={{ color: T.dim }}>· {DEPLOY_INFO.platform} · {DEPLOY_INFO.when}</span>
             </span>
-          </div>
+          </span>
         </div>
       </div>
     </>
