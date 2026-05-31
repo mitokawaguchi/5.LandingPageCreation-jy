@@ -46,8 +46,9 @@
 }
 
 @theme inline {
-  --font-sans: var(--font-geist), var(--font-noto), sans-serif;
+  --font-sans: var(--font-geist), var(--font-noto), system-ui, 'Hiragino Kaku Gothic ProN', sans-serif;
   --font-mono: var(--font-geist-mono), 'Geist Mono Fallback', monospace;
+  --font-serif: var(--font-instrument-serif), 'Instrument Serif', Georgia, serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
