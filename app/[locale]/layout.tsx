@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
-import { Noto_Sans_JP } from 'next/font/google';
+import { Noto_Sans_JP, Instrument_Serif } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
@@ -12,21 +12,29 @@ import '../globals.css';
 const geist = Geist({
   subsets: ['latin'],
   variable: '--font-geist',
-  weight: ['400', '600', '700', '800'],
+  weight: ['400', '500', '600', '700', '800'],
   display: 'swap',
 });
 
 const geistMono = Geist_Mono({
   subsets: ['latin'],
   variable: '--font-geist-mono',
-  weight: ['400', '500', '700'],
+  weight: ['400', '500', '600', '700'],
   display: 'swap',
 });
 
 const notoSansJP = Noto_Sans_JP({
   subsets: ['latin'],
   variable: '--font-noto',
-  weight: ['400', '600', '700', '800'],
+  weight: ['400', '500', '600', '700', '800'],
+  display: 'swap',
+});
+
+const instrumentSerif = Instrument_Serif({
+  subsets: ['latin'],
+  variable: '--font-instrument-serif',
+  weight: '400',
+  style: ['normal', 'italic'],
   display: 'swap',
 });
 
@@ -69,7 +77,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
   return (
     <html lang={locale} className="dark scroll-smooth">
       <body
-        className={`${geist.variable} ${geistMono.variable} ${notoSansJP.variable} font-sans antialiased`}
+        className={`${geist.variable} ${geistMono.variable} ${notoSansJP.variable} ${instrumentSerif.variable} font-sans antialiased`}
         style={{ background: '#06070a', color: '#e9edf2' }}
       >
         <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>

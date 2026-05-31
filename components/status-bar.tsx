@@ -84,7 +84,7 @@ function EditingStatus() {
 }
 
 /* ─── Main StatusBar ─── */
-export function StatusBar() {
+export function StatusBar({ onCmdK }: { onCmdK?: () => void } = {}) {
   return (
     <>
       <style>{`
@@ -130,6 +130,7 @@ export function StatusBar() {
           <button
             type="button"
             className="cmdk-btn"
+            onClick={onCmdK}
             style={{
               display: 'inline-flex',
               alignItems: 'center',
