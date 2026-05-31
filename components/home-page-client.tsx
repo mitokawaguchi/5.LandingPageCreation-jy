@@ -22,6 +22,11 @@ const WorksSection = dynamic(
   { ssr: false },
 );
 
+const LabSection = dynamic(
+  () => import('@/components/lab-section').then((m) => ({ default: m.LabSection })),
+  { ssr: false },
+);
+
 const WritingSection = dynamic(
   () => import('@/components/writing-section').then((m) => ({ default: m.WritingSection })),
   { ssr: false },
@@ -38,16 +43,23 @@ const Footer = dynamic(
 );
 
 export function HomePageClient() {
-  const [introComplete, setIntroComplete] = useState(false);
+  const [intro, setIntro] = useState(true);
+  const [revealed, setRevealed] = useState(false);
 
   return (
     <main style={{ background: '#06070a', minHeight: '100vh' }}>
-      {!introComplete && <StudioIntro onDone={() => setIntroComplete(true)} />}
+      {intro && (
+        <StudioIntro
+          onExitStart={() => setRevealed(true)}
+          onDone={() => setIntro(false)}
+        />
+      )}
       <div
         style={{
-          opacity: introComplete ? 1 : 0,
-          filter: introComplete ? 'none' : 'blur(8px)',
-          transition: 'opacity .6s ease, filter .6s ease',
+          opacity: (intro && !revealed) ? 0 : 1,
+          filter: (intro && !revealed) ? 'blur(10px)' : 'none',
+          transition: 'opacity .55s ease, filter .55s ease',
+          pointerEvents: (intro && !revealed) ? 'none' : 'auto',
         }}
       >
         <StatusBar />
@@ -56,6 +68,7 @@ export function HomePageClient() {
         <HeroSection />
         <AboutSection />
         <WorksSection />
+        <LabSection />
         <WritingSection />
         <ContactSection />
         <Footer />
