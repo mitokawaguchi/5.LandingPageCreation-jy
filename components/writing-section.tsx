@@ -1,106 +1,223 @@
 'use client';
 
-import { BookOpen, Loader2 } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { useTranslations } from 'next-intl';
-import { Link } from '@/i18n/navigation';
-import { useScrollReveal } from '@/hooks/use-scroll-reveal';
-import { WritingArticleCard } from '@/components/writing-article-card';
-import type { WritingArticle, WritingArticlesResponse } from '@/types/writing-article';
-import { getFeaturedWritingArticles } from '@/utils/writing-articles';
+import { Sparkline } from '@/components/sparkline';
 
-export function WritingSection() {
-  const t = useTranslations('writing');
-  const { ref, isVisible } = useScrollReveal<HTMLElement>({ threshold: 0.15 });
-  const [articles, setArticles] = useState<WritingArticle[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
+/* ─── Design Tokens ─── */
+const t = {
+  bg: '#06070a',
+  surface: '#0a0c10',
+  surface2: '#0e1116',
+  surface3: '#13171e',
+  border: '#1a1f28',
+  ink: '#e9edf2',
+  sub: '#8a93a0',
+  dim: '#3d4654',
+  accent: '#b5fb6b',
+  warn: '#ffb648',
+  pink: '#ff5da2',
+  blue: '#5ecfff',
+  green: '#69e6a6',
+  purple: '#b48cff',
+} as const;
 
-  useEffect(() => {
-    const loadArticles = async (): Promise<void> => {
-      try {
-        const response = await fetch('/api/articles');
-        if (!response.ok) {
-          throw new Error(`Article API request failed: ${response.status}`);
-        }
+/* ─── Articles Data ─── */
+const ARTICLES = [
+  {
+    source: 'Zenn' as const,
+    title: 'Next.js App Router で next-intl を使い倒す',
+    likes: 42,
+    impressions: 1280,
+    date: '2026-02-18',
+    url: 'https://zenn.dev/mitokawaguchi/articles/nextjs-next-intl',
+  },
+  {
+    source: 'Qiita' as const,
+    title: 'デザインシステムを CSS Variables だけで構築する',
+    likes: 28,
+    impressions: 980,
+    date: '2026-01-09',
+    url: 'https://qiita.com/mitokawaguchi/items/css-variables-design-system',
+  },
+  {
+    source: 'Zenn' as const,
+    title: 'TypeScript で堅牢な i18n を設計する',
+    likes: 19,
+    impressions: 612,
+    date: '2025-12-22',
+    url: 'https://zenn.dev/mitokawaguchi/articles/typescript-i18n',
+  },
+];
 
-        const payload = (await response.json()) as WritingArticlesResponse;
-        setArticles(getFeaturedWritingArticles(payload.articles));
-      } catch (error) {
-        console.error(error);
-        setHasError(true);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+/* Sparkline placeholder data per article */
+const SPARK_DATA = [
+  [3, 7, 5, 12, 9, 15, 11, 18, 14, 20, 17, 22, 19, 25, 21, 28],
+  [2, 4, 6, 5, 9, 7, 11, 8, 13, 10, 12, 14, 11, 16, 13, 18],
+  [1, 3, 2, 5, 4, 7, 5, 8, 6, 9, 7, 10, 8, 11, 9, 12],
+];
 
-    void loadArticles();
-  }, []);
+function getSourceColor(source: 'Zenn' | 'Qiita'): string {
+  return source === 'Zenn' ? t.blue : t.green;
+}
 
-  const labels = {
-    likes: t('likes'),
-    impressions: t('impressions'),
-    bookmarks: t('bookmarks'),
-    readArticle: t('readArticle'),
-  };
+/* ─── Article Card ─── */
+function ArticleCard({ article, index }: { article: typeof ARTICLES[number]; index: number }) {
+  const sourceColor = getSourceColor(article.source);
 
   return (
-    <section ref={ref} id="articles" className="bg-background py-24 md:py-32">
-      <div className="container mx-auto px-6">
-        <div className="mb-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-          <div>
-            <span
-              className={`text-sm font-semibold uppercase tracking-wide text-accent transition-all duration-700 ${
-                isVisible ? 'translate-x-0 opacity-100' : '-translate-x-5 opacity-0'
-              }`}
-            >
-              {t('kicker')}
-            </span>
-            <h2
-              className={`mt-2 text-3xl font-bold tracking-tight text-foreground transition-all delay-100 duration-700 md:text-4xl ${
-                isVisible ? 'translate-x-0 opacity-100' : '-translate-x-5 opacity-0'
-              }`}
-            >
-              {t('title')}
-            </h2>
-            <p className="mt-4 max-w-2xl text-muted-foreground">{t('intro')}</p>
-          </div>
+    <a
+      href={article.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        minWidth: 360,
+        padding: '28px 32px',
+        background: t.surface,
+        border: `1px solid ${t.border}`,
+        borderRadius: 14,
+        flexShrink: 0,
+        textDecoration: 'none',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 16,
+        transition: 'border-color 0.2s, transform 0.2s',
+      }}
+    >
+      {/* Top: source badge + date */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <span style={{
+          fontSize: 10,
+          fontFamily: 'var(--font-mono)',
+          padding: '3px 10px',
+          borderRadius: 4,
+          background: `${sourceColor}15`,
+          color: sourceColor,
+          textTransform: 'uppercase',
+          letterSpacing: '0.06em',
+          fontWeight: 600,
+        }}>
+          {article.source}
+        </span>
+        <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', color: t.dim }}>
+          {article.date}
+        </span>
+      </div>
 
-          <Link
-            href="/articles"
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-secondary px-5 py-3 text-sm font-semibold text-foreground transition-colors hover:border-primary hover:text-primary"
-          >
-            <BookOpen className="h-4 w-4" aria-hidden />
-            {t('more')}
-          </Link>
+      {/* Title */}
+      <h4 style={{
+        fontSize: 15,
+        fontWeight: 600,
+        color: t.ink,
+        lineHeight: 1.5,
+        fontFamily: '"Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif',
+      }}>
+        {article.title}
+      </h4>
+
+      {/* Sparkline */}
+      <Sparkline values={SPARK_DATA[index]} color={sourceColor} width={140} height={28} />
+
+      {/* Stats */}
+      <div style={{ display: 'flex', gap: 20, marginTop: 'auto' }}>
+        <div>
+          <span style={{ display: 'block', fontSize: 10, color: t.dim, fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+            likes
+          </span>
+          <span style={{ fontSize: 16, fontWeight: 600, color: t.ink, fontFamily: 'var(--font-mono)' }}>
+            {article.likes}
+          </span>
+        </div>
+        <div>
+          <span style={{ display: 'block', fontSize: 10, color: t.dim, fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+            impressions
+          </span>
+          <span style={{ fontSize: 16, fontWeight: 600, color: t.ink, fontFamily: 'var(--font-mono)' }}>
+            {article.impressions.toLocaleString()}
+          </span>
+        </div>
+      </div>
+    </a>
+  );
+}
+
+/* ─── Articles Marquee ─── */
+function ArticlesMarquee() {
+  const doubled = [...ARTICLES, ...ARTICLES, ...ARTICLES];
+
+  return (
+    <div style={{ overflow: 'hidden', width: '100%', position: 'relative', marginTop: 48 }}>
+      {/* Fade masks */}
+      <div style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: 100, background: `linear-gradient(to right, ${t.bg}, transparent)`, zIndex: 1, pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', top: 0, right: 0, bottom: 0, width: 100, background: `linear-gradient(to left, ${t.bg}, transparent)`, zIndex: 1, pointerEvents: 'none' }} />
+
+      <div
+        style={{
+          display: 'flex',
+          width: 'max-content',
+          gap: 24,
+          animation: 'articles-marquee 35s linear infinite',
+        }}
+      >
+        {doubled.map((article, i) => (
+          <ArticleCard key={`${article.title}-${i}`} article={article} index={i % ARTICLES.length} />
+        ))}
+      </div>
+
+      <style>{`
+        @keyframes articles-marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(calc(-384px * 3 - 24px * 3)); }
+        }
+      `}</style>
+    </div>
+  );
+}
+
+/* ─── Main Section ─── */
+export function WritingSection() {
+  return (
+    <section id="articles" style={{ background: t.bg, padding: '180px 0' }}>
+      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '0 56px' }}>
+        {/* Section header */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 16 }}>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: t.dim, letterSpacing: '0.08em' }}>§05</span>
+          <span style={{ width: 24, height: 1, background: t.dim, display: 'inline-block' }} />
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: t.sub, letterSpacing: '0.04em' }}>Writing</span>
         </div>
 
-        {isLoading ? (
-          <div className="flex items-center gap-2 rounded-2xl border border-border bg-secondary/60 p-6 text-muted-foreground">
-            <Loader2 className="h-5 w-5 animate-spin" aria-hidden />
-            {t('loading')}
-          </div>
-        ) : null}
+        <h2 style={{
+          fontSize: 'clamp(32px, 4vw, 52px)',
+          fontWeight: 800,
+          color: t.ink,
+          marginBottom: 12,
+          fontFamily: '"Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif',
+        }}>
+          執筆記事
+        </h2>
 
-        {!isLoading && hasError ? (
-          <p className="rounded-2xl border border-border bg-secondary/60 p-6 text-muted-foreground">
-            {t('error')}
-          </p>
-        ) : null}
+        <p style={{ fontSize: 14, color: t.sub, marginBottom: 0, fontFamily: 'var(--font-mono)', maxWidth: 480 }}>
+          Technical writing on Zenn and Qiita — sharing learnings from production builds
+        </p>
 
-        {!isLoading && !hasError && articles.length === 0 ? (
-          <p className="rounded-2xl border border-border bg-secondary/60 p-6 text-muted-foreground">
-            {t('empty')}
-          </p>
-        ) : null}
+        {/* Marquee */}
+        <ArticlesMarquee />
 
-        {!isLoading && !hasError && articles.length > 0 ? (
-          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {articles.map((article) => (
-              <WritingArticleCard key={article.id} article={article} labels={labels} />
-            ))}
-          </div>
-        ) : null}
+        {/* Summary stats */}
+        <div style={{ display: 'flex', gap: 32, marginTop: 40 }}>
+          {[
+            { label: 'Total articles', value: '3' },
+            { label: 'Total likes', value: '89' },
+            { label: 'Platforms', value: 'Zenn · Qiita' },
+          ].map((stat) => (
+            <div key={stat.label}>
+              <span style={{ display: 'block', fontSize: 10, color: t.dim, fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 4 }}>
+                {stat.label}
+              </span>
+              <span style={{ fontSize: 14, fontWeight: 500, color: t.sub, fontFamily: 'var(--font-mono)' }}>
+                {stat.value}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

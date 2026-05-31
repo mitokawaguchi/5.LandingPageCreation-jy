@@ -1,47 +1,65 @@
 'use client';
 
+import { useState } from 'react';
 import dynamic from 'next/dynamic';
-import { HashScrollOnMount } from '@/components/hash-scroll-on-mount';
-import { Header } from '@/components/header';
+import { StatusBar } from '@/components/status-bar';
+import { NavHeader } from '@/components/nav-header';
+import { TickerStrip } from '@/components/ticker-strip';
 import { HeroSection } from '@/components/hero-section';
 
-const ParticleCanvas = dynamic(
-  () => import('@/components/particle-canvas').then((m) => ({ default: m.ParticleCanvas })),
+const StudioIntro = dynamic(
+  () => import('@/components/studio-intro').then((m) => ({ default: m.StudioIntro })),
   { ssr: false },
 );
 
-const AboutSection = dynamic(() =>
-  import('@/components/about-section').then((m) => ({ default: m.AboutSection })),
+const AboutSection = dynamic(
+  () => import('@/components/about-section').then((m) => ({ default: m.AboutSection })),
+  { ssr: false },
 );
 
-const WorksSection = dynamic(() =>
-  import('@/components/works-section').then((m) => ({ default: m.WorksSection })),
+const WorksSection = dynamic(
+  () => import('@/components/works-section').then((m) => ({ default: m.WorksSection })),
+  { ssr: false },
 );
 
-const WritingSection = dynamic(() =>
-  import('@/components/writing-section').then((m) => ({ default: m.WritingSection })),
+const WritingSection = dynamic(
+  () => import('@/components/writing-section').then((m) => ({ default: m.WritingSection })),
+  { ssr: false },
 );
 
-const ContactSection = dynamic(() =>
-  import('@/components/contact-section').then((m) => ({ default: m.ContactSection })),
+const ContactSection = dynamic(
+  () => import('@/components/contact-section').then((m) => ({ default: m.ContactSection })),
+  { ssr: false },
 );
 
-const Footer = dynamic(() =>
-  import('@/components/footer').then((m) => ({ default: m.Footer })),
+const Footer = dynamic(
+  () => import('@/components/footer').then((m) => ({ default: m.Footer })),
+  { ssr: false },
 );
 
 export function HomePageClient() {
+  const [introComplete, setIntroComplete] = useState(false);
+
   return (
-    <main className="selection:bg-primary selection:text-primary-foreground">
-      <HashScrollOnMount />
-      <ParticleCanvas />
-      <Header />
-      <HeroSection />
-      <AboutSection />
-      <WorksSection />
-      <WritingSection />
-      <ContactSection />
-      <Footer />
+    <main style={{ background: '#06070a', minHeight: '100vh' }}>
+      {!introComplete && <StudioIntro onDone={() => setIntroComplete(true)} />}
+      <div
+        style={{
+          opacity: introComplete ? 1 : 0,
+          filter: introComplete ? 'none' : 'blur(8px)',
+          transition: 'opacity .6s ease, filter .6s ease',
+        }}
+      >
+        <StatusBar />
+        <NavHeader />
+        <TickerStrip />
+        <HeroSection />
+        <AboutSection />
+        <WorksSection />
+        <WritingSection />
+        <ContactSection />
+        <Footer />
+      </div>
     </main>
   );
 }

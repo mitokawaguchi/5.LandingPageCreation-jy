@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
-import { Inter, Noto_Sans_JP } from 'next/font/google';
+import { Geist, Geist_Mono } from 'next/font/google';
+import { Noto_Sans_JP } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
@@ -8,10 +9,17 @@ import type { ReactNode } from 'react';
 import { routing } from '@/i18n/routing';
 import '../globals.css';
 
-const inter = Inter({
+const geist = Geist({
   subsets: ['latin'],
-  variable: '--font-inter',
+  variable: '--font-geist',
   weight: ['400', '600', '700', '800'],
+  display: 'swap',
+});
+
+const geistMono = Geist_Mono({
+  subsets: ['latin'],
+  variable: '--font-geist-mono',
+  weight: ['400', '500', '700'],
   display: 'swap',
 });
 
@@ -59,8 +67,11 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className="scroll-smooth">
-      <body className={`${inter.variable} ${notoSansJP.variable} font-sans antialiased`}>
+    <html lang={locale} className="dark scroll-smooth">
+      <body
+        className={`${geist.variable} ${geistMono.variable} ${notoSansJP.variable} font-sans antialiased`}
+        style={{ background: '#06070a', color: '#e9edf2' }}
+      >
         <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
         <Analytics />
       </body>
