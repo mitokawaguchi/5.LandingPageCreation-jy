@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { CountUp } from '@/components/count-up';
+import { LANGUAGES, LIGHTHOUSE, GIT_LOG as GIT_ROWS, GIT_LOG_TOTAL, LIGHTHOUSE_TARGET } from '@/data/site-content';
 
 /* ─── Design Tokens ─── */
 const T = {
@@ -24,31 +25,7 @@ const T = {
   purple: '#b48cff',
 } as const;
 
-/* ─── Language data ─── */
-const LANGUAGES = [
-  { name: 'TypeScript', pct: 52, color: '#3178c6' },
-  { name: 'CSS', pct: 22, color: T.pink },
-  { name: 'JavaScript', pct: 18, color: '#f1e05a' },
-  { name: 'Markdown', pct: 8, color: T.purple },
-];
-
-/* ─── Lighthouse data ─── */
-const LIGHTHOUSE = [
-  { label: 'Perf', score: 99, color: T.green },
-  { label: 'A11y', score: 100, color: T.green },
-  { label: 'BP', score: 96, color: T.warn },
-  { label: 'SEO', score: 100, color: T.green },
-];
-
-/* ─── Git log data ─── */
-const GIT_ROWS: [string, string, string, string, string][] = [
-  ['a3f9c12', 'feat(hero): add type-on-mount live phrase rotation', '2h', 'mito', T.accent],
-  ['b9c41a8', 'refactor(about-section): split skill tiles into atoms', '1d', 'mito', T.warn],
-  ['c1d873f', 'chore(deps): bump next, react and tailwind', '3d', 'dependabot', T.sub],
-  ['e4a02bb', 'fix(a11y): respect prefers-reduced-motion in hero', '5d', 'mito', T.green],
-  ['f70e923', 'docs(readme): expand auto-deploy notes', '1w', 'mito', T.sub],
-  ['2bc1077', 'feat(i18n): wire next-intl for /ja and /en', '2w', 'mito', T.purple],
-];
+/* データ（言語比率 / Lighthouse / git log）は data/site-content.ts に集約 */
 
 /* ─── Ring Gauge ─── */
 function RingGauge({ score, color, label }: { score: number; color: string; label: string }) {
@@ -76,37 +53,51 @@ function RingGauge({ score, color, label }: { score: number; color: string; labe
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
-      <svg ref={ref} width={96} height={96} viewBox="0 0 96 96">
-        <circle cx={48} cy={48} r={R} fill="none" stroke={T.border} strokeWidth={4} />
-        <circle
-          cx={48}
-          cy={48}
-          r={R}
-          fill="none"
-          stroke={color}
-          strokeWidth={4}
-          strokeLinecap="round"
-          strokeDasharray={C}
-          strokeDashoffset={visible ? offset : C}
-          transform="rotate(-90 48 48)"
-          style={{ transition: 'stroke-dashoffset 1.2s cubic-bezier(0.16,1,0.3,1)' }}
-        />
-        <text
-          x={48}
-          y={48}
-          textAnchor="middle"
-          dominantBaseline="central"
-          fill={T.ink}
-          fontFamily="var(--font-mono)"
-          fontSize={22}
-          fontWeight={600}
+      <div style={{ position: 'relative', width: 96, height: 96 }}>
+        <svg
+          ref={ref}
+          width={96}
+          height={96}
+          viewBox="0 0 96 96"
+          style={{
+            display: 'block',
+            transform: visible ? 'rotate(0deg)' : 'rotate(-140deg)',
+            transition: 'transform 1.5s cubic-bezier(0.2,0.7,0.2,1)',
+          }}
+        >
+          <circle cx={48} cy={48} r={R} fill="none" stroke={T.surface3} strokeWidth={5} />
+          <circle
+            cx={48}
+            cy={48}
+            r={R}
+            fill="none"
+            stroke={color}
+            strokeWidth={5}
+            strokeLinecap="round"
+            strokeDasharray={C}
+            strokeDashoffset={visible ? offset : C}
+            transform="rotate(-90 48 48)"
+            style={{ transition: 'stroke-dashoffset 1.5s cubic-bezier(0.2,0.7,0.2,1)' }}
+          />
+        </svg>
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontFamily: 'var(--font-sans)',
+            fontSize: 22,
+            fontWeight: 600,
+            color: T.ink,
+            fontVariantNumeric: 'tabular-nums',
+          }}
         >
           {visible ? <CountUp to={score} /> : '0'}
-        </text>
-      </svg>
-      <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', color: T.sub, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-        {label}
-      </span>
+        </div>
+      </div>
+      <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: T.sub, letterSpacing: 0.8 }}>{label}</span>
     </div>
   );
 }
@@ -133,27 +124,26 @@ function LangBar({ name, pct, color }: { name: string; pct: number; color: strin
   }, []);
 
   return (
-    <div ref={ref} style={{ display: 'grid', gridTemplateColumns: '120px 1fr 48px', alignItems: 'center', gap: 16 }}>
-      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 13, fontFamily: 'var(--font-mono)', color: T.ink }}>
+    <div ref={ref} style={{ display: 'grid', gridTemplateColumns: '140px 1fr 60px', gap: 18, alignItems: 'center', padding: '12px 0' }}>
+      <span style={{ fontFamily: 'var(--font-sans)', fontSize: 14, color: T.ink, display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ width: 9, height: 9, background: color, display: 'inline-block' }} />
         {name}
       </span>
-      <div style={{ height: 6, background: T.border, position: 'relative', overflow: 'hidden' }}>
-        <div
+      <span style={{ position: 'relative', height: 8, background: T.surface3, display: 'block' }}>
+        <span
           style={{
             position: 'absolute',
-            top: 0,
             left: 0,
-            height: '100%',
-            width: `${pct}%`,
+            top: 0,
+            bottom: 0,
+            width: visible ? `${pct}%` : '0%',
             background: color,
-            transform: visible ? 'scaleX(1)' : 'scaleX(0)',
-            transformOrigin: 'left',
-            transition: 'transform 0.8s cubic-bezier(0.16,1,0.3,1)',
+            transition: 'width 1.4s cubic-bezier(0.2,0.7,0.2,1)',
+            display: 'block',
           }}
         />
-      </div>
-      <span style={{ fontSize: 13, fontFamily: 'var(--font-mono)', color: T.ink, textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
+      </span>
+      <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: T.sub, textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
         {visible ? <CountUp to={pct} suffix="%" /> : '0%'}
       </span>
     </div>
@@ -219,111 +209,132 @@ function GitLog() {
       }}
     >
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ width: 7, height: 7, background: T.warn, display: 'inline-block' }} />
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: T.sub, letterSpacing: '0.06em' }}>
-            git log --oneline &middot; main
-          </span>
-        </div>
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: T.dim }}>
-          showing 6 of 168
-        </span>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 8,
+          fontFamily: 'var(--font-mono)',
+          fontSize: 10,
+          color: T.sub,
+          letterSpacing: 1.2,
+          textTransform: 'uppercase',
+          marginBottom: 18,
+        }}
+      >
+        <span style={{ width: 6, height: 6, background: T.warn, display: 'inline-block' }} />
+        git log --oneline &middot; main
+        <span style={{ flex: 1, height: 1, background: T.border }} />
+        <span>showing {GIT_ROWS.length} of {GIT_LOG_TOTAL}</span>
       </div>
 
       {/* Graph rail + rows */}
-      <div style={{ position: 'relative', paddingLeft: 24 }}>
-        {/* Vertical rail */}
+      <div className="gitlog-rows" style={{ position: 'relative' }}>
+        {/* Vertical rail connecting commit dots */}
         <div
+          aria-hidden
           style={{
             position: 'absolute',
-            left: 6,
-            top: 6,
-            bottom: allDone ? 36 : 6,
-            width: 2,
-            background: `linear-gradient(to bottom, ${T.accent}, ${T.purple})`,
+            left: 6.5,
+            top: 22,
+            bottom: 22,
+            width: 1.5,
+            background: `linear-gradient(${T.accent}, ${T.purple})`,
+            opacity: 0.45,
+            transformOrigin: 'top',
+            transform: started ? 'scaleY(1)' : 'scaleY(0)',
+            transition: 'transform 1s cubic-bezier(0.2,0.7,0.2,1) 0.15s',
           }}
         />
 
         {GIT_ROWS.map(([sha, msg, time, author, color], i) => {
           const typed = msg.slice(0, charCounts[i]);
-          const isTyping = i === currentRow && !allDone;
-          const showRow = started && (i < currentRow || i === currentRow);
+          const rowDone = charCounts[i] >= msg.length;
+          const isTyping = i === currentRow && !rowDone;
+          const showRow = started && (i < currentRow || (i === currentRow && charCounts[i] > 0) || allDone);
 
           return (
             <div
               key={sha}
+              className="git-row"
               style={{
                 display: 'grid',
                 gridTemplateColumns: '14px 84px 1fr 120px 60px',
                 alignItems: 'center',
-                gap: 8,
-                minHeight: 32,
-                opacity: showRow ? 1 : 0.2,
-                transition: 'opacity 0.3s',
+                gap: 16,
+                padding: '12px 0',
+                borderTop: i === 0 ? 'none' : `1px solid ${T.border}`,
+                fontFamily: 'var(--font-mono)',
+                fontSize: 12.5,
+                color: T.ink,
+                opacity: showRow ? 1 : 0.18,
+                transition: 'opacity 0.3s ease',
               }}
             >
               {/* Dot */}
               <span
                 style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: '50%',
-                  background: color,
-                  display: 'inline-block',
-                  marginLeft: -1,
+                  color,
+                  position: 'relative',
+                  zIndex: 1,
+                  textShadow: showRow ? `0 0 6px ${color}` : 'none',
                 }}
-              />
+              >
+                &#x25CF;
+              </span>
               {/* SHA */}
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: T.dim }}>
+              <span className="git-sha" style={{ color: T.warn, fontVariantNumeric: 'tabular-nums' }}>
                 {sha}
               </span>
               {/* Message */}
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: T.ink, whiteSpace: 'nowrap', overflow: 'hidden' }}>
+              <span style={{ color: T.ink }}>
                 {typed}
                 {isTyping && (
                   <span
                     style={{
                       display: 'inline-block',
                       width: 7,
-                      height: 14,
-                      background: T.accent,
+                      height: 13,
                       marginLeft: 1,
                       verticalAlign: 'text-bottom',
-                      animation: 'gitCursor 0.8s step-end infinite',
+                      background: T.accent,
+                      animation: 'gitCursor 1.05s steps(1) infinite',
                     }}
                   />
                 )}
               </span>
               {/* Author */}
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: T.dim, textAlign: 'right' }}>
-                {author}
-              </span>
+              <span style={{ color: T.sub, fontSize: 11 }}>@{author}</span>
               {/* Time */}
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: T.dim, textAlign: 'right' }}>
-                {time}
-              </span>
+              <span style={{ color: T.dim, fontSize: 11, textAlign: 'right' }}>{time}</span>
             </div>
           );
         })}
+      </div>
 
-        {/* Prompt line */}
-        {allDone && (
-          <div style={{ minHeight: 32, display: 'flex', alignItems: 'center', paddingLeft: 14 }}>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: T.accent }}>
-              $&nbsp;
-            </span>
-            <span
-              style={{
-                display: 'inline-block',
-                width: 7,
-                height: 14,
-                background: T.accent,
-                animation: 'gitCursor 0.8s step-end infinite',
-              }}
-            />
-          </div>
-        )}
+      {/* Prompt line */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 8,
+          paddingTop: 14,
+          fontFamily: 'var(--font-mono)',
+          fontSize: 12.5,
+          color: T.sub,
+          opacity: allDone ? 1 : 0,
+          transition: 'opacity 0.4s ease',
+        }}
+      >
+        <span style={{ color: T.green }}>$</span>
+        <span
+          style={{
+            width: 8,
+            height: 14,
+            background: T.accent,
+            animation: 'gitCursor 1.05s steps(1) infinite',
+          }}
+        />
       </div>
     </div>
   );
@@ -335,62 +346,75 @@ function SectionHead() {
     <div
       style={{
         display: 'flex',
-        justifyContent: 'space-between',
         alignItems: 'flex-end',
-        borderBottom: `1px solid ${T.border}`,
-        paddingBottom: 28,
+        gap: 24,
+        justifyContent: 'space-between',
         marginBottom: 88,
+        paddingBottom: 28,
+        borderBottom: `1px solid ${T.border}`,
       }}
     >
       <div>
-        <span
+        <div
           style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 14,
             fontFamily: 'var(--font-mono)',
             fontSize: 11,
             color: T.accent,
             letterSpacing: 1.4,
             textTransform: 'uppercase',
-            display: 'block',
-            marginBottom: 12,
+            marginBottom: 14,
           }}
         >
-          &sect;04 &mdash; Tech distribution
-        </span>
-        <h2
+          <span>&sect;04</span>
+          <span style={{ width: 24, height: 1, background: T.accent }} />
+          <span>Tech distribution</span>
+        </div>
+        <div
           style={{
+            fontFamily: "'Geist', 'Noto Sans JP', system-ui, 'Hiragino Kaku Gothic ProN', sans-serif",
             fontSize: 'clamp(36px, 3.4vw, 50px)',
             fontWeight: 500,
             color: T.ink,
-            fontFamily: 'var(--font-sans)',
-            letterSpacing: '-0.02em',
-            margin: 0,
-            marginBottom: 8,
+            letterSpacing: '-0.018em',
+            lineHeight: 1.3,
+            fontFeatureSettings: '"palt"',
           }}
         >
           Languages &amp; Lighthouse.
-        </h2>
-        <p
+        </div>
+        <div
           style={{
-            fontSize: 14,
+            fontFamily: 'var(--font-sans)',
+            fontSize: 16,
             color: T.sub,
-            fontFamily: 'var(--font-mono)',
-            margin: 0,
-            maxWidth: 640,
+            marginTop: 14,
+            maxWidth: 720,
+            lineHeight: 1.65,
           }}
         >
           公開リポジトリのコードベースを集計し、言語別の比率と Lighthouse の最新スコアを表示しています。
-        </p>
+        </div>
       </div>
-      <span
+      <div
         style={{
+          flexShrink: 0,
+          paddingBottom: 6,
           fontFamily: 'var(--font-mono)',
           fontSize: 11,
-          color: T.green,
-          whiteSpace: 'nowrap',
+          color: T.sub,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 8,
         }}
       >
-        &#x25CF; live
-      </span>
+        <span>last_sync</span>
+        <span style={{ color: T.ink }}>2m ago</span>
+        <span style={{ width: 1, height: 12, background: T.border }} />
+        <span style={{ color: T.green }}>&#x25CF; OK</span>
+      </div>
     </div>
   );
 }
@@ -398,12 +422,12 @@ function SectionHead() {
 /* ─── Main Section ─── */
 export function LabSection() {
   return (
-    <section id="lab" style={{ padding: '180px 0' }}>
-      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '0 56px' }}>
+    <section id="lab" className="sect" style={{ padding: '180px 0' }}>
+      <div className="studio-container" style={{ maxWidth: 1320, margin: '0 auto', padding: '0 56px' }}>
         <SectionHead />
 
         {/* 12-col grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 20 }}>
+        <div className="bento-12" style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 20 }}>
           {/* Left: Language bars (span 6) */}
           <div
             style={{
@@ -412,15 +436,27 @@ export function LabSection() {
               border: `1px solid ${T.border}`,
               borderRadius: 0,
               padding: '28px 30px',
+              minHeight: 340,
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 28 }}>
-              <span style={{ width: 7, height: 7, background: T.accent, display: 'inline-block' }} />
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: T.sub, letterSpacing: '0.06em' }}>
-                Languages &middot; share of source
-              </span>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                fontFamily: 'var(--font-mono)',
+                fontSize: 10,
+                color: T.sub,
+                letterSpacing: 1.2,
+                textTransform: 'uppercase',
+                marginBottom: 20,
+              }}
+            >
+              <span style={{ width: 6, height: 6, background: T.accent, display: 'inline-block' }} />
+              Languages &middot; share of source
+              <span style={{ flex: 1, height: 1, background: T.border }} />
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+            <div>
               {LANGUAGES.map((l) => (
                 <LangBar key={l.name} name={l.name} pct={l.pct} color={l.color} />
               ))}
@@ -435,45 +471,43 @@ export function LabSection() {
               border: `1px solid ${T.border}`,
               borderRadius: 0,
               padding: '28px 30px',
+              minHeight: 340,
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 28 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ width: 7, height: 7, background: T.green, display: 'inline-block' }} />
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: T.sub, letterSpacing: '0.06em' }}>
-                  Lighthouse &middot; production
-                </span>
-              </div>
-              <span
-                style={{
-                  fontSize: 10,
-                  fontFamily: 'var(--font-mono)',
-                  padding: '2px 8px',
-                  background: `${T.green}18`,
-                  color: T.green,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.06em',
-                }}
-              >
-                live
-              </span>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                fontFamily: 'var(--font-mono)',
+                fontSize: 10,
+                color: T.sub,
+                letterSpacing: 1.2,
+                textTransform: 'uppercase',
+                marginBottom: 20,
+              }}
+            >
+              <span style={{ width: 6, height: 6, background: T.green, display: 'inline-block' }} />
+              Lighthouse &middot; production
+              <span style={{ flex: 1, height: 1, background: T.border }} />
+              <span style={{ color: T.green }}>live</span>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: 24 }}>
+            <div className="lh-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 16, marginTop: 8 }}>
               {LIGHTHOUSE.map((lh) => (
                 <RingGauge key={lh.label} label={lh.label} score={lh.score} color={lh.color} />
               ))}
             </div>
-            <p
+            <div
               style={{
-                fontSize: 10,
+                marginTop: 22,
                 fontFamily: 'var(--font-mono)',
-                color: T.dim,
-                margin: 0,
-                textAlign: 'center',
+                fontSize: 11,
+                color: T.sub,
+                lineHeight: 1.7,
               }}
             >
-              測定: v0-mit-tech-studio.vercel.app &middot; モバイル / スロットル
-            </p>
+              測定: <span style={{ color: T.ink }}>{LIGHTHOUSE_TARGET.split(' · ')[0]}</span> · {LIGHTHOUSE_TARGET.split(' · ').slice(1).join(' · ')}
+            </div>
           </div>
 
           {/* Full width: Git Log (span 12) */}

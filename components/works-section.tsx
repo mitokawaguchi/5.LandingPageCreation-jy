@@ -1,8 +1,9 @@
 'use client';
 
-import { useMemo } from 'react';
-import { LAB_REPOS, LAB_GITHUB_PROFILE } from '@/data/lab-github';
 import { Sparkline } from '@/components/sparkline';
+import { Reveal } from '@/components/reveal';
+import { LAB_REPOS } from '@/data/lab-github';
+import { REPOS, REPO_DESCRIPTIONS, HEATMAP_META, WORKFLOW_CARDS } from '@/data/site-content';
 
 /* ─── Design Tokens ─── */
 const T = {
@@ -25,99 +26,106 @@ const T = {
   purple: '#b48cff',
 } as const;
 
-const SPARK_VALUES = [2, 5, 3, 8, 6, 9, 4, 7, 11, 8, 13, 10, 15, 12, 9, 14];
+const monoFam = 'var(--font-mono)';
+const sansFam = 'var(--font-sans)';
 
 const HEATMAP_COLORS = [T.border, '#2d3a22', '#6b8f3a', T.accent];
 
-/* ─── Descriptions for repos ─── */
-const REPO_DESCRIPTIONS: Record<string, string> = {
-  '5.LandingPageCreation-jy':
-    'Dark-themed portfolio landing page built with Next.js, TypeScript, and custom design system. Real-time GitHub integration and performance-optimized animations.',
-  taskflow:
-    'Full-stack task management app with drag-and-drop Kanban board, real-time updates and Vercel deployment.',
-  mitokawaguchi:
-    'GitHub profile README with dynamic stats, contribution graph, and auto-updated skill badges.',
-};
+/* ─── Series helper (matches reference) ─── */
+function series(seed: number, n = 28, base = 50, amp = 30): number[] {
+  return Array.from(
+    { length: n },
+    (_, i) =>
+      base + Math.sin(i * 0.4 + seed) * amp + Math.cos(i * 0.7 + seed * 1.3) * amp * 0.4
+  );
+}
 
 /* ─── Heatmap Data (deterministic) ─── */
-function generateHeatmap(): number[][] {
-  const weeks: number[][] = [];
-  for (let w = 0; w < 52; w++) {
-    const week: number[] = [];
-    for (let d = 0; d < 7; d++) {
-      const v = Math.sin(w * 0.7 + d * 1.3) * 0.5 + 0.5;
-      if (v > 0.75) week.push(3);
-      else if (v > 0.55) week.push(2);
-      else if (v > 0.35) week.push(1);
-      else week.push(0);
-    }
-    weeks.push(week);
-  }
-  return weeks;
+function generateHeatmap(): number[] {
+  return Array.from({ length: 7 * 52 }).map((_, i) => {
+    const v = Math.abs(Math.sin(i * 0.31 + Math.cos(i * 0.07)) + Math.cos(i * 0.21));
+    return v < 0.3 ? 0 : v < 0.7 ? 1 : v < 1.1 ? 2 : 3;
+  });
 }
 
 /* ─── Section Head ─── */
 function SectionHead() {
   return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'flex-end',
-        borderBottom: `1px solid ${T.border}`,
-        paddingBottom: 28,
-        marginBottom: 88,
-      }}
-    >
-      <div>
-        <span
-          style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: 11,
-            color: T.accent,
-            letterSpacing: 1.4,
-            textTransform: 'uppercase',
-            display: 'block',
-            marginBottom: 12,
-          }}
-        >
-          &sect;03 &mdash; Portfolio
-        </span>
-        <h2
-          style={{
-            fontSize: 'clamp(36px, 3.4vw, 50px)',
-            fontWeight: 500,
-            color: T.ink,
-            fontFamily: 'var(--font-sans)',
-            letterSpacing: '-0.02em',
-            margin: 0,
-            marginBottom: 8,
-          }}
-        >
-          Selected Works
-        </h2>
-        <p
-          style={{
-            fontSize: 14,
-            color: T.sub,
-            fontFamily: 'var(--font-mono)',
-            margin: 0,
-          }}
-        >
-          GitHub&#x3067;&#x516C;&#x958B;&#x3057;&#x3066;&#x3044;&#x308B;&#x5B9F;&#x5728;&#x306E;&#x5236;&#x4F5C;&#x7269;&#x30FB;&#x958B;&#x767A;&#x4E8B;&#x4F8B;&#x3067;&#x3059;&#x3002;
-        </p>
-      </div>
-      <span
+    <Reveal>
+      <div
         style={{
-          fontFamily: 'var(--font-mono)',
-          fontSize: 11,
-          color: T.green,
-          whiteSpace: 'nowrap',
+          display: 'flex',
+          alignItems: 'flex-end',
+          gap: 24,
+          justifyContent: 'space-between',
+          marginBottom: 88,
+          paddingBottom: 28,
+          borderBottom: `1px solid ${T.border}`,
         }}
       >
-        last_sync 2m ago&nbsp;|&nbsp;&#x25CF; OK
-      </span>
-    </div>
+        <div>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 14,
+              fontFamily: monoFam,
+              fontSize: 11,
+              color: T.accent,
+              letterSpacing: 1.4,
+              textTransform: 'uppercase',
+              marginBottom: 14,
+            }}
+          >
+            <span>&sect;03</span>
+            <span style={{ width: 24, height: 1, background: T.accent }} />
+            <span>Portfolio</span>
+          </div>
+          <div
+            style={{
+              fontFamily: "'Geist', 'Noto Sans JP', system-ui, 'Hiragino Kaku Gothic ProN', sans-serif",
+              fontSize: 'clamp(36px, 3.4vw, 50px)',
+              fontWeight: 500,
+              color: T.ink,
+              letterSpacing: '-0.018em',
+              lineHeight: 1.3,
+              fontFeatureSettings: '"palt"',
+            }}
+          >
+            Selected Works
+          </div>
+          <div
+            style={{
+              fontFamily: sansFam,
+              fontSize: 16,
+              color: T.sub,
+              marginTop: 14,
+              maxWidth: 720,
+              lineHeight: 1.65,
+            }}
+          >
+            GitHub&#x3067;&#x516C;&#x958B;&#x3057;&#x3066;&#x3044;&#x308B;&#x5B9F;&#x5728;&#x306E;&#x5236;&#x4F5C;&#x7269;&#x30FB;&#x958B;&#x767A;&#x4E8B;&#x4F8B;&#x3067;&#x3059;&#x3002;
+          </div>
+        </div>
+        <div
+          style={{
+            flexShrink: 0,
+            paddingBottom: 6,
+            fontFamily: monoFam,
+            fontSize: 11,
+            color: T.sub,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+          }}
+        >
+          <span>last_sync</span>
+          <span style={{ color: T.ink }}>2m ago</span>
+          <span style={{ width: 1, height: 12, background: T.border }} />
+          <span style={{ color: T.green }}>&#x25CF; OK</span>
+        </div>
+      </div>
+    </Reveal>
   );
 }
 
@@ -128,24 +136,25 @@ function PublicBadge() {
       style={{
         display: 'inline-flex',
         alignItems: 'center',
-        gap: 5,
-        fontSize: 10,
-        fontFamily: 'var(--font-mono)',
+        gap: 6,
         padding: '3px 8px',
-        background: `${T.accent}12`,
-        border: `1px solid ${T.accent}33`,
+        background: 'rgba(181,251,107,.08)',
+        border: `1px solid rgba(181,251,107,.30)`,
         color: T.accent,
-        textTransform: 'uppercase',
-        letterSpacing: '0.06em',
+        fontFamily: monoFam,
+        fontSize: 9.5,
+        letterSpacing: 1.2,
+        fontWeight: 600,
       }}
     >
       <span
         style={{
           width: 5,
           height: 5,
-          borderRadius: '50%',
+          borderRadius: 3,
           background: T.accent,
-          animation: 'studioPulse 2s infinite',
+          boxShadow: `0 0 6px ${T.accent}`,
+          animation: 'studioPulse 1.6s ease-in-out infinite',
         }}
       />
       PUBLIC
@@ -153,480 +162,450 @@ function PublicBadge() {
   );
 }
 
-/* ─── Featured Repo Card ─── */
-function FeaturedCard({ repo }: { repo: (typeof LAB_REPOS)[number] }) {
-  const hostname = repo.homepage
-    ? new URL(repo.homepage).hostname
-    : null;
-
+/* ─── Small Stat ─── */
+function SmallStat({ label, value }: { label: string; value: React.ReactNode }) {
   return (
-    <div
-      className="studioFeaturedCard"
-      style={{
-        background: T.surface,
-        border: `1px solid ${T.border}`,
-        borderRadius: 0,
-        padding: '40px 48px',
-        position: 'relative',
-        overflow: 'hidden',
-        transition: 'border-color 0.2s',
-      }}
-    >
-      {/* Top accent line on hover via CSS */}
-      {/* Badge row */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
-        {repo.language && (
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 10, fontFamily: 'var(--font-mono)', color: T.sub, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-            <span style={{ width: 7, height: 7, background: '#3178c6', display: 'inline-block' }} />
-            {repo.language}
-          </span>
-        )}
-        <span
-          style={{
-            fontSize: 10,
-            fontFamily: 'var(--font-mono)',
-            padding: '3px 8px',
-            background: `${T.warn}18`,
-            color: T.warn,
-            textTransform: 'uppercase',
-            letterSpacing: '0.06em',
-          }}
-        >
-          FEATURED
-        </span>
-        <span style={{ flex: 1, height: 1, background: T.border }} />
-        <PublicBadge />
-      </div>
-
-      {/* Grid layout: 1.5fr 1fr */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 32, alignItems: 'start' }}>
-        {/* Left */}
-        <div>
-          <h3
-            style={{
-              fontSize: 40,
-              fontWeight: 600,
-              color: T.ink,
-              fontFamily: 'var(--font-mono)',
-              marginBottom: 8,
-              letterSpacing: '-0.02em',
-              margin: 0,
-              marginTop: 4,
-            }}
-          >
-            {repo.name}
-          </h3>
-          <p style={{ fontSize: 14, color: T.sub, marginBottom: 24, lineHeight: 1.6, maxWidth: 560, marginTop: 8 }}>
-            {REPO_DESCRIPTIONS[repo.name] || repo.name}
-          </p>
-          <div style={{ display: 'flex', gap: 12 }}>
-            <a
-              href={repo.htmlUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 6,
-                fontSize: 12,
-                fontFamily: 'var(--font-mono)',
-                color: T.ink,
-                padding: '8px 16px',
-                border: `1px solid ${T.border}`,
-                background: 'transparent',
-                textDecoration: 'none',
-                transition: 'border-color 0.2s',
-                borderRadius: 0,
-              }}
-            >
-              &#x2197; GitHub
-            </a>
-            {repo.homepage && (
-              <a
-                href={repo.homepage}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 6,
-                  fontSize: 12,
-                  fontFamily: 'var(--font-mono)',
-                  color: T.accent,
-                  padding: '8px 16px',
-                  border: `1px solid ${T.accent}33`,
-                  background: 'transparent',
-                  textDecoration: 'none',
-                  transition: 'border-color 0.2s',
-                  borderRadius: 0,
-                }}
-              >
-                &#x2197; Live &middot; {hostname}
-              </a>
-            )}
-          </div>
-        </div>
-
-        {/* Right */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 16 }}>
-          <Sparkline values={SPARK_VALUES} color={T.accent} width={140} height={40} />
-          <div style={{ display: 'flex', gap: 20 }}>
-            {[
-              { label: 'commits', value: String(repo.commitsCount) },
-              { label: 'updated', value: '4m' },
-              { label: 'status', value: 'OK', color: T.green },
-            ].map((stat) => (
-              <div key={stat.label} style={{ textAlign: 'right' }}>
-                <span
-                  style={{
-                    display: 'block',
-                    fontSize: 10,
-                    color: T.dim,
-                    fontFamily: 'var(--font-mono)',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.06em',
-                  }}
-                >
-                  {stat.label}
-                </span>
-                <span
-                  style={{
-                    fontSize: 14,
-                    fontWeight: 600,
-                    color: stat.color || T.ink,
-                    fontFamily: 'var(--font-mono)',
-                  }}
-                >
-                  {stat.value}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ─── Language color helper ─── */
-function langColor(lang: string | null): string {
-  if (!lang) return T.dim;
-  const map: Record<string, string> = {
-    TypeScript: '#3178c6',
-    JavaScript: '#f1e05a',
-    CSS: T.pink,
-    Markdown: T.purple,
-  };
-  return map[lang] || T.sub;
-}
-
-/* ─── Other Repo Card ─── */
-function RepoCard({ repo }: { repo: (typeof LAB_REPOS)[number] }) {
-  const hostname = repo.homepage ? new URL(repo.homepage).hostname : null;
-
-  return (
-    <div
-      style={{
-        background: T.surface,
-        border: `1px solid ${T.border}`,
-        borderRadius: 0,
-        padding: '28px 30px',
-        minHeight: 280,
-        display: 'flex',
-        flexDirection: 'column',
-        transition: 'border-color 0.2s',
-      }}
-    >
-      {/* Badge row */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
-        {repo.language && (
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 10, fontFamily: 'var(--font-mono)', color: T.sub, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-            <span style={{ width: 7, height: 7, background: langColor(repo.language), display: 'inline-block' }} />
-            {repo.language}
-          </span>
-        )}
-        <PublicBadge />
-      </div>
-
-      {/* Name */}
-      <h3
-        style={{
-          fontSize: 24,
-          fontWeight: 600,
-          color: T.ink,
-          fontFamily: 'var(--font-mono)',
-          letterSpacing: '-0.02em',
-          margin: 0,
-          marginBottom: 8,
-        }}
-      >
-        {repo.name}
-      </h3>
-
-      {/* Desc */}
-      <p style={{ fontSize: 13, color: T.sub, lineHeight: 1.6, marginBottom: 20, marginTop: 0, flex: 1 }}>
-        {REPO_DESCRIPTIONS[repo.name] || repo.name}
-      </p>
-
-      {/* CTA */}
-      <div style={{ display: 'flex', gap: 12, marginBottom: 20 }}>
-        <a
-          href={repo.htmlUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 6,
-            fontSize: 12,
-            fontFamily: 'var(--font-mono)',
-            color: T.ink,
-            padding: '8px 16px',
-            border: `1px solid ${T.border}`,
-            background: 'transparent',
-            textDecoration: 'none',
-            borderRadius: 0,
-          }}
-        >
-          &#x2197; GitHub
-        </a>
-        {repo.homepage && (
-          <a
-            href={repo.homepage}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 6,
-              fontSize: 12,
-              fontFamily: 'var(--font-mono)',
-              color: T.accent,
-              padding: '8px 16px',
-              border: `1px solid ${T.accent}33`,
-              background: 'transparent',
-              textDecoration: 'none',
-              borderRadius: 0,
-            }}
-          >
-            &#x2197; Live &middot; {hostname}
-          </a>
-        )}
-      </div>
-
-      {/* Sparkline */}
-      <Sparkline values={SPARK_VALUES} color={T.accent} width={120} height={28} />
-
-      {/* Stats */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12, marginTop: 12 }}>
-        {[
-          { label: 'commits', value: String(repo.commitsCount) },
-          { label: 'updated', value: '4m' },
-          { label: 'status', value: 'OK', color: T.green },
-        ].map((s) => (
-          <div key={s.label}>
-            <span style={{ display: 'block', fontSize: 10, color: T.dim, fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-              {s.label}
-            </span>
-            <span style={{ fontSize: 13, fontWeight: 600, color: s.color || T.ink, fontFamily: 'var(--font-mono)' }}>
-              {s.value}
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ─── Commit Heatmap ─── */
-function CommitHeatmap() {
-  const heatmap = useMemo(() => generateHeatmap(), []);
-
-  return (
-    <div
-      style={{
-        background: T.surface,
-        border: `1px solid ${T.border}`,
-        borderRadius: 0,
-        padding: '28px 30px',
-        marginTop: 20,
-      }}
-    >
-      {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20 }}>
-        <span style={{ width: 7, height: 7, background: T.accent, display: 'inline-block' }} />
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: T.sub, letterSpacing: '0.06em' }}>
-          Commit heatmap &middot; 52 weeks
-        </span>
-      </div>
-
-      {/* Grid */}
+    <div>
       <div
         style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(52, 14px)',
-          gridTemplateRows: 'repeat(7, 14px)',
-          gap: 3,
-          gridAutoFlow: 'column',
-          overflowX: 'auto',
-          paddingBottom: 8,
-        }}
-      >
-        {Array.from({ length: 52 }).flatMap((_, w) =>
-          Array.from({ length: 7 }).map((_, d) => {
-            const level = heatmap[w][d];
-            return (
-              <div
-                key={`${w}-${d}`}
-                style={{
-                  width: 14,
-                  height: 14,
-                  background: HEATMAP_COLORS[level],
-                  borderRadius: 0,
-                }}
-              />
-            );
-          })
-        )}
-      </div>
-
-      {/* Footer */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginTop: 16,
-          fontSize: 10,
-          fontFamily: 'var(--font-mono)',
+          fontFamily: monoFam,
+          fontSize: 9.5,
           color: T.dim,
+          letterSpacing: 1.1,
+          textTransform: 'uppercase',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span>less</span>
-          {HEATMAP_COLORS.map((c, i) => (
-            <span key={i} style={{ width: 12, height: 12, background: c, display: 'inline-block' }} />
-          ))}
-          <span>more</span>
-        </div>
-        <div style={{ display: 'flex', gap: 20 }}>
-          <span>peak: Tue 14:00 JST</span>
-          <span style={{ color: T.green }}>streak: 18d</span>
-        </div>
+        {label}
+      </div>
+      <div
+        style={{
+          fontFamily: sansFam,
+          fontSize: 18,
+          color: T.ink,
+          fontWeight: 600,
+          letterSpacing: '-0.015em',
+          marginTop: 2,
+        }}
+      >
+        {value}
       </div>
     </div>
   );
 }
 
-/* ─── Workflow Card ─── */
-function WorkflowCard({
-  num,
-  title,
-  body,
-  color,
-}: {
-  num: string;
-  title: string;
-  body: string;
-  color: string;
-}) {
+/* ─── Heatmap ─── */
+function Heatmap() {
+  const cells = generateHeatmap();
   return (
     <div
+      className="heatmap-grid"
       style={{
-        background: T.surface,
-        border: `1px solid ${T.border}`,
-        borderRadius: 0,
-        padding: '24px 28px',
+        display: 'grid',
+        gridTemplateColumns: 'repeat(52, 1fr)',
+        gridTemplateRows: 'repeat(7, 14px)',
+        gap: 3,
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-        <span
-          style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: 11,
-            color,
-            textTransform: 'uppercase',
-            letterSpacing: '0.08em',
-            fontWeight: 600,
-          }}
-        >
-          {num}
-        </span>
-      </div>
-      <h4 style={{ fontSize: 16, fontWeight: 600, color: T.ink, marginBottom: 6, fontFamily: 'var(--font-mono)', margin: 0 }}>
-        {title}
-      </h4>
-      <p style={{ fontSize: 12, color: T.sub, lineHeight: 1.5, margin: 0, marginTop: 6 }}>
-        {body}
-      </p>
+      {cells.map((lvl, i) => (
+        <span key={i} style={{ background: HEATMAP_COLORS[lvl] }} />
+      ))}
     </div>
   );
 }
 
 /* ─── Main Section ─── */
 export function WorksSection() {
+  const repos = REPOS;
   const featuredRepo = LAB_REPOS[0];
-  const otherRepos = LAB_REPOS.slice(1);
+  const repoColors = [T.accent, T.warn, T.purple];
 
   return (
-    <section id="works" style={{ background: T.surface2, padding: '180px 0' }}>
-      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '0 56px' }}>
+    <section id="works" className="sect" style={{ padding: '180px 0', background: T.surface2 }}>
+      <div className="studio-container" style={{ maxWidth: 1320, margin: '0 auto', padding: '0 56px' }}>
         <SectionHead />
 
-        {/* Featured repo */}
-        <FeaturedCard repo={featuredRepo} />
+        {/* Featured (first repo) */}
+        <Reveal>
+          <div
+            className="studio-tile repo-card"
+            style={{
+              background: T.surface,
+              border: `1px solid ${T.border}`,
+              padding: '40px 40px 36px',
+              marginBottom: 20,
+              position: 'relative',
+              transition: 'border-color .25s',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                fontFamily: monoFam,
+                fontSize: 10,
+                color: T.sub,
+                letterSpacing: 1.2,
+                textTransform: 'uppercase',
+                marginBottom: 22,
+              }}
+            >
+              <span style={{ width: 7, height: 7, background: '#3178c6' }} />
+              <span>{featuredRepo.language}</span>
+              <span style={{ color: T.dim }}>&middot;</span>
+              <span>FEATURED</span>
+              <span style={{ flex: 1, height: 1, background: T.border }} />
+              <PublicBadge />
+            </div>
+            <div
+              className="grid-feat"
+              style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 56, alignItems: 'flex-end' }}
+            >
+              <div>
+                <div
+                  style={{
+                    fontFamily: sansFam,
+                    fontSize: 40,
+                    color: T.ink,
+                    fontWeight: 600,
+                    letterSpacing: '-0.03em',
+                    lineHeight: 1.1,
+                    wordBreak: 'break-all',
+                  }}
+                >
+                  {featuredRepo.name}
+                </div>
+                <div
+                  style={{
+                    fontFamily: sansFam,
+                    fontSize: 16,
+                    color: T.sub,
+                    marginTop: 16,
+                    lineHeight: 1.65,
+                    maxWidth: 620,
+                  }}
+                >
+                  {REPO_DESCRIPTIONS[featuredRepo.name] || featuredRepo.name}
+                </div>
+                <div style={{ display: 'flex', gap: 12, marginTop: 24, flexWrap: 'wrap' }}>
+                  <a
+                    className="studio-cta-ghost"
+                    href={featuredRepo.htmlUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 8,
+                      padding: '10px 18px',
+                      border: `1px solid ${T.border}`,
+                      color: T.ink,
+                      fontFamily: sansFam,
+                      fontSize: 13,
+                      fontWeight: 500,
+                      cursor: 'pointer',
+                      textDecoration: 'none',
+                    }}
+                  >
+                    &#x2197; GitHub
+                  </a>
+                  {featuredRepo.homepage && (
+                    <a
+                      className="studio-cta-ghost"
+                      href={featuredRepo.homepage}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 8,
+                        padding: '10px 18px',
+                        border: `1px solid ${T.accent}`,
+                        color: T.accent,
+                        fontFamily: sansFam,
+                        fontSize: 13,
+                        fontWeight: 500,
+                        cursor: 'pointer',
+                        textDecoration: 'none',
+                      }}
+                    >
+                      &#x2197; Live &middot; {featuredRepo.homepage}
+                    </a>
+                  )}
+                </div>
+              </div>
+              <div>
+                <Sparkline
+                  values={series(2, 60, 50, 22)}
+                  color={T.accent}
+                  fill="rgba(181,251,107,.10)"
+                  width={420}
+                  height={90}
+                  stroke={1.6}
+                />
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(3, 1fr)',
+                    gap: 12,
+                    marginTop: 16,
+                    paddingTop: 16,
+                    borderTop: `1px solid ${T.border}`,
+                  }}
+                >
+                  <SmallStat label="commits" value={featuredRepo.commitsCount} />
+                  <SmallStat label="updated" value="4m" />
+                  <SmallStat label="status" value={<span style={{ color: T.green }}>OK</span>} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </Reveal>
 
-        {/* Other repos grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 20, marginTop: 20 }}>
-          {otherRepos.map((repo) => (
-            <RepoCard key={repo.id} repo={repo} />
+        {/* Other repos */}
+        <div
+          className="grid-2"
+          style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 20, marginBottom: 28 }}
+        >
+          {repos.slice(1).map((r, i) => (
+            <Reveal key={r.id}>
+              <div
+                className="studio-tile repo-card"
+                style={{
+                  background: T.surface,
+                  border: `1px solid ${T.border}`,
+                  padding: '28px 30px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 16,
+                  minHeight: 280,
+                  position: 'relative',
+                  transition: 'border-color .25s, transform .25s',
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    fontFamily: monoFam,
+                    fontSize: 10,
+                    color: T.sub,
+                    letterSpacing: 1.2,
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 7,
+                      height: 7,
+                      background:
+                        r.language === 'JavaScript'
+                          ? '#f1e05a'
+                          : r.language === 'Markdown'
+                            ? T.purple
+                            : T.accent,
+                    }}
+                  />
+                  <span>{r.language || 'PROFILE'}</span>
+                  <span style={{ flex: 1, height: 1, background: T.border }} />
+                  <PublicBadge />
+                </div>
+                <div
+                  style={{
+                    fontFamily: sansFam,
+                    fontSize: 24,
+                    color: T.ink,
+                    fontWeight: 600,
+                    letterSpacing: '-0.02em',
+                    wordBreak: 'break-all',
+                  }}
+                >
+                  {r.name}
+                </div>
+                <div style={{ fontFamily: sansFam, fontSize: 14, color: T.sub, lineHeight: 1.65 }}>
+                  {REPO_DESCRIPTIONS[r.name] || r.name}
+                </div>
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 2 }}>
+                  <a
+                    className="studio-cta-ghost"
+                    href={r.htmlUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 6,
+                      padding: '7px 12px',
+                      border: `1px solid ${T.border}`,
+                      color: T.ink,
+                      fontFamily: sansFam,
+                      fontSize: 12,
+                      fontWeight: 500,
+                      cursor: 'pointer',
+                      textDecoration: 'none',
+                    }}
+                  >
+                    &#x2197; GitHub
+                  </a>
+                  {r.homepage && (
+                    <a
+                      className="studio-cta-ghost"
+                      href={r.homepage}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 6,
+                        padding: '7px 12px',
+                        border: `1px solid ${T.accent}`,
+                        color: T.accent,
+                        fontFamily: sansFam,
+                        fontSize: 12,
+                        fontWeight: 500,
+                        cursor: 'pointer',
+                        textDecoration: 'none',
+                      }}
+                    >
+                      &#x2197; Live
+                    </a>
+                  )}
+                </div>
+                <div style={{ flex: 1 }} />
+                <Sparkline
+                  values={series(i * 13 + 7, 50, 40, 22)}
+                  color={repoColors[i + 1]}
+                  fill="rgba(255,255,255,.03)"
+                  width={420}
+                  height={50}
+                  stroke={1.5}
+                />
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(3, 1fr)',
+                    gap: 12,
+                    paddingTop: 14,
+                    borderTop: `1px solid ${T.border}`,
+                  }}
+                >
+                  <SmallStat label="commits" value={r.commitsCount} />
+                  <SmallStat label="updated" value={['1d', '3w'][i]} />
+                  <SmallStat label="status" value={<span style={{ color: T.green }}>OK</span>} />
+                </div>
+              </div>
+            </Reveal>
           ))}
         </div>
 
-        {/* Heatmap */}
-        <CommitHeatmap />
+        {/* Heatmap full-width */}
+        <Reveal>
+          <div style={{ background: T.surface, border: `1px solid ${T.border}`, padding: '26px 28px', marginBottom: 20 }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                fontFamily: monoFam,
+                fontSize: 10,
+                color: T.sub,
+                letterSpacing: 1.2,
+                textTransform: 'uppercase',
+                marginBottom: 18,
+              }}
+            >
+              <span style={{ width: 6, height: 6, background: T.accent }} />
+              Commit heatmap &middot; 52 weeks
+              <span style={{ flex: 1, height: 1, background: T.border }} />
+              <span style={{ color: T.dim }}>cells = day</span>
+            </div>
+            <div className="heatmap-scroll">
+              <Heatmap />
+            </div>
+            <div
+              style={{
+                display: 'flex',
+                gap: 18,
+                marginTop: 18,
+                fontFamily: monoFam,
+                fontSize: 10,
+                color: T.sub,
+                alignItems: 'center',
+              }}
+            >
+              <span>less</span>
+              <span style={{ display: 'flex', gap: 2 }}>
+                {HEATMAP_COLORS.map((c, i) => (
+                  <span key={i} style={{ width: 12, height: 12, background: c }} />
+                ))}
+              </span>
+              <span>more</span>
+              <span style={{ flex: 1 }} />
+              <span>
+                {HEATMAP_META.peak.split(': ')[0]}:{' '}
+                <span style={{ color: T.ink }}>{HEATMAP_META.peak.split(': ')[1]}</span>
+              </span>
+              <span style={{ color: T.green }}>{HEATMAP_META.streak}</span>
+            </div>
+          </div>
+        </Reveal>
 
-        {/* Workflow row */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20, marginTop: 20 }}>
-          <WorkflowCard
-            num="01"
-            title="Build"
-            body="TypeScript strict, ESLint, Prettier &#x2014; zero warnings policy"
-            color={T.green}
-          />
-          <WorkflowCard
-            num="02"
-            title="Deploy"
-            body="Vercel Preview on PR, Production on merge to main"
-            color={T.blue}
-          />
-          <WorkflowCard
-            num="03"
-            title="Auto Update"
-            body="Dependabot + automated security patches weekly"
-            color={T.purple}
-          />
-        </div>
+        {/* Workflow row 3-col */}
+        <Reveal delay={80}>
+          <div className="grid-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
+            {WORKFLOW_CARDS.map((card, i) => (
+              <div
+                key={card.num}
+                style={{
+                  background: T.surface,
+                  border: `1px solid ${T.border}`,
+                  padding: '22px 24px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 10,
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    fontFamily: monoFam,
+                    fontSize: 10,
+                    color: T.sub,
+                    letterSpacing: 1.2,
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  <span style={{ color: card.color, fontWeight: 700, fontSize: 12 }}>0{i + 1}</span>
+                  <span style={{ flex: 1, height: 1, background: T.border }} />
+                  <span style={{ color: card.color }}>{card.title}</span>
+                </div>
+                <div
+                  style={{
+                    fontFamily: sansFam,
+                    fontSize: 17,
+                    color: T.ink,
+                    fontWeight: 600,
+                    letterSpacing: '-0.015em',
+                  }}
+                >
+                  {card.title}
+                </div>
+                <div style={{ fontFamily: sansFam, fontSize: 13, color: T.sub, lineHeight: 1.65 }}>
+                  {card.body}
+                </div>
+              </div>
+            ))}
+          </div>
+        </Reveal>
       </div>
 
       <style>{`
         @keyframes studioPulse {
           0%, 100% { opacity: 1; }
           50% { opacity: 0.4; }
-        }
-        .studioFeaturedCard::after {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          height: 2px;
-          background: ${T.accent};
-          opacity: 0;
-          transition: opacity 0.2s;
-        }
-        .studioFeaturedCard:hover::after {
-          opacity: 1;
         }
       `}</style>
     </section>
