@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { StatusBar } from '@/components/status-bar';
 import { NavHeader } from '@/components/nav-header';
@@ -42,9 +42,33 @@ const Footer = dynamic(
   { ssr: false },
 );
 
+const CmdK = dynamic(
+  () => import('@/components/cmdk').then((m) => ({ default: m.CmdK })),
+  { ssr: false },
+);
+
+const Crosshair = dynamic(
+  () => import('@/components/crosshair').then((m) => ({ default: m.Crosshair })),
+  { ssr: false },
+);
+
 export function HomePageClient() {
   const [intro, setIntro] = useState(true);
   const [revealed, setRevealed] = useState(false);
+  const [cmdkOpen, setCmdkOpen] = useState(false);
+
+  const closeCmdk = useCallback(() => setCmdkOpen(false), []);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setCmdkOpen((v) => !v);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
   return (
     <main style={{ background: '#06070a', minHeight: '100vh' }}>
@@ -62,7 +86,7 @@ export function HomePageClient() {
           pointerEvents: (intro && !revealed) ? 'none' : 'auto',
         }}
       >
-        <StatusBar />
+        <StatusBar onCmdK={() => setCmdkOpen(true)} />
         <NavHeader />
         <TickerStrip />
         <HeroSection />
@@ -73,6 +97,8 @@ export function HomePageClient() {
         <ContactSection />
         <Footer />
       </div>
+      <CmdK open={cmdkOpen} onClose={closeCmdk} />
+      <Crosshair />
     </main>
   );
 }
