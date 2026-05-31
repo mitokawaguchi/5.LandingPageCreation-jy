@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
+import type { WritingArticle } from '@/types/writing-article';
 import { StatusBar } from '@/components/status-bar';
 import { NavHeader } from '@/components/nav-header';
 import { TickerStrip } from '@/components/ticker-strip';
@@ -52,7 +53,7 @@ const Crosshair = dynamic(
   { ssr: false },
 );
 
-export function HomePageClient() {
+export function HomePageClient({ articles }: { articles?: WritingArticle[] }) {
   const [intro, setIntro] = useState(true);
   const [revealed, setRevealed] = useState(false);
   const [cmdkOpen, setCmdkOpen] = useState(false);
@@ -93,7 +94,7 @@ export function HomePageClient() {
         <AboutSection />
         <WorksSection />
         <LabSection />
-        <WritingSection />
+        <WritingSection articles={articles} />
         <ContactSection />
         <Footer />
       </div>
