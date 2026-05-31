@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Sparkline } from '@/components/sparkline';
-import { ARTICLES } from '@/data/site-content';
+import type { WritingArticle } from '@/types/writing-article';
+import { ARTICLES as STATIC_ARTICLES } from '@/data/site-content';
 
 /* ─── Design Tokens ─── */
 const T = { bg:'#06070a', surface:'#0a0c10', surface2:'#0e1116', surface3:'#13171e', border:'#1a1f28', borderStrong:'#252b35', ink:'#e9edf2', sub:'#8a93a0', dim:'#3d4654', accent:'#b5fb6b', accentDim:'#7da848', warn:'#ffb648', pink:'#ff5da2', blue:'#5ecfff', green:'#69e6a6', red:'#ff5a64', purple:'#b48cff' };
@@ -56,8 +57,21 @@ function SmallStat({ label, value }: { label: string; value: React.ReactNode }) 
   );
 }
 
+type CardData = { source: string; title: string; likes: number; impressions: number; date: string; url: string };
+
+function toCardData(a: WritingArticle): CardData {
+  return {
+    source: a.platform === 'zenn' ? 'Zenn' : 'Qiita',
+    title: a.title,
+    likes: a.likesCount,
+    impressions: a.impressionsCount ?? 0,
+    date: a.publishedAt.slice(0, 10),
+    url: a.url,
+  };
+}
+
 /* ─── Writing Card ─── */
-function WritingCard({ a, i }: { a: typeof ARTICLES[number]; i: number }) {
+function WritingCard({ a, i }: { a: CardData; i: number }) {
   const accent = a.source === 'Zenn' ? T.blue : T.green;
   const fillCol = a.source === 'Zenn' ? 'rgba(94,207,255,.10)' : 'rgba(105,230,166,.10)';
 
@@ -103,8 +117,10 @@ function WritingCard({ a, i }: { a: typeof ARTICLES[number]; i: number }) {
 }
 
 /* ─── Main Section ─── */
-export function WritingSection() {
-  const articles = ARTICLES;
+export function WritingSection({ articles: dynamicArticles }: { articles?: WritingArticle[] }) {
+  const articles: CardData[] = dynamicArticles && dynamicArticles.length > 0
+    ? dynamicArticles.map(toCardData)
+    : STATIC_ARTICLES;
   // duration tuned to card-set width for a ticker-like glide (~44px/s)
   const setWidth = articles.length * (380 + 20);
   const dur = Math.round(setWidth / 44);
