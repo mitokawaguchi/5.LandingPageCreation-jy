@@ -1,118 +1,231 @@
 'use client';
 
-import type { SVGProps } from 'react';
-import { useTranslations } from 'next-intl';
-import { useScrollReveal } from '@/hooks/use-scroll-reveal';
-import { Github, Instagram, Mail } from 'lucide-react';
-import { QiitaIcon } from '@/components/qiita-icon';
-import { ZennIcon } from '@/components/zenn-icon';
-import { WRITING_PROFILES } from '@/data/writing-profiles';
+/* ─── Design Tokens ─── */
+const t = {
+  bg: '#06070a',
+  surface: '#0a0c10',
+  surface2: '#0e1116',
+  surface3: '#13171e',
+  border: '#1a1f28',
+  ink: '#e9edf2',
+  sub: '#8a93a0',
+  dim: '#3d4654',
+  accent: '#b5fb6b',
+  warn: '#ffb648',
+  pink: '#ff5da2',
+  blue: '#5ecfff',
+  green: '#69e6a6',
+  purple: '#b48cff',
+} as const;
 
-function ThreadsIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 960 960" fill="currentColor" aria-hidden="true" {...props}>
-      <path d="M404.63 392.13c-11.92-7.93-51.53-35.49-51.53-35.49 33.4-47.88 77.46-66.52 138.36-66.52 43.07 0 79.64 14.52 105.75 42 26.12 27.49 41.02 66.8 44.41 117.07 14.48 6.07 27.85 13.22 39.99 21.4 48.96 33 75.92 82.34 75.92 138.91 0 120.23-98.34 224.67-276.35 224.67-152.84 0-311.63-89.11-311.63-354.45 0-263.83 153.81-353.92 311.2-353.92 72.68 0 243.16 10.76 307.27 222.94l-60.12 15.63C678.33 213.2 574.4 189.14 479.11 189.14c-157.52 0-246.62 96.13-246.62 300.65 0 183.38 99.59 280.8 248.71 280.8 122.68 0 214.15-63.9 214.15-157.44 0-63.66-53.37-94.14-56.1-94.14-10.42 54.62-38.36 146.5-161.01 146.5-71.46 0-133.07-49.47-133.07-114.29 0-92.56 87.61-126.06 156.8-126.06 25.91 0 57.18 1.75 73.46 5.07 0-28.21-23.81-76.49-83.96-76.49-55.15-.01-69.14 17.92-86.84 38.39zm105.8 96.25c-90.13 0-101.79 38.51-101.79 62.7 0 38.86 46.07 51.74 70.65 51.74 45.06 0 91.35-12.52 98.63-107.31-22.85-5.14-39.88-7.13-67.49-7.13z" />
-    </svg>
-  );
-}
+/* ─── Contact Channels ─── */
+const CHANNELS = [
+  { label: 'Email', value: 'contact@mittechstudio.com', href: 'mailto:contact@mittechstudio.com', color: t.accent },
+  { label: 'GitHub', value: '@mitokawaguchi', href: 'https://github.com/mitokawaguchi', color: t.ink },
+  { label: 'Instagram', value: '@mito_112_', href: 'https://www.instagram.com/mito_112_/', color: t.pink },
+  { label: 'Threads', value: '@mito_112_', href: 'https://www.threads.net/@mito_112_', color: t.purple },
+  { label: 'Zenn', value: '@mitokawaguchi', href: 'https://zenn.dev/mitokawaguchi', color: t.blue },
+  { label: 'Qiita', value: '@mitokawaguchi_', href: 'https://qiita.com/mitokawaguchi_', color: t.green },
+];
 
+/* ─── Main Section ─── */
 export function ContactSection() {
-  const t = useTranslations('contact');
-  const { ref, isVisible } = useScrollReveal<HTMLElement>({ threshold: 0.2 });
-
   return (
-    <section ref={ref} id="contact" className="bg-background bg-grid py-24 md:py-32">
-      <div className="container mx-auto px-6">
-        <div className="mx-auto max-w-2xl text-center">
-          <div
-            className={`mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/20 transition-all duration-700 ${
-              isVisible ? 'scale-100 opacity-100' : 'scale-75 opacity-0'
-            }`}
-          >
-            <Mail className="h-8 w-8 text-primary" />
+    <section id="contact" style={{ background: t.bg, padding: '180px 0' }}>
+      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '0 56px' }}>
+        {/* Section header */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 64 }}>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: t.dim, letterSpacing: '0.08em' }}>§06</span>
+          <span style={{ width: 24, height: 1, background: t.dim, display: 'inline-block' }} />
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: t.sub, letterSpacing: '0.04em' }}>Contact</span>
+        </div>
+
+        {/* Two-column layout */}
+        <div style={{ display: 'grid', gridTemplateColumns: '8fr 4fr', gap: 48 }}>
+          {/* Left: main CTA card */}
+          <div style={{
+            background: t.surface,
+            border: `1px solid ${t.border}`,
+            borderRadius: 20,
+            padding: '56px 52px',
+          }}>
+            {/* Meta */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 40 }}>
+              <span style={{
+                width: 7,
+                height: 7,
+                borderRadius: '50%',
+                background: t.green,
+                animation: 'contact-pulse 2s infinite',
+              }} />
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: t.sub, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                ACCEPTING-WORK · response &lt; 24h
+              </span>
+            </div>
+
+            {/* Big text */}
+            <h2 style={{
+              fontSize: 'clamp(48px, 6vw, 88px)',
+              fontWeight: 800,
+              lineHeight: 1.1,
+              marginBottom: 32,
+              fontFamily: '"Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif',
+            }}>
+              <span style={{ color: t.ink }}>一緒に</span>
+              <br />
+              <span style={{ color: t.accent }}>つくりませんか？</span>
+            </h2>
+
+            {/* Body */}
+            <p style={{
+              fontSize: 15,
+              color: t.sub,
+              lineHeight: 1.8,
+              maxWidth: 480,
+              marginBottom: 40,
+              fontFamily: '"Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif',
+            }}>
+              新規プロジェクトのご相談、デザインシステムの構築、フロントエンド開発の支援など、
+              お気軽にお問い合わせください。24時間以内に返信いたします。
+            </p>
+
+            {/* CTA Buttons */}
+            <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+              <a
+                href="mailto:contact@mittechstudio.com"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  padding: '14px 32px',
+                  borderRadius: 8,
+                  background: t.accent,
+                  color: '#06070a',
+                  fontSize: 14,
+                  fontWeight: 700,
+                  fontFamily: 'var(--font-mono)',
+                  textDecoration: 'none',
+                  transition: 'opacity 0.2s',
+                  letterSpacing: '0.02em',
+                }}
+              >
+                &#9656; お問い合わせ
+              </a>
+              <a
+                href="#"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  padding: '14px 32px',
+                  borderRadius: 8,
+                  background: 'transparent',
+                  color: t.sub,
+                  fontSize: 14,
+                  fontWeight: 600,
+                  fontFamily: 'var(--font-mono)',
+                  textDecoration: 'none',
+                  border: `1px solid ${t.border}`,
+                  transition: 'border-color 0.2s, color 0.2s',
+                }}
+              >
+                Brief PDF &#8599;
+              </a>
+            </div>
           </div>
 
-          <h2
-            className={`mb-4 text-4xl font-extrabold tracking-tight text-foreground transition-all delay-100 duration-700 md:text-5xl ${
-              isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-            }`}
-          >
-            <span className="text-foreground">{t('title')}</span>{' '}
-            <span className="text-shimmer">{t('titleAccent')}</span>
-          </h2>
+          {/* Right column */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+            {/* Capacity card */}
+            <div style={{
+              background: t.surface,
+              border: `1px solid ${t.border}`,
+              borderRadius: 14,
+              padding: '28px 28px',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20 }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: t.dim, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Capacity</span>
+              </div>
 
-          <p
-            className={`mb-10 text-lg leading-relaxed text-muted-foreground transition-all delay-200 duration-700 ${
-              isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-            }`}
-          >
-            {t('body')}
-          </p>
+              <div style={{ fontSize: 32, fontWeight: 700, color: t.ink, fontFamily: 'var(--font-mono)', marginBottom: 12 }}>
+                2 / 3 <span style={{ fontSize: 14, fontWeight: 400, color: t.dim }}>slots</span>
+              </div>
 
-          <a
-            href="mailto:contact@mittechstudio.com"
-            className={`inline-flex items-center gap-2 rounded-lg bg-primary px-8 py-4 text-lg font-semibold text-primary-foreground transition-all duration-300 pulse-glow hover:bg-primary/90 active:scale-95 ${
-              isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-            }`}
-            style={{ transitionDelay: '300ms' }}
-          >
-            <Mail className="h-5 w-5" />
-            {t('cta')}
-          </a>
+              {/* Progress bar */}
+              <div style={{
+                width: '100%',
+                height: 6,
+                borderRadius: 3,
+                background: t.surface3,
+                marginBottom: 12,
+                overflow: 'hidden',
+              }}>
+                <div style={{
+                  width: '66%',
+                  height: '100%',
+                  borderRadius: 3,
+                  background: `linear-gradient(90deg, ${t.accent}, ${t.green})`,
+                }} />
+              </div>
 
-          <div
-            className={`mt-12 flex justify-center gap-4 transition-all delay-500 duration-700 ${
-              isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-            }`}
-          >
-            <a
-              href="https://www.instagram.com/mito_112_/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-secondary text-muted-foreground transition-all duration-200 hover:bg-primary/20 hover:text-primary active:scale-95"
-            >
-              <span className="sr-only">{t('instagram')}</span>
-              <Instagram className="h-5 w-5" />
-            </a>
-            <a
-              href="https://www.threads.net/@mito_112_"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-secondary text-muted-foreground transition-all duration-200 hover:bg-primary/20 hover:text-primary active:scale-95"
-            >
-              <span className="sr-only">{t('threads')}</span>
-              <ThreadsIcon className="h-5 w-5" />
-            </a>
-            <a
-              href="https://github.com/mitokawaguchi"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-secondary text-muted-foreground transition-all duration-200 hover:bg-primary/20 hover:text-primary active:scale-95"
-            >
-              <span className="sr-only">{t('github')}</span>
-              <Github className="h-5 w-5" />
-            </a>
-            <a
-              href={WRITING_PROFILES.zenn.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-secondary text-muted-foreground transition-all duration-200 hover:bg-primary/20 hover:text-primary active:scale-95"
-            >
-              <span className="sr-only">{t('zenn')}</span>
-              <ZennIcon className="h-5 w-5" />
-            </a>
-            <a
-              href={WRITING_PROFILES.qiita.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-secondary text-muted-foreground transition-all duration-200 hover:bg-primary/20 hover:text-primary active:scale-95"
-            >
-              <span className="sr-only">{t('qiita')}</span>
-              <QiitaIcon className="h-5 w-5" />
-            </a>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: t.sub }}>
+                1 slot available · from 2026.05
+              </span>
+            </div>
+
+            {/* Channels card */}
+            <div style={{
+              background: t.surface,
+              border: `1px solid ${t.border}`,
+              borderRadius: 14,
+              padding: '28px 28px',
+              flex: 1,
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20 }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: t.dim, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Channels</span>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+                {CHANNELS.map((ch) => (
+                  <a
+                    key={ch.label}
+                    href={ch.href}
+                    target={ch.href.startsWith('mailto') ? undefined : '_blank'}
+                    rel={ch.href.startsWith('mailto') ? undefined : 'noopener noreferrer'}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      padding: '10px 0',
+                      borderBottom: `1px solid ${t.border}`,
+                      textDecoration: 'none',
+                      transition: 'background 0.15s',
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <span style={{
+                        width: 5,
+                        height: 5,
+                        borderRadius: '50%',
+                        background: ch.color,
+                      }} />
+                      <span style={{ fontSize: 12, color: t.ink, fontFamily: 'var(--font-mono)' }}>{ch.label}</span>
+                    </div>
+                    <span style={{ fontSize: 11, color: t.dim, fontFamily: 'var(--font-mono)' }}>&#8599;</span>
+                  </a>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
+
+      <style>{`
+        @keyframes contact-pulse {
+          0%, 100% { opacity: 1; box-shadow: 0 0 0 0 #69e6a644; }
+          50% { opacity: 0.6; box-shadow: 0 0 0 4px #69e6a600; }
+        }
+      `}</style>
     </section>
   );
 }
