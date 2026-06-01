@@ -256,6 +256,26 @@ export function StudioIntro({ onExitStart, onDone }: StudioIntroProps) {
         </div>
       </div>
 
+      {/* Skip hint */}
+      {phase === 'enter' && (
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 48,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            fontFamily: 'var(--font-mono)',
+            fontSize: 11,
+            color: T.sub,
+            letterSpacing: 1.2,
+            opacity: 0,
+            animation: `introSkipPulse 2.4s ease-in-out 1.4s infinite`,
+          }}
+        >
+          press any key to skip
+        </div>
+      )}
+
       <style>{`
         @keyframes introCharReveal {
           0% { transform: translateY(116%); }
@@ -264,6 +284,10 @@ export function StudioIntro({ onExitStart, onDone }: StudioIntroProps) {
         @keyframes introSubFade {
           0% { opacity: 0; transform: translateY(6px); }
           100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes introSkipPulse {
+          0%, 100% { opacity: .5; }
+          50% { opacity: 1; }
         }
       `}</style>
     </div>

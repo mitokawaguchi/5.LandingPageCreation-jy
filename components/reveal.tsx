@@ -10,7 +10,7 @@ interface RevealProps {
   children: ReactNode;
 }
 
-export function Reveal({ delay = 0, y = 24, className, style, children }: RevealProps) {
+export function Reveal({ delay = 0, y = 40, className, style, children }: RevealProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
@@ -50,9 +50,10 @@ export function Reveal({ delay = 0, y = 24, className, style, children }: Reveal
       className={className}
       style={{
         opacity: visible ? 1 : 0,
-        transform: visible ? 'translateY(0)' : `translateY(${y}px)`,
-        transition: `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}ms, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}ms`,
-        willChange: 'opacity, transform',
+        transform: visible ? 'none' : `translateY(${y}px) scale(.985)`,
+        filter: visible ? 'none' : 'blur(7px)',
+        transition: `opacity .95s cubic-bezier(.22,.7,.2,1), transform 1.05s cubic-bezier(.22,.7,.2,1), filter .95s cubic-bezier(.22,.7,.2,1)`,
+        willChange: 'opacity, transform, filter',
         ...style,
       }}
     >

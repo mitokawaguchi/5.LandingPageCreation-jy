@@ -33,7 +33,7 @@ export function Sparkline({
           observer.disconnect();
         }
       },
-      { threshold: 0.3 }
+      { threshold: 0.1 }
     );
 
     observer.observe(el);
@@ -83,7 +83,7 @@ export function Sparkline({
           fill={fill}
           style={{
             opacity: revealed ? 0.15 : 0,
-            transition: 'opacity 0.8s ease 0.3s',
+            transition: 'opacity 0.8s ease 0.4s',
           }}
         />
       )}
@@ -97,7 +97,7 @@ export function Sparkline({
         style={{
           strokeDasharray: pathLength,
           strokeDashoffset: revealed ? 0 : pathLength,
-          transition: `stroke-dashoffset 1.2s cubic-bezier(0.16,1,0.3,1)`,
+          transition: `stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1)`,
         }}
       />
     </svg>

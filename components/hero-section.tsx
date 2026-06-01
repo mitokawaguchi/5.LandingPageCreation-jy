@@ -21,6 +21,8 @@ function splitChars(text: string) {
 export function HeroSection() {
   const t = useTranslations('hero');
   const titleRef = useRef<HTMLDivElement>(null);
+  const secRef = useRef<HTMLElement>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
   const [playing, setPlaying] = useState(false);
   const [beamDone, setBeamDone] = useState(false);
 
@@ -38,6 +40,38 @@ export function HeroSection() {
     );
     obs.observe(el);
     return () => obs.disconnect();
+  }, []);
+
+  // Cinematic scroll-exit: hero recedes into depth as you scroll past
+  useEffect(() => {
+    const sec = secRef.current;
+    const inner = innerRef.current;
+    if (!sec || !inner) return;
+    const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    const lowPower = window.matchMedia?.('(max-width: 820px)').matches || 'ontouchstart' in window;
+    if (reduced || lowPower) return;
+    inner.style.willChange = 'opacity, transform, filter';
+    let raf = 0;
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        const r = sec.getBoundingClientRect();
+        const vh = window.innerHeight;
+        let p = (-r.top) / (vh * 0.85);
+        p = Math.max(0, Math.min(1, p));
+        const e = p * p;
+        inner.style.opacity = (1 - e).toFixed(3);
+        inner.style.transform = `translateY(${(-e * 70).toFixed(1)}px) scale(${(1 + e * 0.07).toFixed(4)})`;
+        inner.style.filter = e > 0.002 ? `blur(${(e * 12).toFixed(2)}px)` : 'none';
+      });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      cancelAnimationFrame(raf);
+    };
   }, []);
 
   useEffect(() => {
@@ -76,21 +110,30 @@ export function HeroSection() {
   const line2 = t('line2');
   const line3 = t('line3');
 
-  const renderChars = (text: string, lineIndex: number) =>
-    splitChars(text).map((ch, i) => (
-      <span
-        key={`${lineIndex}-${i}`}
-        className="kt-char"
-        data-line={lineIndex}
-        data-idx={i}
-        style={{ display: 'inline-block', whiteSpace: ch === ' ' ? 'pre' : undefined }}
-      >
-        {ch}
-      </span>
-    ));
+  const renderChars = (text: string, lineIndex: number, accent?: boolean) =>
+    splitChars(text).map((ch, i) => {
+      const delay = LINE_BASE[lineIndex] + i * STEP;
+      return (
+        <span
+          key={`${lineIndex}-${i}`}
+          className="kt-char"
+          data-line={lineIndex}
+          data-idx={i}
+          style={{
+            display: 'inline-block',
+            whiteSpace: ch === ' ' ? 'pre' : undefined,
+            color: accent ? T.accent : undefined,
+            ...(accent && playing ? { animation: `ktGlow .6s ease ${delay}ms both` } : undefined),
+          }}
+        >
+          {ch}
+        </span>
+      );
+    });
 
   return (
     <section
+      ref={secRef}
       id="home"
       style={{
         position: 'relative',
@@ -99,6 +142,7 @@ export function HeroSection() {
       }}
     >
       <div
+        ref={innerRef}
         className="studio-container"
         style={{
           maxWidth: 1320,
@@ -171,13 +215,16 @@ export function HeroSection() {
               className="kt-beam"
               style={{
                 position: 'absolute',
-                left: 0,
-                right: 0,
+                left: '-2%',
+                width: '104%',
                 height: 2,
-                background: `linear-gradient(90deg, transparent, ${T.accent}, transparent)`,
-                animation: 'ktBeam 1.1s ease-out forwards',
+                background: `linear-gradient(90deg, rgba(181,251,107,0), ${T.accent} 18%, #eaffc4 50%, ${T.accent} 82%, rgba(181,251,107,0))`,
+                boxShadow: `0 0 22px 3px rgba(181,251,107,.55)`,
+                top: 40,
                 zIndex: 2,
                 pointerEvents: 'none',
+                mixBlendMode: 'screen',
+                animation: 'ktBeam 1.25s cubic-bezier(.45,.05,.35,1) forwards',
               }}
             />
           )}
@@ -196,7 +243,7 @@ export function HeroSection() {
             }}
           >
             {/* Line 1 */}
-            <span style={{ display: 'block' }}>{renderChars(line1, 0)}</span>
+            <span style={{ display: 'block' }}>{renderChars(line1, 0, false)}</span>
 
             {/* Line 2 */}
             <span
@@ -239,22 +286,22 @@ export function HeroSection() {
               style={{
                 position: 'relative',
                 display: 'inline-block',
-                color: T.accent,
-                animation: playing ? 'ktGlow 3s ease-in-out infinite' : undefined,
               }}
             >
-              {renderChars(line3, 2)}
+              {renderChars(line3, 2, true)}
               <span style={{ color: T.sub }}>.</span>
               <span
-                className="kt-caret"
+                className={'kt-caret' + (playing || beamDone ? ' on' : '')}
+                aria-hidden
                 style={{
                   display: 'inline-block',
-                  width: 3,
-                  height: '0.75em',
+                  width: '0.5em',
+                  height: '0.86em',
+                  marginLeft: '0.06em',
+                  verticalAlign: '-0.04em',
                   background: T.accent,
-                  marginLeft: 4,
-                  verticalAlign: 'baseline',
-                  animation: 'ktCaret 1s step-end infinite',
+                  opacity: 0,
+                  boxShadow: `0 0 14px rgba(181,251,107,.6)`,
                 }}
               />
             </span>
@@ -380,38 +427,33 @@ export function HeroSection() {
       </div>
 
       <style>{`
-        @keyframes studioPulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.3; }
-        }
         .kt-char {
           opacity: 0;
           transform: translateY(0.30em) scaleY(1.32);
-          filter: blur(9px);
           transform-origin: bottom;
-          transition: opacity 0.5s cubic-bezier(.16,1,.3,1),
-                      transform 0.6s cubic-bezier(.16,1,.3,1),
-                      filter 0.5s cubic-bezier(.16,1,.3,1);
+          filter: blur(9px);
+          transition: opacity .5s ease, transform .62s cubic-bezier(.16,1,.3,1), filter .5s ease;
+          will-change: opacity, transform, filter;
         }
-        .kt-char.on {
-          opacity: 1;
-          transform: none;
-          filter: blur(0);
-        }
-        .kt-rule.on {
-          transform: scaleX(1) !important;
-        }
+        .kt-char.on { opacity: 1; transform: none; filter: blur(0); }
+        .kt-rule.on { transform: scaleX(1) !important; }
         @keyframes ktGlow {
-          0%, 100% { text-shadow: 0 0 0 transparent; }
-          50% { text-shadow: 0 0 40px rgba(181,251,107,0.18), 0 0 80px rgba(181,251,107,0.08); }
+          0% { text-shadow: none; }
+          45% { text-shadow: 0 0 26px rgba(181,251,107,.85), 0 0 10px rgba(181,251,107,.6); }
+          100% { text-shadow: none; }
         }
-        @keyframes ktCaret {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0; }
-        }
+        .kt-caret.on { animation: ktCaret 1.05s steps(1) 1.15s 4 forwards; }
+        @keyframes ktCaret { 0%, 50% { opacity: 1; } 50.01%, 100% { opacity: 0; } }
         @keyframes ktBeam {
-          0% { top: 0; opacity: 1; }
+          0%   { top: 28px; opacity: 0; }
+          12%  { opacity: 1; }
+          85%  { opacity: 1; }
           100% { top: 100%; opacity: 0; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .kt-char { opacity: 1; transform: none; filter: none; transition: none; }
+          .kt-rule { transform: scaleX(1); }
+          .kt-beam { display: none; }
         }
       `}</style>
     </section>
