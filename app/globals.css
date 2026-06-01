@@ -431,6 +431,14 @@ body::before {
 .stagger-children.visible > *:nth-child(6) { transition-delay: 0.3s; opacity: 1; transform: translateY(0); }
 
 /* ─── Responsive ─── */
+/* Let grid/flex children shrink below their intrinsic content width, so a
+   wide child (e.g. a sparkline SVG) can't force its track past the viewport. */
+.bento-12 > *,
+.grid-feat > *,
+.grid-2 > *,
+.grid-3 > *,
+.grid-4 > * { min-width: 0; }
+
 .heatmap-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .heatmap-scroll .heatmap-grid { min-width: 680px; }
 .gitlog-rows { overflow-x: auto; -webkit-overflow-scrolling: touch; }
