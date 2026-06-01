@@ -45,7 +45,7 @@ function RingGauge({ score, color, label }: { score: number; color: string; labe
           obs.disconnect();
         }
       },
-      { threshold: 0.3 }
+      { threshold: 0.4 }
     );
     obs.observe(el);
     return () => obs.disconnect();
@@ -180,20 +180,21 @@ function GitLog() {
     const msg = GIT_ROWS[currentRow][1];
     if (charCounts[currentRow] >= msg.length) {
       if (currentRow < GIT_ROWS.length - 1) {
-        setCurrentRow((r) => r + 1);
-      } else {
-        setAllDone(true);
+        const timer = setTimeout(() => setCurrentRow((r) => r + 1), 170);
+        return () => clearTimeout(timer);
       }
+      setAllDone(true);
       return;
     }
 
+    const isFirstChar = currentRow === 0 && charCounts[0] === 0;
     const timer = setTimeout(() => {
       setCharCounts((prev) => {
         const next = [...prev];
         next[currentRow] = prev[currentRow] + 1;
         return next;
       });
-    }, 22);
+    }, isFirstChar ? 260 : 16);
 
     return () => clearTimeout(timer);
   }, [started, charCounts, currentRow, allDone]);
