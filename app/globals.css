@@ -87,6 +87,15 @@
 html {
   scroll-behavior: smooth;
   scrollbar-gutter: stable;
+  /* clip (not hidden) avoids creating a scroll container that would break
+     the sticky status bar, while still killing any horizontal overflow. */
+  overflow-x: clip;
+  max-width: 100%;
+}
+
+body {
+  overflow-x: clip;
+  max-width: 100%;
 }
 
 body {
@@ -448,6 +457,7 @@ body::before {
   .sect { padding-top: 96px !important; padding-bottom: 96px !important; }
   .hero-section { padding-top: 40px !important; padding-bottom: 80px !important; }
   .hero-meta-strip { margin-bottom: 32px !important; }
+  .hero-title { font-size: clamp(44px, 12vw, 76px) !important; max-width: 100% !important; }
   .hero-cta-hint { display: none !important; }
   .hero-cta-group { width: 100% !important; }
   .hero-cta-group a { flex: 1 !important; justify-content: center !important; }
@@ -470,6 +480,7 @@ body::before {
   .skill-flip { flex: 0 0 82vw !important; width: 82vw !important; }
   .writing-card { flex: 0 0 82vw !important; }
   .hero-section { padding-top: 32px !important; padding-bottom: 60px !important; }
+  .hero-title { font-size: clamp(38px, 12vw, 60px) !important; }
   .hero-type-grid { gap: 24px !important; }
   .hero-cta-group a { padding: 14px 18px !important; font-size: 13px !important; }
   .pinned-head { height: 140vh !important; }

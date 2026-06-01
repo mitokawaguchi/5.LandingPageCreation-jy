@@ -232,6 +232,7 @@ export function HeroSection() {
           )}
 
           <h1
+            className="hero-title"
             style={{
               margin: 0,
               fontFamily: 'var(--font-sans)',

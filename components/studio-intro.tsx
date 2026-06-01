@@ -12,10 +12,22 @@ interface StudioIntroProps {
 }
 
 const STUDIO_NAME = 'MIT Tech Studio';
-// How much larger than the docked nav logo the opening lockup sits.
-const BIG = 3;
+// How much larger than the docked nav logo the opening lockup sits (desktop).
+const MAX_BIG = 3;
+// Approx rendered width of the lockup at scale 1 (logo + gap + name).
+const LOCKUP_NATURAL = 190;
+
+// On narrow screens, shrink the opening lockup so it never spills past the
+// viewport (the scaled-up lockup was overflowing and forcing a horizontal
+// scrollbar / "dead area").
+function computeBig(): number {
+  if (typeof window === 'undefined') return MAX_BIG;
+  const fit = (window.innerWidth * 0.84) / LOCKUP_NATURAL;
+  return Math.max(1.4, Math.min(MAX_BIG, fit));
+}
 
 export function StudioIntro({ onExitStart, onDone }: StudioIntroProps) {
+  const [BIG] = useState(computeBig);
   const [shown, setShown] = useState(false);     // entrance played
   const [exiting, setExiting] = useState(false);  // lockup flies to nav dock
   const [fading, setFading] = useState(false);    // overlay clears + page surfaces
@@ -118,6 +130,7 @@ export function StudioIntro({ onExitStart, onDone }: StudioIntroProps) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        overflow: 'hidden',
         pointerEvents: exiting || fading ? 'none' : 'auto',
       }}
     >
