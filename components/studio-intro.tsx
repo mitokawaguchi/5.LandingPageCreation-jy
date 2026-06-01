@@ -16,138 +16,97 @@ const STUDIO_NAME = 'MIT Tech Studio';
 const BIG = 3;
 
 export function StudioIntro({ onExitStart, onDone }: StudioIntroProps) {
-  const [phase, setPhase] = useState<'enter' | 'fly' | 'fade' | 'done'>('enter');
-  const lockupRef = useRef<HTMLDivElement>(null);
-  const markRef = useRef<HTMLDivElement>(null);
-  const [flyTransform, setFlyTransform] = useState<string>('');
-  const skipReady = useRef(false);
-  const hasExited = useRef(false);
+  const [shown, setShown] = useState(false);     // entrance played
+  const [exiting, setExiting] = useState(false);  // lockup flies to nav dock
+  const [fading, setFading] = useState(false);    // overlay clears + page surfaces
+  const [dock, setDock] = useState<string | null>(null); // transform that lands on nav
+  const lockRef = useRef<HTMLDivElement>(null);
+  const doneRef = useRef(false);
+  const prevOverflowRef = useRef('');
 
-  // Keep the latest callbacks in refs so the exit logic can stay dependency-
-  // free. (The parent passes fresh inline callbacks each render; depending on
-  // them directly would re-create the auto-exit timer every render and the
-  // intro could never finish — leaving the page's scroll lock stuck on.)
+  // Low-power / reduced-motion: drop the heavier blur + glow compositing.
+  const liteRef = useRef(false);
+  if (typeof window !== 'undefined' && !liteRef.current) {
+    liteRef.current =
+      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ||
+      window.matchMedia?.('(max-width: 820px)').matches ||
+      'ontouchstart' in window;
+  }
+  const lite = liteRef.current;
+
+  // Keep the latest callbacks in refs so the exit logic can stay dependency-free.
   const onExitStartRef = useRef(onExitStart);
   const onDoneRef = useRef(onDone);
   onExitStartRef.current = onExitStart;
   onDoneRef.current = onDone;
 
-  // Allow skip after 1200ms
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      skipReady.current = true;
-    }, 1200);
-    return () => clearTimeout(timer);
+  const finish = useCallback(() => {
+    if (doneRef.current) return;
+    doneRef.current = true;
+    // Measure the nav logo and compute the transform that docks onto it.
+    requestAnimationFrame(() => {
+      const lock = lockRef.current;
+      const target = document.querySelector<HTMLElement>('[data-logo-dock]');
+      if (lock && target) {
+        const ir = lock.getBoundingClientRect();
+        const tr = target.getBoundingClientRect();
+        const dx = (tr.left + tr.width / 2) - (ir.left + ir.width / 2);
+        const dy = (tr.top + tr.height / 2) - (ir.top + ir.height / 2);
+        const natural = ir.width / BIG; // size at scale 1
+        const sc = natural > 0 ? tr.width / natural : 1;
+        setDock(`translate(${dx}px, ${dy}px) scale(${sc})`);
+      } else {
+        setDock('scale(1)');
+      }
+      setExiting(true);
+    });
+    const FLY = 880;   // logo flight to the nav slot (slow drift, then snap)
+    const SURF = 560;  // page surfacing out of blur (kept brief)
+    // once the logo has arrived, the page emerges from blur behind it
+    setTimeout(() => { setFading(true); onExitStartRef.current?.(); }, FLY);
+    setTimeout(() => { onDoneRef.current?.(); }, FLY + SURF);
   }, []);
 
-  // Lock body scroll during the intro; always restore it to the scrollable
-  // default on unmount so the page can never get stuck non-scrollable.
   useEffect(() => {
+    prevOverflowRef.current = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
+    window.scrollTo(0, 0);
+    const raf = requestAnimationFrame(() => setShown(true));
+    const auto = setTimeout(finish, 2600);
+    // skip — armed after a beat so a stray scroll/tap can't kill it instantly
+    let armed = false;
+    const arm = setTimeout(() => { armed = true; }, 1200);
+    const skip = () => { if (armed) finish(); };
+    window.addEventListener('keydown', skip);
+    window.addEventListener('wheel', skip, { passive: true });
+    window.addEventListener('touchmove', skip, { passive: true });
+    window.addEventListener('pointerdown', skip);
     return () => {
-      document.body.style.overflow = '';
+      cancelAnimationFrame(raf);
+      clearTimeout(auto);
+      clearTimeout(arm);
+      window.removeEventListener('keydown', skip);
+      window.removeEventListener('wheel', skip);
+      window.removeEventListener('touchmove', skip);
+      window.removeEventListener('pointerdown', skip);
+      document.body.style.overflow = prevOverflowRef.current;
     };
-  }, []);
+  }, [finish]);
 
-  const triggerExit = useCallback(() => {
-    if (hasExited.current) return;
-    hasExited.current = true;
-
-    // Compute fly transform to nav logo dock.
-    //
-    // Position: align the lockup CENTER to the dock center. The lockup is
-    // scaled with transform-origin:center, so its center is invariant under
-    // scaling — measuring it at scale(BIG) gives the right target for any
-    // final scale.
-    //
-    // Scale: derive from the "M" mark, not the whole lockup. The mark has an
-    // identical 36px base in both the intro lockup and the nav dock, so this
-    // resolves to ~1.0 regardless of sub-pixel text-width differences — the
-    // docked logo ends at exactly the nav logo's size with no visible pop.
-    const dock = document.querySelector<HTMLElement>('[data-logo-dock]');
-    const dockMark = dock?.firstElementChild as HTMLElement | undefined;
-    const lockup = lockupRef.current;
-    const mark = markRef.current;
-
-    if (dock && dockMark && lockup && mark) {
-      const dockRect = dock.getBoundingClientRect();
-      const lockupRect = lockup.getBoundingClientRect();
-      const dockMarkRect = dockMark.getBoundingClientRect();
-      const markRect = mark.getBoundingClientRect();
-
-      const naturalMark = markRect.width / BIG;
-      const s = naturalMark > 0 ? dockMarkRect.width / naturalMark : 1;
-
-      const dx = dockRect.left + dockRect.width / 2 - (lockupRect.left + lockupRect.width / 2);
-      const dy = dockRect.top + dockRect.height / 2 - (lockupRect.top + lockupRect.height / 2);
-
-      setFlyTransform(`translate(${dx}px, ${dy}px) scale(${s})`);
-    } else {
-      setFlyTransform('scale(0.3) translate(-60vw, -44vh)');
-    }
-
-    onExitStartRef.current?.();
-    setPhase('fly');
-  }, []);
-
-  // Auto exit after 2600ms — fires exactly once.
+  // Release the scroll lock the instant the page starts surfacing.
   useEffect(() => {
-    const timer = setTimeout(triggerExit, 2600);
-    return () => clearTimeout(timer);
-  }, [triggerExit]);
+    if (fading) document.body.style.overflow = prevOverflowRef.current || '';
+  }, [fading]);
 
-  // Skip handlers (keyboard, wheel, touch, pointer) after 1200ms
-  useEffect(() => {
-    const handle = () => {
-      if (skipReady.current) triggerExit();
-    };
-    window.addEventListener('keydown', handle);
-    window.addEventListener('wheel', handle, { passive: true });
-    window.addEventListener('touchstart', handle, { passive: true });
-    window.addEventListener('pointerdown', handle);
-    return () => {
-      window.removeEventListener('keydown', handle);
-      window.removeEventListener('wheel', handle);
-      window.removeEventListener('touchstart', handle);
-      window.removeEventListener('pointerdown', handle);
-    };
-  }, [triggerExit]);
+  const studioChars = [...STUDIO_NAME];
+  const subDelay = 360 + STUDIO_NAME.length * 42 + 120;
 
-  // Fly phase -> fade phase after 880ms
-  useEffect(() => {
-    if (phase === 'fly') {
-      const timer = setTimeout(() => {
-        document.body.style.overflow = '';
-        setPhase('fade');
-      }, 880);
-      return () => clearTimeout(timer);
-    }
-  }, [phase]);
-
-  // Fade phase -> done after 560ms
-  useEffect(() => {
-    if (phase === 'fade') {
-      const timer = setTimeout(() => {
-        setPhase('done');
-        onDoneRef.current?.();
-      }, 560);
-      return () => clearTimeout(timer);
-    }
-  }, [phase]);
-
-  if (phase === 'done') return null;
-
-  const studioChars = STUDIO_NAME.split('');
-
-  // Per-character reveal timing. The subtitle ("Tokyo · since 2025") only
-  // starts once the final "o" of "MIT Tech Studio" has emerged.
-  const CHAR_BASE = 360;
-  const CHAR_STEP = 42;
-  const lastCharDelay = CHAR_BASE + (studioChars.length - 1) * CHAR_STEP;
-  const subDelay = lastCharDelay + 140;
+  // lockup transform: big while open, docked transform on exit
+  const lockTransform = exiting && dock ? dock : `scale(${shown ? BIG : BIG * 0.82})`;
 
   return (
     <div
+      className={'intro-overlay' + (fading ? ' out' : '')}
       style={{
         position: 'fixed',
         inset: 0,
@@ -155,141 +114,113 @@ export function StudioIntro({ onExitStart, onDone }: StudioIntroProps) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: T.bg,
-        opacity: phase === 'fade' ? 0 : 1,
-        transition: phase === 'fade' ? 'opacity 560ms ease' : undefined,
-        pointerEvents: phase === 'fly' || phase === 'fade' ? 'none' : 'auto',
+        pointerEvents: exiting || fading ? 'none' : 'auto',
       }}
     >
       <div
-        ref={lockupRef}
+        ref={lockRef}
+        className="intro-lock"
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: 10,
+          gap: 14,
           transformOrigin: 'center center',
-          transform:
-            phase === 'enter'
-              ? `scale(${BIG})`
-              : phase === 'fly' || phase === 'fade'
-                ? flyTransform
-                : 'none',
-          transition:
-            phase === 'fly' || phase === 'fade'
-              ? 'transform 880ms cubic-bezier(.16,1,.3,1)'
-              : undefined,
+          transform: lockTransform,
+          opacity: shown ? 1 : 0,
+          transition: exiting
+            ? 'transform .88s cubic-bezier(.72,0,.84,.15), opacity .88s ease'
+            : 'transform .7s cubic-bezier(.16,1,.3,1), opacity .5s ease',
+          willChange: 'transform, opacity',
         }}
       >
-        {/* Logo "M" square — matches the nav dock exactly */}
-        <div
-          ref={markRef}
+        {/* Logo "M" square — springs in with a soft overshoot + accent glow */}
+        <span
           style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
             width: 36,
             height: 36,
             background: T.accent,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
-            fontFamily: 'var(--font-mono)',
+            color: '#0a0c10',
             fontWeight: 800,
             fontSize: 18,
-            color: T.bg,
+            fontFamily: 'var(--font-sans)',
             lineHeight: 1,
+            flexShrink: 0,
+            transform: shown ? 'none' : 'scale(.5) rotate(-12deg)',
+            transition: 'transform .6s cubic-bezier(.34,1.56,.5,1)',
+            boxShadow: shown && !exiting && !lite ? `0 0 30px ${T.accent}66` : 'none',
           }}
         >
           M
-        </div>
+        </span>
 
-        {/* Text lockup */}
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            lineHeight: 1.2,
-          }}
-        >
-          {/* "MIT Tech Studio" with staggered character reveal */}
-          <span
+        <div>
+          {/* "MIT Tech Studio" — masked letterpress rise, per-glyph focus-in */}
+          <div
             style={{
               fontFamily: 'var(--font-sans)',
-              fontWeight: 600,
               fontSize: 15,
+              fontWeight: 600,
               color: T.ink,
-              display: 'flex',
+              letterSpacing: '-0.01em',
+              whiteSpace: 'nowrap',
             }}
           >
-            {studioChars.map((ch, i) => (
-              <span
-                key={i}
-                style={{
-                  display: 'inline-block',
-                  overflow: 'hidden',
-                }}
-              >
+            {studioChars.map((ch, i) => {
+              if (ch === ' ') {
+                return (
+                  <span key={i} style={{ display: 'inline-block', width: '0.28em' }}>
+                    {' '}
+                  </span>
+                );
+              }
+              const delay = 360 + i * 42;
+              return (
                 <span
-                  className="intro-char"
+                  key={i}
                   style={{
                     display: 'inline-block',
-                    animation: `introCharReveal 0.7s cubic-bezier(.2,.86,.24,1.04) ${CHAR_BASE + i * CHAR_STEP}ms both`,
-                    whiteSpace: ch === ' ' ? 'pre' : undefined,
+                    overflow: 'hidden',
+                    verticalAlign: 'bottom',
+                    paddingBottom: '0.08em',
+                    marginBottom: '-0.08em',
                   }}
                 >
-                  {ch}
+                  <span
+                    style={{
+                      display: 'inline-block',
+                      transform: shown ? 'none' : 'translateY(116%)',
+                      filter: shown || lite ? 'none' : 'blur(3px)',
+                      opacity: shown ? 1 : 0,
+                      transition: `transform .74s cubic-bezier(.2,.86,.24,1.04) ${delay}ms, opacity .5s ease ${delay}ms, filter .55s ease ${delay}ms`,
+                      willChange: 'transform',
+                    }}
+                  >
+                    {ch}
+                  </span>
                 </span>
-              </span>
-            ))}
-          </span>
+              );
+            })}
+          </div>
 
           {/* Subtitle — matches the nav dock exactly */}
-          <span
+          <div
             style={{
-              fontFamily: 'var(--font-mono)',
+              fontFamily: 'var(--font-sans)',
               fontSize: 12,
               color: T.sub,
-              opacity: 0,
-              animation: `introSubFade 0.6s ease ${subDelay}ms both`,
+              letterSpacing: '-0.005em',
+              opacity: shown ? 1 : 0,
+              transform: shown ? 'none' : 'translateY(6px)',
+              transition: `opacity .55s ease ${subDelay}ms, transform .6s cubic-bezier(.2,.8,.25,1) ${subDelay}ms`,
             }}
           >
             Tokyo · since 2025
-          </span>
+          </div>
         </div>
       </div>
-
-      {/* Skip hint */}
-      {phase === 'enter' && (
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 48,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            fontFamily: 'var(--font-mono)',
-            fontSize: 11,
-            color: T.sub,
-            letterSpacing: 1.2,
-            opacity: 0,
-            animation: `introSkipPulse 2.4s ease-in-out 1.4s infinite`,
-          }}
-        >
-          press any key to skip
-        </div>
-      )}
-
-      <style>{`
-        @keyframes introCharReveal {
-          0% { transform: translateY(116%); }
-          100% { transform: translateY(0); }
-        }
-        @keyframes introSubFade {
-          0% { opacity: 0; transform: translateY(6px); }
-          100% { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes introSkipPulse {
-          0%, 100% { opacity: .5; }
-          50% { opacity: 1; }
-        }
-      `}</style>
     </div>
   );
 }
