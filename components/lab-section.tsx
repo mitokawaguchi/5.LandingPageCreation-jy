@@ -329,6 +329,7 @@ function GitLog() {
 function SectionHead() {
   return (
     <div
+      className="section-head"
       style={{
         display: 'flex',
         alignItems: 'flex-end',
@@ -384,6 +385,7 @@ function SectionHead() {
         </div>
       </div>
       <div
+        className="section-head-sync"
         style={{
           flexShrink: 0,
           paddingBottom: 6,

@@ -54,7 +54,7 @@ export function ContactSection() {
               </h2>
 
               {/* Body */}
-              <div style={{ fontFamily: sansFam, fontSize: 17, color: T.sub, lineHeight: 1.7, marginTop: 28, maxWidth: 600 }}>
+              <div className="contact-body" style={{ fontFamily: sansFam, fontSize: 17, color: T.sub, lineHeight: 1.7, marginTop: 28, maxWidth: 600 }}>
                 新規プロジェクトのご相談、デザインシステムの構築、フロントエンド開発の支援など、お気軽にお問い合わせください。24時間以内に返信いたします。
               </div>
 

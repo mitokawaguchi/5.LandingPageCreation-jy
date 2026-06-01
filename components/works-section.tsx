@@ -53,6 +53,7 @@ function SectionHead() {
   return (
     <Reveal>
       <div
+        className="section-head"
         style={{
           display: 'flex',
           alignItems: 'flex-end',
@@ -108,6 +109,7 @@ function SectionHead() {
           </div>
         </div>
         <div
+          className="section-head-sync"
           style={{
             flexShrink: 0,
             paddingBottom: 6,
@@ -227,7 +229,7 @@ export function WorksSection() {
         {/* Featured (first repo) */}
         <Reveal>
           <div
-            className="studio-tile repo-card"
+            className="studio-tile repo-card works-featured-card"
             style={{
               background: T.surface,
               border: `1px solid ${T.border}`,
@@ -263,6 +265,7 @@ export function WorksSection() {
             >
               <div>
                 <div
+                  className="works-featured-title"
                   style={{
                     fontFamily: sansFam,
                     fontSize: 40,

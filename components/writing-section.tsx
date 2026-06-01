@@ -129,7 +129,7 @@ export function WritingSection({ articles: dynamicArticles }: { articles?: Writi
     <section id="writing" className="sect" style={{ padding: '180px 0', background: T.surface2 }}>
       <div className="studio-container" style={{ maxWidth: 1320, margin: '0 auto', padding: '0 56px' }}>
         {/* SectionHead */}
-        <div style={{
+        <div className="section-head" style={{
           display: 'flex', alignItems: 'flex-end', gap: 24, justifyContent: 'space-between',
           marginBottom: 88, paddingBottom: 28, borderBottom: `1px solid ${T.border}`,
         }}>
@@ -149,7 +149,7 @@ export function WritingSection({ articles: dynamicArticles }: { articles?: Writi
               Zenn と Qiita に公開している技術記事を、いいね数またはインプレッション数の高い順に最大3件表示します。
             </div>
           </div>
-          <div style={{ flexShrink: 0, paddingBottom: 6, fontFamily: monoFam, fontSize: 11, color: T.sub, display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div className="section-head-sync" style={{ flexShrink: 0, paddingBottom: 6, fontFamily: monoFam, fontSize: 11, color: T.sub, display: 'flex', alignItems: 'center', gap: 8 }}>
             <span>last_sync</span>
             <span style={{ color: T.ink }}>2m ago</span>
             <span style={{ width: 1, height: 12, background: T.border }} />

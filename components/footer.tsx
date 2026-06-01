@@ -41,7 +41,7 @@ export function Footer() {
     }}>
       <div className="studio-container" style={{ maxWidth: 1320, margin: '0 auto', padding: '0 56px' }}>
         {/* Top brand row */}
-        <div style={{
+        <div className="footer-brand-grid" style={{
           display: 'grid',
           gridTemplateColumns: 'auto 1fr',
           gap: 'clamp(28px, 4vw, 56px)',
@@ -111,8 +111,7 @@ export function Footer() {
             }}>
               MIT&nbsp;TECH
             </div>
-            {/* STUDIO — same mono family; distinction comes from weight, not typeface. */}
-            <div style={{
+            <div className="footer-wordmark" style={{
               fontFamily: monoFam,
               fontStyle: 'normal', fontWeight: 700,
               fontSize: 'clamp(48px, 7vw, 108px)',
