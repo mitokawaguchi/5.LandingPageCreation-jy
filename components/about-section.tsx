@@ -159,7 +159,7 @@ function PinnedHead({ num, kicker, title, sub }: { num: string; kicker: string; 
   }, [n]);
 
   return (
-    <div ref={sectionRef} style={{ height: '210vh', position: 'relative' }}>
+    <div ref={sectionRef} className="pinned-head" style={{ height: '210vh', position: 'relative' }}>
       <div style={{
         position: 'sticky', top: 0, height: '100vh',
         display: 'flex', flexDirection: 'column', justifyContent: 'center',
@@ -451,7 +451,7 @@ export function AboutSection() {
         {/* feature row */}
         <div className="bento-12" style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 20 }}>
           <Reveal style={{ gridColumn: 'span 7' }}>
-            <div style={{
+            <div className="about-note-card" style={{
               background: T.surface, border: `1px solid ${T.border}`,
               padding: '40px 44px 36px', minHeight: 380, display: 'flex', flexDirection: 'column',
               position: 'relative', overflow: 'hidden',
@@ -488,7 +488,7 @@ export function AboutSection() {
                   ))}
                 </div>
 
-                <div key={lang} style={{
+                <div key={lang} className="about-note-body" style={{
                   fontFamily: jpFam, color: T.ink,
                   fontSize: 'clamp(20px, 1.7vw, 26px)', lineHeight: 1.85,
                   letterSpacing: '0.01em', fontWeight: 500, maxWidth: '32em',
@@ -516,11 +516,11 @@ export function AboutSection() {
               </div>
 
               {/* meta strip footer */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 18, borderTop: `1px solid ${T.border}`, paddingTop: 22 }}>
+              <div className="about-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 18, borderTop: `1px solid ${T.border}`, paddingTop: 22 }}>
                 {STUDIO_STATS.map((s) => (
                   <div key={s.label}>
                     <div style={{ fontFamily: monoFam, fontSize: 10, color: T.sub, letterSpacing: 1.1, textTransform: 'uppercase' }}>{s.label}</div>
-                    <div style={{ fontFamily: sansFam, fontSize: 28, color: T.ink, fontWeight: 600, letterSpacing: '-0.025em', marginTop: 6 }}>{s.value}</div>
+                    <div className="about-stat-value" style={{ fontFamily: sansFam, fontSize: 28, color: T.ink, fontWeight: 600, letterSpacing: '-0.025em', marginTop: 6 }}>{s.value}</div>
                     <div style={{ fontFamily: monoFam, fontSize: 10, color: T.dim, marginTop: 2 }}>{s.note ?? ''}</div>
                   </div>
                 ))}

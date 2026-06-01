@@ -71,7 +71,11 @@ export function StudioIntro({ onExitStart, onDone }: StudioIntroProps) {
     prevOverflowRef.current = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     window.scrollTo(0, 0);
-    const raf = requestAnimationFrame(() => setShown(true));
+    // Double-rAF ensures the browser paints the initial (hidden) state
+    // before we flip to shown=true, so CSS transitions actually animate.
+    const raf = requestAnimationFrame(() => {
+      requestAnimationFrame(() => setShown(true));
+    });
     const auto = setTimeout(finish, 2600);
     // skip — armed after a beat so a stray scroll/tap can't kill it instantly
     let armed = false;

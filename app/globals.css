@@ -438,12 +438,29 @@ body::before {
 @media (max-width: 760px) {
   .nav-links { display: none !important; }
   .sb-clocks, .sb-deploy { display: none !important; }
+  .nav-cta { display: none !important; }
   .grid-3 { grid-template-columns: 1fr !important; }
   .grid-4 { grid-template-columns: repeat(2, 1fr) !important; }
   .foot-3 { grid-template-columns: 1fr !important; gap: 20px !important; }
   .contact-card { height: auto !important; padding: 36px 28px 32px !important; }
   .contact-h2 { font-size: clamp(40px, 10vw, 64px) !important; }
+  .contact-body { font-size: 15px !important; }
   .sect { padding-top: 96px !important; padding-bottom: 96px !important; }
+  .hero-section { padding-top: 40px !important; padding-bottom: 80px !important; }
+  .hero-meta-strip { margin-bottom: 32px !important; }
+  .hero-cta-hint { display: none !important; }
+  .hero-cta-group { width: 100% !important; }
+  .hero-cta-group a { flex: 1 !important; justify-content: center !important; }
+  .hero-subtitle { font-size: 16px !important; }
+  .pinned-head { height: 160vh !important; }
+  .about-note-card { padding: 28px 24px 24px !important; min-height: auto !important; }
+  .about-note-body { font-size: clamp(17px, 4vw, 22px) !important; }
+  .about-stats-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 12px !important; }
+  .about-stat-value { font-size: 22px !important; }
+  .section-head { margin-bottom: 48px !important; flex-direction: column !important; align-items: flex-start !important; }
+  .section-head-sync { display: none !important; }
+  .works-featured-title { font-size: 28px !important; }
+  .works-featured-card { padding: 28px 24px 24px !important; }
 }
 
 @media (max-width: 640px) {
@@ -452,6 +469,15 @@ body::before {
   .lh-grid { grid-template-columns: repeat(2, 1fr) !important; row-gap: 22px !important; }
   .skill-flip { flex: 0 0 82vw !important; width: 82vw !important; }
   .writing-card { flex: 0 0 82vw !important; }
+  .hero-section { padding-top: 32px !important; padding-bottom: 60px !important; }
+  .hero-type-grid { gap: 24px !important; }
+  .hero-cta-group a { padding: 14px 18px !important; font-size: 13px !important; }
+  .pinned-head { height: 140vh !important; }
+  .footer-brand-grid { grid-template-columns: 1fr !important; }
+  .footer-wordmark { font-size: clamp(36px, 10vw, 72px) !important; }
+  .works-featured-title { font-size: 24px !important; }
+  .works-featured-card { padding: 24px 20px 20px !important; }
+  .section-head { margin-bottom: 36px !important; }
 }
 
 @media (max-width: 560px) {
