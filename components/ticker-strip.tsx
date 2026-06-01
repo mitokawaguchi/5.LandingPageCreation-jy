@@ -13,7 +13,7 @@ export function TickerStrip() {
         overflow: 'hidden',
       }}
     >
-      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '0 56px' }}>
+      <div className="studio-container" style={{ maxWidth: 1320, margin: '0 auto', padding: '0 56px' }}>
         <Ticker items={TICKER_ITEMS} speed={32} />
       </div>
     </div>

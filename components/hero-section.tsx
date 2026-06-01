@@ -135,6 +135,7 @@ export function HeroSection() {
     <section
       ref={secRef}
       id="home"
+      className="hero-section"
       style={{
         position: 'relative',
         background: T.bg,
@@ -152,6 +153,7 @@ export function HeroSection() {
       >
         {/* HeroMeta strip */}
         <div
+          className="hero-meta-strip"
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -321,6 +323,7 @@ export function HeroSection() {
         >
           {/* Left: Subtitle */}
           <p
+            className="hero-subtitle"
             style={{
               margin: 0,
               fontFamily: 'var(--font-sans)',
@@ -336,7 +339,7 @@ export function HeroSection() {
           </p>
 
           {/* Right: CTA group */}
-          <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+          <div className="hero-cta-group" style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
             <a
               href="#works"
               onClick={handleScrollToWorks}
@@ -381,6 +384,7 @@ export function HeroSection() {
               {t('learnMore')}
             </a>
             <span
+              className="hero-cta-hint"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',

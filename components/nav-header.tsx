@@ -77,7 +77,7 @@ export function NavHeader() {
         <div style={{ flex: 1 }} />
 
         {/* CTA */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div className="nav-cta" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <a
             href="#contact"
             className="studio-cta-primary"
