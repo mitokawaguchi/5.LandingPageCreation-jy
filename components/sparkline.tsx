@@ -75,7 +75,7 @@ export function Sparkline({
       width={width}
       height={height}
       viewBox={`0 0 ${width} ${height}`}
-      style={{ overflow: 'visible', display: 'block' }}
+      style={{ overflow: 'visible', display: 'block', width: '100%', height: 'auto', maxWidth: width }}
     >
       {fill && fillD && (
         <path
