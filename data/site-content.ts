@@ -113,20 +113,32 @@ export const LIGHTHOUSE: LighthouseScore[] = [
   { label: 'BP', score: 96, color: C.warn },
   { label: 'SEO', score: 100, color: C.green },
 ];
-/* Lighthouse 計測対象の注記 + git log のヘッダ表示 */
+/* Lighthouse 計測対象の注記 */
 export const LIGHTHOUSE_TARGET = 'v0-mit-tech-studio.vercel.app · モバイル / スロットル';
-export const GIT_LOG_TOTAL = 168; // 「showing 6 of 168」の総数
 
-/* git log（実データ。GitHub の最新コミットに置き換え可）
- * [sha, message, time, author, dotColor] */
-export type GitRow = [string, string, string, string, string];
-export const GIT_LOG: GitRow[] = [
-  ['a3f9c12', 'feat(hero): add type-on-mount live phrase rotation', '2h', 'mito', C.accent],
-  ['b9c41a8', 'refactor(about-section): split skill tiles into atoms', '1d', 'mito', C.warn],
-  ['c1d873f', 'chore(deps): bump next, react and tailwind', '3d', 'dependabot', C.sub],
-  ['e4a02bb', 'fix(a11y): respect prefers-reduced-motion in hero', '5d', 'mito', C.green],
-  ['f70e923', 'docs(readme): expand auto-deploy notes', '1w', 'mito', C.sub],
-  ['2bc1077', 'feat(i18n): wire next-intl for /ja and /en', '2w', 'mito', C.purple],
+/* ────────────────────────────────────────────────────────────────────────
+ *  CAREER ログ — 経歴年表（実データ。git log 風のタイプライター演出で表示）
+ *  ヘッダは「career.log · timeline」として表示します（演出は lab-section 側）。
+ *
+ *  ▸ 1 行 = 経歴 1 件。表示は配列の上から順（新しい順に並べる想定）。
+ *  ▸ [year, message, period, org, dotColor]
+ *      year    : 左の識別子（年。SHA の代わり。例 '2024'）
+ *      message : 役割・出来事（タイプライターで打たれる本文）
+ *      period  : 右端の期間表示（例 '2024–' / '2y'）
+ *      org     : 所属・会社（'@org' で表示）
+ *      dotColor: 行頭ドットの色
+ *
+ *  ▼▼▼ 下のサンプルは構成テンプレートです。実際の経歴に置き換えてください ▼▼▼
+ * ──────────────────────────────────────────────────────────────────────── */
+export type CareerRow = [string, string, string, string, string];
+export const CAREER_LOG_TOTAL = 6; // ヘッダの「showing N of M」の総件数
+export const CAREER_LOG: CareerRow[] = [
+  ['2024', 'フロントエンドエンジニアとして自社プロダクト開発に従事', '2024–', 'current-co', C.accent],
+  ['2023', 'Next.js / TypeScript で受託・自社サービスのUIを設計', '2023', 'studio', C.warn],
+  ['2022', 'Webフロントエンド領域で実務をスタート', '2022', 'first-co', C.blue],
+  ['2021', '個人開発・OSS でモダンフロントエンドを習得', '2021', 'personal', C.green],
+  ['2020', '独学でWeb制作・プログラミングを開始', '2020', 'self-taught', C.purple],
+  ['2019', '— ここに最初の経歴を記入 —', '2019', 'origin', C.sub],
 ];
 
 /* ────────────────────────────────────────────────────────────────────────
