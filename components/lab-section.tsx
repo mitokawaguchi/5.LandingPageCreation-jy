@@ -224,7 +224,7 @@ function CareerLog() {
         }}
       >
         <span style={{ width: 6, height: 6, background: T.warn, display: 'inline-block' }} />
-        career.log &middot; timeline
+        git log --oneline &middot; career
         <span style={{ flex: 1, height: 1, background: T.border }} />
         <span>showing {CAREER_ROWS.length} of {CAREER_LOG_TOTAL}</span>
       </div>
