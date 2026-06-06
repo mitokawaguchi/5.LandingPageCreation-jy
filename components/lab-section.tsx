@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { CountUp } from '@/components/count-up';
-import { LANGUAGES, LIGHTHOUSE, GIT_LOG as GIT_ROWS, GIT_LOG_TOTAL, LIGHTHOUSE_TARGET } from '@/data/site-content';
+import { LANGUAGES, LIGHTHOUSE, CAREER_LOG as CAREER_ROWS, CAREER_LOG_TOTAL, LIGHTHOUSE_TARGET } from '@/data/site-content';
 
 /* ─── Design Tokens ─── */
 const T = {
@@ -150,11 +150,11 @@ function LangBar({ name, pct, color }: { name: string; pct: number; color: strin
   );
 }
 
-/* ─── Git Log with typewriter ─── */
-function GitLog() {
+/* ─── Career Log with typewriter（git log 風の演出は維持） ─── */
+function CareerLog() {
   const ref = useRef<HTMLDivElement>(null);
   const [started, setStarted] = useState(false);
-  const [charCounts, setCharCounts] = useState<number[]>(GIT_ROWS.map(() => 0));
+  const [charCounts, setCharCounts] = useState<number[]>(CAREER_ROWS.map(() => 0));
   const [currentRow, setCurrentRow] = useState(0);
   const [allDone, setAllDone] = useState(false);
 
@@ -177,9 +177,9 @@ function GitLog() {
   useEffect(() => {
     if (!started || allDone) return;
 
-    const msg = GIT_ROWS[currentRow][1];
+    const msg = CAREER_ROWS[currentRow][1];
     if (charCounts[currentRow] >= msg.length) {
-      if (currentRow < GIT_ROWS.length - 1) {
+      if (currentRow < CAREER_ROWS.length - 1) {
         const timer = setTimeout(() => setCurrentRow((r) => r + 1), 170);
         return () => clearTimeout(timer);
       }
@@ -224,15 +224,15 @@ function GitLog() {
         }}
       >
         <span style={{ width: 6, height: 6, background: T.warn, display: 'inline-block' }} />
-        git log --oneline &middot; main
+        career.log &middot; timeline
         <span style={{ flex: 1, height: 1, background: T.border }} />
-        <span>showing {GIT_ROWS.length} of {GIT_LOG_TOTAL}</span>
+        <span>showing {CAREER_ROWS.length} of {CAREER_LOG_TOTAL}</span>
       </div>
 
       {/* Graph rail + rows */}
       <div className="gitlog-rows" style={{ position: 'relative' }}>
 
-        {GIT_ROWS.map(([sha, msg, time, author, color], i) => {
+        {CAREER_ROWS.map(([sha, msg, time, author, color], i) => {
           const typed = msg.slice(0, charCounts[i]);
           const rowDone = charCounts[i] >= msg.length;
           const isTyping = i === currentRow && !rowDone;
@@ -497,9 +497,9 @@ export function LabSection() {
             </div>
           </div>
 
-          {/* Full width: Git Log (span 12) */}
+          {/* Full width: Career Log (span 12) */}
           <div style={{ gridColumn: 'span 12', marginTop: 0 }}>
-            <GitLog />
+            <CareerLog />
           </div>
         </div>
       </div>
