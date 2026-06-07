@@ -93,7 +93,7 @@ function WritingCard({ a, i }: { a: CardData; i: number }) {
         transition: 'transform .25s, border-color .25s, box-shadow .25s',
         textDecoration: 'none',
         color: T.ink,
-        flex: '0 0 380px',
+        flex: '0 0 320px',
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontFamily: monoFam, fontSize: 10, letterSpacing: 1.2, textTransform: 'uppercase' }}>
@@ -106,7 +106,7 @@ function WritingCard({ a, i }: { a: CardData; i: number }) {
       </div>
       <div style={{ fontFamily: sansFam, fontSize: 20, color: T.ink, fontWeight: 600, lineHeight: 1.4, letterSpacing: '-0.012em' }}>{a.title}</div>
       <div style={{ flex: 1 }} />
-      <Sparkline values={series(i * 11 + 3, 32, 30, 18)} color={accent} fill={fillCol} width={320} height={36} stroke={1.5} />
+      <Sparkline values={series(i * 11 + 3, 32, 30, 18)} color={accent} fill={fillCol} width={260} height={36} stroke={1.5} />
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, paddingTop: 14, borderTop: `1px solid ${T.border}` }}>
         <SmallStat label="likes" value={<CountUp end={a.likes} />} />
         <SmallStat label="imp" value={<CountUp end={a.impressions} />} />
@@ -122,7 +122,7 @@ export function WritingSection({ articles: dynamicArticles }: { articles?: Writi
     ? dynamicArticles.map(toCardData)
     : STATIC_ARTICLES;
   // duration tuned to card-set width for a ticker-like glide (~44px/s)
-  const setWidth = articles.length * (380 + 20);
+  const setWidth = articles.length * (320 + 20);
   const dur = Math.round(setWidth / 44);
 
   return (
