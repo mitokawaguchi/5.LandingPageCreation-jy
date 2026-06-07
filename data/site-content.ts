@@ -113,20 +113,33 @@ export const LIGHTHOUSE: LighthouseScore[] = [
   { label: 'BP', score: 96, color: C.warn },
   { label: 'SEO', score: 100, color: C.green },
 ];
-/* Lighthouse 計測対象の注記 + git log のヘッダ表示 */
+/* Lighthouse 計測対象の注記 */
 export const LIGHTHOUSE_TARGET = 'v0-mit-tech-studio.vercel.app · モバイル / スロットル';
-export const GIT_LOG_TOTAL = 168; // 「showing 6 of 168」の総数
 
-/* git log（実データ。GitHub の最新コミットに置き換え可）
- * [sha, message, time, author, dotColor] */
-export type GitRow = [string, string, string, string, string];
-export const GIT_LOG: GitRow[] = [
-  ['a3f9c12', 'feat(hero): add type-on-mount live phrase rotation', '2h', 'mito', C.accent],
-  ['b9c41a8', 'refactor(about-section): split skill tiles into atoms', '1d', 'mito', C.warn],
-  ['c1d873f', 'chore(deps): bump next, react and tailwind', '3d', 'dependabot', C.sub],
-  ['e4a02bb', 'fix(a11y): respect prefers-reduced-motion in hero', '5d', 'mito', C.green],
-  ['f70e923', 'docs(readme): expand auto-deploy notes', '1w', 'mito', C.sub],
-  ['2bc1077', 'feat(i18n): wire next-intl for /ja and /en', '2w', 'mito', C.purple],
+/* ────────────────────────────────────────────────────────────────────────
+ *  CAREER ログ — 経歴年表（実データ。git log 風のタイプライター演出で表示）
+ *  ヘッダは「git log --oneline · career」として表示します（演出は lab-section 側）。
+ *
+ *  ▸ 1 行 = 経歴 1 件。表示は配列の上から順（git log と同じく新しい順）。
+ *  ▸ [sha, message, period, author, dotColor]
+ *      sha     : 7 桁の擬似コミットハッシュ（CLI の git log を踏襲）
+ *      message : conventional-commit 風のひとこと（タイプライターで打たれる本文）
+ *      period  : 右端の期間表示（例 '2025–' / '2022–25'）
+ *      author  : '@author' で表示
+ *      dotColor: 行頭ドットの色
+ *
+ *  ※ メッセージは英語・ユーモア（自虐）込みの実経歴。差し替えはこの配列だけでOK。
+ * ──────────────────────────────────────────────────────────────────────── */
+export type CareerRow = [string, string, string, string, string];
+export const CAREER_LOG_TOTAL = 7; // ヘッダの「showing N of M」の総件数
+export const CAREER_LOG: CareerRow[] = [
+  ['c0ffee5', 'feat(brain): outsource thinking to Cursor + Claude (a.k.a. vibe coding)', '2025–', 'mito', C.accent],
+  ['e4d0b91', 'feat(job): pivot to pharma marketing — now hyping molecules for a living', '2025–', 'mito', C.green],
+  ['defaced', 'revert(life): escape real estate after 6 months of documented hell', '2025', 'regret', C.red],
+  ['decade5', "docs(edu): graduate M-University — took 5 years, but who's counting", '2024', 'mito', C.blue],
+  ['faded17', 'chore(retail): fold the same shirts for 3 years @ apparel store', '2022–25', 'mito', C.purple],
+  ['a1b8f3c', 'chore(gym): re-rack weights for 3.5 years — net muscle gain: 0', '2019–22', 'no-gains', C.warn],
+  ['0000001', 'chore: initial commit — enroll at M-University w/ delusional optimism', '2019', 'mito', C.sub],
 ];
 
 /* ────────────────────────────────────────────────────────────────────────
