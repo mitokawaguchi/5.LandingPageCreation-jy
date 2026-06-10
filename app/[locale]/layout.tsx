@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
-import { Noto_Sans_JP, Instrument_Serif } from 'next/font/google';
+import { Noto_Sans_JP } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
@@ -23,19 +23,15 @@ const geistMono = Geist_Mono({
   display: 'swap',
 });
 
+// JP フォントはウェイト数がそのまま CSS / 転送量に跳ね返る（1 ウェイト ≈ 120
+// の unicode-range スライス）ため、実使用の 3 つに絞る。600/800 は最寄りの
+// 500/700 で描画される。
 const notoSansJP = Noto_Sans_JP({
   subsets: ['latin'],
   variable: '--font-noto',
-  weight: ['400', '500', '600', '700', '800'],
+  weight: ['400', '500', '700'],
   display: 'swap',
-});
-
-const instrumentSerif = Instrument_Serif({
-  subsets: ['latin'],
-  variable: '--font-instrument-serif',
-  weight: '400',
-  style: ['normal', 'italic'],
-  display: 'swap',
+  preload: false,
 });
 
 export function generateStaticParams(): { locale: string }[] {
@@ -77,9 +73,17 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
   return (
     <html lang={locale} className="dark scroll-smooth">
       <body
-        className={`${geist.variable} ${geistMono.variable} ${notoSansJP.variable} ${instrumentSerif.variable} font-sans antialiased`}
+        className={`${geist.variable} ${geistMono.variable} ${notoSansJP.variable} font-sans antialiased`}
         style={{ background: '#06070a', color: '#e9edf2' }}
       >
+        {/* 描画前に実行され、イントロ未視聴のセッションだけ intro-pending を立てる
+            （ホームの初回表示をブロックしない仕組み。CSS 側 .intro-gate と対）。 */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{sessionStorage.getItem('mts-intro-seen')||document.documentElement.classList.add('intro-pending')}catch(e){}",
+          }}
+        />
         <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
         <Analytics />
       </body>

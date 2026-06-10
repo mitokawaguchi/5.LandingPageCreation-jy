@@ -54,11 +54,32 @@ const Crosshair = dynamic(
 );
 
 export function HomePageClient({ articles }: { articles?: WritingArticle[] }) {
-  const [intro, setIntro] = useState(true);
-  const [revealed, setRevealed] = useState(false);
+  // イントロは「演出を見ていないセッションの初回」だけ再生する。
+  // 表示制御は SSR HTML をブロックしないよう CSS（html.intro-pending +
+  // .intro-gate / .intro-splash、layout.tsx の pre-paint script）に寄せ、
+  // ここでは演出コンポーネントの mount だけを管理する。
+  const [intro, setIntro] = useState(false);
   const [cmdkOpen, setCmdkOpen] = useState(false);
 
   const closeCmdk = useCallback(() => setCmdkOpen(false), []);
+
+  useEffect(() => {
+    if (document.documentElement.classList.contains('intro-pending')) {
+      setIntro(true);
+    }
+  }, []);
+
+  const handleIntroExitStart = useCallback(() => {
+    // ロゴがナビへ着地し始めたらコンテンツを浮上させる（CSS transition が発火）
+    document.documentElement.classList.remove('intro-pending');
+  }, []);
+
+  const handleIntroDone = useCallback(() => {
+    setIntro(false);
+    try {
+      sessionStorage.setItem('mts-intro-seen', '1');
+    } catch {}
+  }, []);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -75,18 +96,15 @@ export function HomePageClient({ articles }: { articles?: WritingArticle[] }) {
     <main style={{ background: '#06070a', minHeight: '100vh' }}>
       {intro && (
         <StudioIntro
-          onExitStart={() => setRevealed(true)}
-          onDone={() => setIntro(false)}
+          onExitStart={handleIntroExitStart}
+          onDone={handleIntroDone}
         />
       )}
-      <div
-        style={{
-          opacity: (intro && !revealed) ? 0 : 1,
-          filter: (intro && !revealed) ? 'blur(10px)' : 'none',
-          transition: 'opacity .55s ease, filter .55s ease',
-          pointerEvents: (intro && !revealed) ? 'none' : 'auto',
-        }}
-      >
+      {/* JS 到着前から intro-pending 中の画面を覆う静的スプラッシュ（CSS のみ） */}
+      <div className="intro-splash" aria-hidden="true">
+        <span className="intro-splash-mark">M</span>
+      </div>
+      <div className="intro-gate">
         <StatusBar onCmdK={() => setCmdkOpen(true)} />
         <NavHeader />
         <TickerStrip />

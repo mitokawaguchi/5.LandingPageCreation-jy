@@ -48,7 +48,7 @@
 @theme inline {
   --font-sans: var(--font-geist), var(--font-noto), system-ui, 'Hiragino Kaku Gothic ProN', sans-serif;
   --font-mono: var(--font-geist-mono), 'Geist Mono Fallback', monospace;
-  --font-serif: var(--font-instrument-serif), 'Instrument Serif', Georgia, serif;
+  --font-serif: Georgia, 'Times New Roman', serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -294,6 +294,61 @@ body::before {
 
 .intro-overlay.out {
   background: transparent;
+}
+
+/* ─── Intro Gate（イントロ中だけコンテンツを伏せる・SSR 非ブロッキング） ───
+ * html.intro-pending は layout.tsx の pre-paint script が「イントロ未視聴の
+ * セッション」でのみ立てる。リピート訪問はクラスが付かず、HTML 到着と同時に
+ * コンテンツがそのまま描画される（JS 不要）。 */
+.intro-gate {
+  transition: opacity .55s ease, filter .55s ease;
+}
+
+html.intro-pending .intro-gate {
+  opacity: 0;
+  filter: blur(10px);
+  pointer-events: none;
+  /* JS が遅い/無効でも必ず浮上するフェイルセーフ（演出より後に発火） */
+  animation: introGateFailsafe .6s ease 3.6s forwards;
+}
+
+@keyframes introGateFailsafe {
+  to { opacity: 1; filter: none; pointer-events: auto; }
+}
+
+/* JS 到着前の初回ペイントを真っ黒にしない静的スプラッシュ。
+ * 実イントロ（z-index 9999）が被さるので、入れ替わりは見えない。 */
+.intro-splash {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  background: #06070a;
+  align-items: center;
+  justify-content: center;
+}
+
+html.intro-pending .intro-splash {
+  display: flex;
+  animation: introSplashFailsafe .5s ease 3.4s forwards;
+}
+
+@keyframes introSplashFailsafe {
+  to { opacity: 0; visibility: hidden; }
+}
+
+.intro-splash-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: #b5fb6b;
+  color: #0a0c10;
+  font-family: var(--font-sans);
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1;
 }
 
 /* ─── Skill Flip Card (3D) ─── */
