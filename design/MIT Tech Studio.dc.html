@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Geist:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Geist+Mono:wght@400;500&family=Noto+Sans+JP:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{ --accent:#a4d166; --sec-pad: clamp(96px, 13vh, 168px); }
+  *{ box-sizing:border-box; }
+  body, x-dc, x-dc h1, x-dc h2, x-dc h3, x-dc p, x-dc span, x-dc a, x-dc div, x-dc dt, x-dc dd, x-dc li{ font-family:'Geist','Noto Sans JP',system-ui,sans-serif; }
+  x-dc h1, x-dc h2, x-dc h3, x-dc h4, x-dc p, x-dc span, x-dc a, x-dc div, x-dc dt, x-dc dd, x-dc li{ color:#cfd5dd; }
+  x-dc [style*="Geist Mono"], x-dc [style*="'Geist Mono'"]{ font-family:'Geist Mono','Noto Sans JP',monospace !important; }
+  html{ scroll-behavior:smooth; }
+  body{ margin:0; background:#0a0b0e; color:#cfd5dd; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+  ::selection{ background:var(--accent); color:#0c0e12; }
+  body::before{ content:''; position:fixed; inset:0; z-index:0; pointer-events:none; background:radial-gradient(115% 70% at 50% -12%, color-mix(in oklch, var(--accent) 7%, transparent), transparent 56%), radial-gradient(140% 120% at 50% 120%, rgba(0,0,0,.55), transparent 60%); }
+  body::after{ content:''; position:fixed; inset:0; z-index:120; pointer-events:none; opacity:.04; mix-blend-mode:overlay; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  .reveal{ opacity:0; transform:translateY(48px) scale(.98); filter:blur(12px); transition:opacity 1s cubic-bezier(.16,1,.3,1), transform 1s cubic-bezier(.16,1,.3,1), filter 1s cubic-bezier(.16,1,.3,1); }
+  .reveal.in{ opacity:1; transform:none; filter:blur(0); }
+  .reveal.wipe{ clip-path:inset(0 0 108% 0); transition:opacity .2s linear, clip-path 1.05s cubic-bezier(.16,1,.3,1), transform 1.05s cubic-bezier(.16,1,.3,1); filter:none; transform:translateY(8px); }
+  .reveal.wipe.in{ clip-path:inset(-18% -2% -18% -2%); transform:none; }
+  .rise{ opacity:0; transform:translateY(28px); transition:opacity .85s cubic-bezier(.16,1,.3,1), transform .85s cubic-bezier(.16,1,.3,1); }
+  .rise.in{ opacity:1; transform:none; }
+  .flip-card{ perspective:1600px; }
+  .flip-inner{ position:relative; width:100%; height:100%; transition:transform .72s cubic-bezier(.7,0,.2,1); transform-style:preserve-3d; }
+  .flip-card:hover .flip-inner, .flip-card:focus-within .flip-inner{ transform:rotateY(180deg); }
+  .flip-face{ position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; }
+  .nav-link{ position:relative; }
+  .nav-link::after{ content:''; position:absolute; left:14px; right:14px; bottom:4px; height:2px; border-radius:2px; background:var(--accent); transform:scaleX(0); transform-origin:left center; transition:transform .32s cubic-bezier(.16,1,.3,1); }
+  .nav-link:hover::after{ transform:scaleX(1); }
+  .sns-card{ position:relative; overflow:hidden; }
+  .sns-card::before{ content:''; position:absolute; inset:0; pointer-events:none; opacity:0; transition:opacity .4s ease; background:radial-gradient(130% 160% at 0% 50%, color-mix(in srgb, var(--b,#9aa3b0) 24%, transparent), transparent 62%); }
+  .sns-card:hover::before{ opacity:1; }
+  .sns-card:hover{ border-color:var(--b,#33404e) !important; box-shadow:0 16px 44px -20px color-mix(in srgb, var(--b,#000) 55%, transparent); }
+  .sns-card .sns-go{ position:relative; margin-left:auto; opacity:0; transform:translateX(-10px); transition:opacity .32s cubic-bezier(.16,1,.3,1), transform .32s cubic-bezier(.16,1,.3,1); color:var(--b,var(--accent)); font-family:'Geist Mono',monospace; font-size:12px; white-space:nowrap; flex:none; }
+  .sns-card:hover .sns-go{ opacity:1; transform:translateX(0); }
+  .sns-card .sns-ico{ position:relative; transition:transform .35s cubic-bezier(.16,1,.3,1), filter .35s ease; }
+  .sns-card:hover .sns-ico{ transform:scale(1.16) rotate(-5deg); filter:drop-shadow(0 0 9px var(--b)); }
+  .work-card .work-go{ font-family:'Geist Mono',monospace; font-size:22px; line-height:1; color:#4a525f; opacity:.35; transform:translateX(-8px); transition:transform .38s cubic-bezier(.16,1,.3,1), opacity .38s ease, color .38s ease; }
+  .work-card:hover .work-go{ opacity:1; transform:translateX(0); color:var(--accent); }
+  .work-card .work-idx{ transition:color .38s ease; }
+  .work-card:hover .work-idx{ color:var(--accent); }
+  .work-card{ position:relative; overflow:hidden; }
+  .work-card > *{ position:relative; z-index:1; }
+  .work-card::before{ content:''; position:absolute; inset:0; z-index:0; pointer-events:none; opacity:0; transition:opacity .4s ease; background:radial-gradient(130% 170% at 0% 50%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 64%); }
+  .work-card:hover::before{ opacity:1; }
+  .work-card:hover{ border-color:var(--accent) !important; box-shadow:0 16px 44px -20px color-mix(in srgb, var(--accent) 55%, transparent); }
+  .cta .ar{ display:inline-block; transition:transform .3s cubic-bezier(.16,1,.3,1); }
+  .cta:hover .ar{ transform:translateX(4px); }
+  .cta-fill{ position:relative; overflow:hidden; }
+  .cta-fill::after{ content:''; position:absolute; top:0; bottom:0; left:-70%; width:45%; background:linear-gradient(90deg, transparent, rgba(255,255,255,.5), transparent); transform:skewX(-18deg); opacity:0; pointer-events:none; }
+  .cta-fill:hover::after{ animation:ctaSheen .75s ease forwards; }
+  @keyframes ctaSheen{ 0%{ left:-70%; opacity:0; } 25%{ opacity:.85; } 100%{ left:130%; opacity:0; } }
+  .gh-wrap{ position:relative; }
+  .gh-pop{ position:absolute; right:calc(100% + 14px); bottom:0; width:300px; background:#0c0f14; border:1px solid #232932; border-radius:14px; padding:18px; box-shadow:0 26px 64px -26px rgba(0,0,0,.92); opacity:0; transform:translateX(8px) scale(.98); transform-origin:bottom right; pointer-events:none; transition:opacity .25s cubic-bezier(.16,1,.3,1), transform .25s cubic-bezier(.16,1,.3,1); z-index:60; }
+  .gh-pop::after{ content:''; position:absolute; left:100%; top:0; bottom:0; width:14px; }
+  .gh-wrap:hover .gh-pop, .gh-wrap:focus-within .gh-pop{ opacity:1; transform:translateX(0) scale(1); pointer-events:auto; }
+  .cm-wrap{ position:relative; }
+  .cm-pop{ position:absolute; top:calc(100% + 12px); right:0; width:232px; background:#0c0f14; border:1px solid #232932; border-radius:12px; padding:7px; box-shadow:0 24px 60px -24px rgba(0,0,0,.92); opacity:0; transform:translateY(8px) scale(.98); transform-origin:top right; pointer-events:none; transition:opacity .25s cubic-bezier(.16,1,.3,1), transform .25s cubic-bezier(.16,1,.3,1); z-index:60; display:flex; flex-direction:column; gap:2px; }
+  .cm-pop::before{ content:''; position:absolute; top:-14px; left:0; right:0; height:14px; }
+  .cm-wrap:hover .cm-pop, .cm-wrap:focus-within .cm-pop{ opacity:1; transform:none; pointer-events:auto; }
+  .cm-item{ display:flex; align-items:center; gap:11px; padding:9px 11px; border-radius:8px; text-decoration:none; transition:background .2s; }
+  .cm-item:hover{ background:#12161d; }
+  .cm-item img{ width:17px; height:17px; flex:none; display:block; object-fit:contain; }
+  .media-wrap{ position:relative; overflow:hidden; border-radius:18px; background:#0c0f14; }
+  .media-wrap::after{ content:''; position:absolute; inset:0; pointer-events:none; z-index:1; background:radial-gradient(125% 125% at 50% 45%, transparent 50%, rgba(10,11,14,.55) 80%, #0a0b0e 100%); }
+  .media-wrap image-slot, .media-wrap video, .media-wrap img{ display:block; width:100%; height:100%; transition:transform .7s cubic-bezier(.16,1,.3,1); }
+  .media-wrap video, .media-wrap img{ object-fit:cover; }
+  .media-wrap:hover image-slot, .media-wrap:hover video, .media-wrap:hover img{ transform:scale(1.05); }
+  .skill-card:hover{ border-color:color-mix(in srgb, var(--c,#33404e) 45%, #2a3340) !important; }
+  .skill-card .skill-score{ display:inline-block; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+  .skill-card:hover .skill-score{ transform:scale(1.22); }
+  .skill-card:hover .skill-bar{ box-shadow:0 0 14px -1px var(--c); }
+  @keyframes blink{ 0%,49%{opacity:1} 50%,100%{opacity:0} }
+  @keyframes floatGrid{ to{ background-position: 0 -44px, -44px 0; } }
+  @keyframes riseIn{ from{ opacity:0; transform:translateY(26px); } to{ opacity:1; transform:none; } }
+  @keyframes beamSweep{ 0%{ top:-4%; opacity:0; } 12%{ opacity:1; } 78%{ opacity:1; } 100%{ top:104%; opacity:0; } }
+  @keyframes logoDot{ 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:.45; transform:scale(.78); } }
+  /* ===== opening / cursor / kinetic ===== */
+  #intro{ position:fixed; inset:0; z-index:9000; pointer-events:none; }
+  #intro .ipanel{ position:absolute; left:0; right:0; height:50.4%; background:#08090c; transition:transform 1.05s cubic-bezier(.76,0,.24,1); }
+  #intro .itop{ top:0; }
+  #intro .ibot{ bottom:0; }
+  #intro.open .itop{ transform:translateY(-100%); }
+  #intro.open .ibot{ transform:translateY(100%); }
+  #intro .ilogo{ position:absolute; inset:0; z-index:3; display:flex; align-items:center; justify-content:center; transform-origin:center center; }
+  #intro .iseam{ position:absolute; left:0; right:0; top:50%; height:3px; margin-top:-1.5px; z-index:2; background:linear-gradient(90deg, transparent, var(--accent) 18%, #eaffcb 50%, var(--accent) 82%, transparent); box-shadow:0 0 30px 4px var(--accent); transform:scaleX(0); transform-origin:center; opacity:0; mix-blend-mode:screen; transition:transform .55s cubic-bezier(.76,0,.24,1) .14s, opacity .2s ease .14s; }
+  #intro.seam .iseam{ transform:scaleX(1); opacity:1; }
+  #intro.open .iseam{ opacity:0; }
+  #intro .iburst{ opacity:0; transform-box:fill-box; transform-origin:center; }
+  #intro.seam .iburst{ animation:iburst .75s cubic-bezier(.2,.7,.3,1) forwards; }
+  #intro.seam .iburst2{ animation:iburst .95s cubic-bezier(.2,.7,.3,1) .08s forwards; }
+  @keyframes iburst{ 0%{ opacity:.9; r:5px; stroke-width:2.4; } 100%{ opacity:0; r:46px; stroke-width:0.2; } }
+  #intro.seam #iDot{ animation:dotFlash .6s cubic-bezier(.22,1,.36,1) forwards; }
+  #intro.charge #iDot{ animation:dotCharge .5s cubic-bezier(.4,0,.5,1) forwards; }
+  @keyframes dotCharge{ 0%{ opacity:1; transform:scale(1); filter:drop-shadow(0 0 2px var(--accent)); } 45%{ opacity:1; transform:scale(1.28); filter:drop-shadow(0 0 13px var(--accent)) drop-shadow(0 0 4px var(--accent)); } 100%{ opacity:1; transform:scale(1.04); filter:drop-shadow(0 0 6px var(--accent)); } }
+  @keyframes dotFlash{ 0%{ opacity:1; transform:scale(1.04); filter:drop-shadow(0 0 6px var(--accent)); } 26%{ opacity:1; transform:scale(1.95); filter:drop-shadow(0 0 11px var(--accent)) drop-shadow(0 0 26px var(--accent)); } 100%{ opacity:1; transform:scale(1); filter:drop-shadow(0 0 6px var(--accent)); } }
+  #intro .idraw{ stroke-dasharray:100; stroke-dashoffset:100; animation:idraw 1.1s cubic-bezier(.6,.02,.2,1) .15s forwards; }
+  @keyframes idraw{ to{ stroke-dashoffset:0; } }
+  #intro .idot{ opacity:0; transform-box:fill-box; transform-origin:center; animation:idot .5s cubic-bezier(.16,1,.3,1) 1.05s forwards; }
+  @keyframes idot{ 0%{ opacity:0; transform:scale(.2); } 70%{ transform:scale(1.25); } 100%{ opacity:1; transform:scale(1); } }
+  .kc{ display:inline-block; opacity:0; transform:translateY(.62em) rotate(3deg); transition:opacity .6s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1); }
+  .kc.in{ opacity:1; transform:none; }
+  #cursor, #cursorDot{ position:fixed; top:0; left:0; z-index:9500; pointer-events:none; will-change:transform; }
+  #cursor{ width:34px; height:34px; border:1.5px solid #e9edf2; border-radius:50%; margin:-17px 0 0 -17px; opacity:0; mix-blend-mode:difference; transition:width .25s ease, height .25s ease, margin .25s ease, background .25s ease, opacity .3s; }
+  #cursorDot{ transition:opacity .3s; }
+  #cursorDot::after{ content:''; position:absolute; width:9px; height:9px; margin:-4.5px 0 0 -4.5px; background:var(--accent); border-radius:2px; box-shadow:0 0 12px var(--accent), 0 0 4px var(--accent); animation:curSpin 2.6s linear infinite; }
+  @keyframes curSpin{ from{ transform:rotate(0deg); } to{ transform:rotate(360deg); } }
+  body.cursor-hot #cursor{ width:60px; height:60px; margin:-30px 0 0 -30px; background:rgba(233,237,242,.12); opacity:1; }
+  body.cursor-hot #cursorDot::after{ width:6px; height:6px; margin:-3px 0 0 -3px; }
+  @media (hover:none), (pointer:coarse){ #cursor,#cursorDot{ display:none; } }
+  .nav-links{ display:flex; }
+  .nav-burger{ display:none; }
+  .hide-mobile{ display:block; }
+  @media (max-width:820px){
+    .nav-links{ display:none; }
+    .nav-burger{ display:inline-flex; }
+    .hide-mobile{ display:none; }
+  }
+  @media (prefers-reduced-motion:reduce){
+    .reveal{ opacity:1; transform:none; filter:none; }
+    .reveal.wipe{ clip-path:none; }
+    .rise{ opacity:1; transform:none; }
+    .kc{ opacity:1; transform:none; }
+    #intro{ display:none; }
+    [style*="animation"]{ animation:none !important; }
+    html{ scroll-behavior:auto; }
+  }
+</style>
+<script src="./image-slot.js"></script>
+</helmet>
+
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#0a0b0e"/><text x="50" y="62" font-family="Geist,system-ui,sans-serif" font-size="44" font-weight="800" fill="#cfd5dd" text-anchor="middle">M<tspan fill="#a4d166">.</tspan></text></svg></template>
+<div style="font-family:'Geist','Noto Sans JP',system-ui,sans-serif; background:#0c0e12; color:#cfd5dd; min-height:100vh; overflow-x:hidden;">
+
+  <!-- ===== OPENING ===== -->
+  <div id="intro" aria-hidden="true">
+    <div class="ipanel itop"></div>
+    <div class="ipanel ibot"></div>
+    <div class="iseam"></div>
+    <div class="ilogo">
+      <svg viewBox="0 0 120 100" width="clamp(120px,16vw,200px)" height="auto" xmlns="http://www.w3.org/2000/svg" style="width:clamp(120px,16vw,200px); height:auto; overflow:visible;">
+        <path class="idraw" pathLength="100" d="M14 80 V26 L42 54 L70 26 V80" fill="none" stroke="#e9edf2" stroke-width="12" stroke-linejoin="round" stroke-linecap="round"></path>
+        <rect id="iDot" class="idot" x="90" y="74" width="12" height="12" rx="2" fill="var(--accent)"></rect>
+        <circle class="iburst" cx="96" cy="80" r="5" fill="none" stroke="var(--accent)" stroke-width="2"></circle>
+        <circle class="iburst iburst2" cx="96" cy="80" r="5" fill="none" stroke="var(--accent)" stroke-width="1.4"></circle>
+      </svg>
+    </div>
+  </div>
+
+  <div id="cursor"></div>
+  <div id="cursorDot"></div>
+
+
+  <!-- ===== NAV ===== -->
+  <nav style="position:fixed; top:0; left:0; right:0; z-index:50; display:flex; align-items:center; justify-content:space-between; padding:16px clamp(20px,5vw,56px); background:rgba(7,8,11,.72); backdrop-filter:blur(14px); border-bottom:1px solid #14181f;">
+    <a href="#home" onClick="{{ goHome }}" style="display:flex; align-items:center; gap:13px; text-decoration:none; color:inherit;">
+      <span id="navLogoMark" style="display:inline-flex; width:32px; height:32px; align-items:center; justify-content:center;"><svg viewBox="0 0 120 100" width="34" height="28" xmlns="http://www.w3.org/2000/svg" aria-label="MIT Tech Studio logo"><path d="M14 80 V26 L42 54 L70 26 V80" fill="none" stroke="#e9edf2" stroke-width="12" stroke-linejoin="round" stroke-linecap="round"></path><rect x="90" y="74" width="12" height="12" rx="2" fill="var(--accent)" style="transform-box:fill-box; transform-origin:center; animation:logoDot 2.6s ease-in-out infinite;"></rect></svg></span>
+      <span style="display:flex; flex-direction:column; line-height:1;">
+        <span style="font-weight:700; font-size:14px; letter-spacing:-0.01em;">MIT Tech Studio</span>
+        <span style="font-family:'Geist Mono',monospace; font-size:10px; color:#5b6471; letter-spacing:.06em; margin-top:3px;">rev.07 · tokyo</span>
+      </span>
+    </a>
+
+    <div class="nav-links" style="align-items:center; gap:6px;">
+      <sc-for list="{{ navLinks }}" as="link" hint-placeholder-count="4">
+        <a href="{{ link.href }}" class="nav-link" style="text-decoration:none; color:#aab2bd; font-size:14px; font-weight:500; padding:9px 14px 11px; border-radius:8px; transition:color .2s, background .2s;" style-hover="color:var(--accent); background:#10141a;">{{ link.label }}</a>
+      </sc-for>
+      <div class="cm-wrap" style="margin-left:10px;">
+      <a href="#contact" style="text-decoration:none; display:inline-flex; align-items:center; gap:8px; background:var(--accent); color:#0c0e12; font-weight:600; font-size:14px; padding:10px 18px; border-radius:9px; transition:transform .15s, box-shadow .2s;" style-hover="transform:translateY(-1px); box-shadow:0 8px 24px -8px var(--accent);">お問い合わせ</a>
+        <div class="cm-pop">
+          <a href="mailto:contact@mittechstudio.com" class="cm-item">
+            <img data-src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='%23ffb648' d='M2 5a1 1 0 0 1 1-1h18a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5zm2 1.2V18h16V6.2l-8 5-8-5z'/%3E%3C/svg%3E" alt="Email" />
+            <span style="display:flex; flex-direction:column; line-height:1.25; min-width:0;">
+              <span style="font-size:13px; font-weight:600; color:#cfd5dd;">メール</span>
+              <span style="font-family:'Geist Mono',monospace; font-size:10px; color:#6b7480; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">contact@mittechstudio.com</span>
+            </span>
+          </a>
+          <a href="https://github.com/mitokawaguchi" target="_blank" class="cm-item"><img data-src="https://cdn.simpleicons.org/github/e9edf2" alt="GitHub" /><span style="font-size:13px; font-weight:500; color:#cfd5dd;">GitHub</span></a>
+          <a href="https://x.com/mito_112_" target="_blank" class="cm-item"><img data-src="https://cdn.simpleicons.org/x/e9edf2" alt="X" /><span style="font-size:13px; font-weight:500; color:#cfd5dd;">X</span></a>
+          <a href="https://zenn.dev/mitokawaguchi" target="_blank" class="cm-item"><img data-src="https://cdn.simpleicons.org/zenn/3EA8FF" alt="Zenn" /><span style="font-size:13px; font-weight:500; color:#cfd5dd;">Zenn</span></a>
+        </div>
+      </div>
+    </div>
+
+    <button class="nav-burger" onClick="{{ toggleMenu }}" aria-label="menu" style="display:none; width:42px; height:42px; align-items:center; justify-content:center; background:#10141a; border:1px solid #1b1f27; border-radius:10px; cursor:pointer;">
+      <span style="display:flex; flex-direction:column; gap:5px;">
+        <span style="width:18px; height:2px; background:#cfd5dd; border-radius:2px;"></span>
+        <span style="width:18px; height:2px; background:#cfd5dd; border-radius:2px;"></span>
+      </span>
+    </button>
+  </nav>
+
+  <!-- ===== MOBILE MENU ===== -->
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; inset:0; z-index:60; background:rgba(7,8,11,.97); backdrop-filter:blur(20px); display:flex; flex-direction:column; padding:24px clamp(20px,6vw,40px);">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:48px;">
+        <span style="font-weight:700; font-size:15px;">MIT Tech Studio</span>
+        <button onClick="{{ toggleMenu }}" aria-label="close" style="width:42px; height:42px; background:#10141a; border:1px solid #1b1f27; border-radius:10px; color:#cfd5dd; font-size:20px; cursor:pointer;">×</button>
+      </div>
+      <sc-for list="{{ navLinks }}" as="link" hint-placeholder-count="4">
+        <a href="{{ link.href }}" onClick="{{ toggleMenu }}" style="text-decoration:none; color:#cfd5dd; font-size:34px; font-weight:600; letter-spacing:-0.02em; padding:14px 0; border-bottom:1px solid #14181f;">{{ link.label }}</a>
+      </sc-for>
+      <a href="#contact" onClick="{{ toggleMenu }}" style="margin-top:auto; text-align:center; text-decoration:none; background:var(--accent); color:#0c0e12; font-weight:600; font-size:17px; padding:18px; border-radius:12px;">お問い合わせ →</a>
+    </div>
+  </sc-if>
+
+  <!-- ===== HERO ===== -->
+  <section id="home" style="position:relative; min-height:clamp(620px,90vh,1000px); display:flex; flex-direction:column; justify-content:center; padding:clamp(96px,12vh,132px) clamp(20px,5vw,56px) clamp(60px,9vh,120px);">
+    <div aria-hidden="true" data-parallax="0.18" style="position:absolute; inset:-12% 0; background-image:linear-gradient(#10141a 1px,transparent 1px),linear-gradient(90deg,#10141a 1px,transparent 1px); background-size:44px 44px; mask-image:radial-gradient(ellipse 90% 60% at 50% 0%, #000 0%, transparent 72%); -webkit-mask-image:radial-gradient(ellipse 90% 60% at 50% 0%, #000 0%, transparent 72%); opacity:.6; pointer-events:none; animation:floatGrid 7s linear infinite;"></div>
+
+    <img src="uploads/Gemini_Generated_Image_d311dzd311dzd311.png" alt="" aria-hidden="true" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 35%; z-index:0; pointer-events:none;" />
+    <div aria-hidden="true" style="position:absolute; inset:0; z-index:0; pointer-events:none; background:linear-gradient(90deg, rgba(10,11,14,.72) 0%, rgba(10,11,14,.42) 36%, rgba(10,11,14,.08) 70%, transparent 100%), linear-gradient(180deg, transparent 38%, rgba(10,11,14,.55) 70%, #0a0b0e 100%);"></div>
+    <div aria-hidden="true" style="position:absolute; right:0; bottom:0; width:180px; height:150px; z-index:0; pointer-events:none; background:radial-gradient(120px 110px at 100% 100%, #0a0b0e 45%, transparent 78%);"></div>
+
+    <div style="position:relative; max-width:1240px; margin:0; display:flex; align-items:center; gap:clamp(32px,5vw,72px); flex-wrap:wrap;">
+      <div style="flex:1 1 520px; min-width:300px;">
+      <div style="position:relative; padding-bottom:.1em;">
+        <div aria-hidden="true" style="position:absolute; left:-2%; width:104%; height:2px; top:0; background:linear-gradient(90deg, transparent, var(--accent) 30%, #f0ffd0 50%, var(--accent) 70%, transparent); box-shadow:0 0 26px 3px var(--accent); opacity:0; mix-blend-mode:screen; pointer-events:none; animation:beamSweep 1.5s cubic-bezier(.45,.05,.35,1) .1s forwards;"></div>
+        <h1 class="hero-line" style="margin:0; font-weight:800; font-size:clamp(46px,8vw,132px); line-height:1.0; letter-spacing:-0.045em; color:#cfd5dd;">
+          <span class="rise" style="display:block;">Engineering</span>
+          <span class="rise" style="display:block; font-weight:500; color:#6b7480; font-size:.42em; letter-spacing:-0.01em; margin:.08em 0 .04em;">meets</span>
+          <span class="rise" style="display:block; color:var(--accent);">Creativity<span style="color:#5b6471;">.</span></span>
+        </h1>
+      </div>
+
+      <div class="rise" style="margin-top:clamp(30px,5.25vh,54px);">
+        <p style="margin:0; font-size:clamp(16px,2vw,20px); line-height:1.7; color:#9aa3b0; max-width:560px;">技術力とデザインの融合。精密かつエレガントなWeb体験を創造し、ビジネスの未来を加速させます。</p>
+      </div>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ABOUT ===== -->
+  <section id="about" style="position:relative; overflow:hidden; padding:clamp(28px,4vh,56px) clamp(20px,5vw,56px) var(--sec-pad); margin-top:clamp(-90px,-11vh,-56px);">
+    <img src="uploads/Gemini_Generated_Image_8jay6h8jay6h8jay.png" alt="" aria-hidden="true" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 62%; z-index:0; pointer-events:none;" />
+    <div aria-hidden="true" style="position:absolute; inset:0; z-index:0; pointer-events:none; background:linear-gradient(90deg, rgba(8,9,12,.96) 0%, rgba(8,9,12,.9) 50%, rgba(8,9,12,.62) 100%);"></div>
+    <div style="position:relative; z-index:1; max-width:1240px; margin:0 auto;">
+      <div class="reveal" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:clamp(28px,4vw,56px); align-items:stretch;">
+          <div style="display:flex; flex-direction:column;">
+          <h2 class="reveal wipe" style="margin:0 0 clamp(30px,5vh,46px); font-family:'Geist','Noto Sans JP',sans-serif; color:#f5f7fa; font-size:clamp(32px,4.5vw,58px); font-weight:700; line-height:1.12; letter-spacing:-0.03em;">デザインと<br>エンジニアリングの<br>境界をなくす。</h2>
+          <p style="margin:clamp(24px,4vh,44px) 0 32px; font-family:'Geist','Noto Sans JP',sans-serif; font-size:clamp(15px,1.7vw,18px); line-height:1.85; color:#c3cad3; max-width:560px;">私たちは、単に美しいだけのサイトはつくりません。課題を解決する「機能美」と、人の心を動かす「体験」を、ひとつに両立させます。</p>
+          <div style="display:flex; gap:clamp(24px,4vw,48px); flex-wrap:wrap; margin-top:auto;">
+            <sc-for list="{{ stats }}" as="s" hint-placeholder-count="3">
+              <div>
+                <div style="font-size:clamp(24px,3vw,34px); font-weight:700; letter-spacing:-0.02em;">{{ s.value }}</div>
+                <div style="font-family:'Geist Mono',monospace; font-size:11px; color:#6b7480; letter-spacing:.06em; margin-top:6px;">{{ s.label }}</div>
+              </div>
+            </sc-for>
+          </div>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr; gap:12px; align-content:start;">
+        <sc-for list="{{ skills }}" as="sk" hint-placeholder-count="4">
+          <div class="reveal skill-card" data-c="{{ sk.color }}" style="background:rgba(12,15,20,.62); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,.08); border-radius:16px; padding:26px; transition:opacity .8s cubic-bezier(.16,1,.3,1), transform .4s cubic-bezier(.22,1,.36,1), border-color .3s, box-shadow .5s cubic-bezier(.22,1,.36,1);" style-hover="border-color:#33404e; transform:translateY(-5px); box-shadow:0 26px 54px -30px rgba(0,0,0,.85);">
+            <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:18px;">
+              <span style="font-weight:600; font-size:16px;">{{ sk.label }}</span>
+              <span class="skill-score" style="font-family:'Geist Mono',monospace; font-size:13px; color:{{ sk.color }};"><span data-countup="{{ sk.score }}">0</span></span>
+            </div>
+            <div style="height:5px; border-radius:3px; background:#181d25; overflow:hidden; margin-bottom:18px;">
+              <div data-bar="{{ sk.score }}" class="skill-bar" style="height:100%; width:0; border-radius:3px; background:{{ sk.color }}; transition:width 1.2s cubic-bezier(.16,1,.3,1), box-shadow .4s ease;"></div>
+            </div>
+            <div style="display:flex; flex-wrap:wrap; gap:7px;">
+              <sc-for list="{{ sk.stack }}" as="tag" hint-placeholder-count="3">
+                <span style="font-family:'Geist Mono',monospace; font-size:11px; color:#7b8593; padding:4px 9px; background:#10141a; border-radius:6px;">{{ tag }}</span>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+          </div>
+        </div>
+    </div>
+  </section>
+
+  <!-- ===== WORKS ===== -->
+  <section id="works" style="position:relative; padding:var(--sec-pad) clamp(20px,5vw,56px);">
+    <img src="uploads/Gemini_Generated_Image_xw2w4sxw2w4sxw2w.png" alt="" aria-hidden="true" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; z-index:0; pointer-events:none; opacity:1;" />
+    <div aria-hidden="true" style="position:absolute; inset:0; z-index:0; pointer-events:none; background:linear-gradient(180deg, rgba(10,11,14,.34) 0%, rgba(10,11,14,.55) 50%, rgba(10,11,14,.9) 90%);"></div>
+    <div aria-hidden="true" style="position:absolute; right:0; bottom:0; width:200px; height:160px; z-index:0; pointer-events:none; background:radial-gradient(140px 120px at 100% 100%, #0a0b0e 50%, transparent 80%);"></div>
+    <div style="position:relative; z-index:1; max-width:1240px; margin:0 auto;">
+      <div class="reveal" style="position:relative; z-index:20; display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:16px; margin-bottom:clamp(40px,7vh,64px);">
+        <div>
+          <h2 class="reveal wipe" style="margin:0; font-size:clamp(40px,5.5vw,76px); font-weight:700; letter-spacing:-0.03em;">Selected Works</h2>
+        </div>
+        <div class="gh-wrap">
+        <a href="https://github.com/mitokawaguchi" target="_blank" class="cta" style="display:inline-flex; align-items:center; gap:8px; text-decoration:none; font-family:'Geist Mono',monospace; font-size:13px; color:#cfd5dd; border:1px solid #232932; border-radius:10px; padding:11px 18px; transition:border-color .25s, background .25s, transform .15s, color .25s, box-shadow .25s;" style-hover="border-color:var(--accent); background:#0e1116; transform:translateY(-2px); color:var(--accent); box-shadow:0 12px 30px -14px var(--accent);">all on github <span class="ar">↗</span></a>
+          <div class="gh-pop">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+              <img data-src="https://cdn.simpleicons.org/github/e9edf2" alt="GitHub" width="22" height="22" style="display:block; flex:none;" />
+              <span style="display:flex; flex-direction:column; line-height:1.25; min-width:0;">
+                <span style="font-size:14px; font-weight:600; color:#cfd5dd;">@mitokawaguchi</span>
+                <span style="font-family:'Geist Mono',monospace; font-size:11px; color:#6b7480;">github.com/mitokawaguchi</span>
+              </span>
+              <span style="margin-left:auto; font-family:'Geist Mono',monospace; font-size:11px; color:var(--accent);">● active</span>
+            </div>
+            <div style="display:flex; gap:8px; margin-bottom:16px;">
+              <div style="flex:1; background:#10141a; border:1px solid #1b212a; border-radius:9px; padding:10px 11px;"><div style="font-family:'Geist Mono',monospace; font-size:18px; font-weight:600; color:#cfd5dd;">24</div><div style="font-family:'Geist Mono',monospace; font-size:10px; color:#6b7480; letter-spacing:.06em; margin-top:3px;">REPOS</div></div>
+              <div style="flex:1; background:#10141a; border:1px solid #1b212a; border-radius:9px; padding:10px 11px;"><div style="font-family:'Geist Mono',monospace; font-size:18px; font-weight:600; color:#cfd5dd;">32</div><div style="font-family:'Geist Mono',monospace; font-size:10px; color:#6b7480; letter-spacing:.06em; margin-top:3px;">STARS</div></div>
+              <div style="flex:1; background:#10141a; border:1px solid #1b212a; border-radius:9px; padding:10px 11px;"><div style="font-family:'Geist Mono',monospace; font-size:18px; font-weight:600; color:#cfd5dd;">18</div><div style="font-family:'Geist Mono',monospace; font-size:10px; color:#6b7480; letter-spacing:.06em; margin-top:3px;">FOLLOWERS</div></div>
+            </div>
+            <div style="font-family:'Geist Mono',monospace; font-size:10px; color:#6b7480; letter-spacing:.1em; margin-bottom:9px;">LANGUAGES</div>
+            <div style="display:flex; height:7px; border-radius:4px; overflow:hidden; margin-bottom:11px;">
+              <span style="width:58%; background:#3178c6;"></span>
+              <span style="width:34%; background:#f1e05a;"></span>
+              <span style="width:8%; background:#6b7480;"></span>
+            </div>
+            <div style="display:flex; flex-wrap:wrap; gap:10px; font-family:'Geist Mono',monospace; font-size:11px; color:#8b94a1;">
+              <span style="display:inline-flex; align-items:center; gap:6px;"><span style="width:7px; height:7px; border-radius:50%; background:#3178c6;"></span>TS 58%</span>
+              <span style="display:inline-flex; align-items:center; gap:6px;"><span style="width:7px; height:7px; border-radius:50%; background:#f1e05a;"></span>JS 34%</span>
+              <span style="display:inline-flex; align-items:center; gap:6px;"><span style="width:7px; height:7px; border-radius:50%; background:#6b7480;"></span>MD 8%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <sc-for list="{{ works }}" as="w" hint-placeholder-count="3">
+          <a href="{{ w.url }}" target="_blank" class="reveal work-card" style="text-decoration:none; color:inherit; display:grid; grid-template-columns:auto 1fr auto auto; gap:clamp(16px,3vw,40px); align-items:center; background:#0c0f14; border:1px solid #161b22; border-radius:18px; padding:clamp(22px,3vw,32px); transition:opacity .8s cubic-bezier(.16,1,.3,1), transform .35s cubic-bezier(.22,1,.36,1), border-color .3s, background .3s, box-shadow .5s cubic-bezier(.22,1,.36,1);" style-hover="background:#0e1218; transform:translateY(-5px);">
+            <span class="work-idx" style="font-family:'Geist Mono',monospace; font-size:14px; color:#4a525f;">{{ w.idx }}</span>
+            <span style="min-width:0;">
+              <span style="display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:10px;">
+                <span style="font-size:clamp(19px,2.4vw,26px); font-weight:600; letter-spacing:-0.01em;">{{ w.name }}</span>
+                <span style="font-family:'Geist Mono',monospace; font-size:11px; color:var(--accent); border:1px solid #232932; border-radius:20px; padding:3px 10px;">{{ w.lang }}</span>
+              </span>
+              <span style="display:block; font-size:14px; line-height:1.6; color:#8b94a1; max-width:640px;">{{ w.desc }}</span>
+            </span>
+            <span class="hide-mobile" style="text-align:right;">
+              <span style="display:block; font-family:'Geist Mono',monospace; font-size:22px; font-weight:500; color:#cfd5dd;">{{ w.commits }}</span>
+              <span style="display:block; font-family:'Geist Mono',monospace; font-size:10px; color:#6b7480; letter-spacing:.08em; margin-top:4px;">COMMITS</span>
+            </span>
+            <span class="work-go" aria-hidden="true">→</span>
+          </a>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== WRITING ===== -->
+  <section id="writing" style="position:relative; overflow:hidden; padding:var(--sec-pad) clamp(20px,5vw,56px);">
+    <img src="uploads/Gemini_Generated_Image_kwjtodkwjtodkwjt.png" alt="" aria-hidden="true" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; z-index:0; pointer-events:none; opacity:.5;" />
+    <div aria-hidden="true" style="position:absolute; inset:0; z-index:0; pointer-events:none; background:linear-gradient(180deg, rgba(10,11,14,.72) 0%, rgba(10,11,14,.82) 45%, rgba(10,11,14,.95) 90%);"></div>
+    <div aria-hidden="true" style="position:absolute; right:0; bottom:0; width:200px; height:160px; z-index:0; pointer-events:none; background:radial-gradient(140px 120px at 100% 100%, #0a0b0e 50%, transparent 80%);"></div>
+    <div style="position:relative; z-index:1; max-width:1240px; margin:0 auto;">
+      <h2 class="reveal wipe" style="margin:0 0 clamp(40px,7vh,64px); font-size:clamp(32px,4.5vw,56px); font-weight:700; letter-spacing:-0.03em;">執筆記事</h2>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px;">
+        <sc-for list="{{ articles }}" as="a" hint-placeholder-count="3">
+          <div class="reveal flip-card" style="min-height:232px;">
+            <div class="flip-inner">
+              <!-- FRONT -->
+              <a href="{{ a.url }}" target="_blank" class="flip-face" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; background:#0c0f14; border:1px solid #161b22; border-radius:16px; padding:24px; transition:border-color .3s;" style-hover="border-color:#33404e;">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:18px;">
+                  <span style="display:inline-flex; align-items:center; gap:6px; font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:.06em; color:{{ a.color }}; border:1px solid #232932; border-radius:6px; padding:3px 9px;"><sc-if value="{{ a.icon }}" hint-placeholder-val="{{ false }}"><img data-src="{{ a.icon }}" alt="{{ a.source }}" width="13" height="13" style="display:block;" /></sc-if>{{ a.source }}</span>
+                  <span style="font-family:'Geist Mono',monospace; font-size:11px; color:#6b7480;">{{ a.date }}</span>
+                </div>
+                <div style="font-size:16px; font-weight:600; line-height:1.5; letter-spacing:-0.01em; flex:1; margin-bottom:22px;">{{ a.title }}</div>
+                <div style="display:flex; align-items:center; font-family:'Geist Mono',monospace; font-size:12px; color:#7b8593;">
+                  <span style="display:flex; gap:18px;"><span>♥ {{ a.likes }}</span><span>◉ {{ a.impressions }}</span></span>
+                </div>
+              </a>
+              <!-- BACK -->
+              <a href="{{ a.url }}" target="_blank" class="flip-face" style="transform:rotateY(180deg); text-decoration:none; color:inherit; display:flex; flex-direction:column; background:#0e1218; border:1px solid {{ a.color }}; border-radius:16px; padding:24px;">
+                <span style="font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:.06em; color:{{ a.color }}; margin-bottom:14px;">SUMMARY — {{ a.source }}</span>
+                <p style="margin:0; flex:1; font-size:14px; line-height:1.7; color:#aab2bd;">{{ a.summary }}</p>
+                <span style="margin-top:16px; font-family:'Geist Mono',monospace; font-size:12px; color:{{ a.color }};">記事を読む →</span>
+              </a>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONTACT ===== -->
+  <section id="contact" style="position:relative; overflow:hidden; padding:var(--sec-pad) clamp(20px,5vw,56px);">
+    <img src="uploads/Gemini_Generated_Image_n0fjx4n0fjx4n0fj-e0d2ac07.png" alt="" aria-hidden="true" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; z-index:0; pointer-events:none; opacity:1;" />
+    <div aria-hidden="true" style="position:absolute; inset:0; z-index:0; pointer-events:none; background:linear-gradient(180deg, rgba(10,11,14,.34) 0%, rgba(10,11,14,.55) 50%, rgba(10,11,14,.9) 90%);"></div>
+    <div aria-hidden="true" style="position:absolute; right:0; bottom:0; width:200px; height:160px; z-index:0; pointer-events:none; background:radial-gradient(140px 120px at 100% 100%, #0a0b0e 50%, transparent 80%);"></div>
+    <div style="position:relative; z-index:1; max-width:1240px; margin:0 auto;">
+      <div style="display:flex; gap:clamp(32px,5vw,64px); align-items:stretch; justify-content:space-between; flex-wrap:wrap; margin:0 0 clamp(34px,5vh,48px);">
+        <div style="flex:1 1 340px; min-width:260px; display:flex; flex-direction:column; justify-content:space-between; gap:clamp(28px,4.5vh,48px);">
+          <div style="display:flex; flex-direction:column; gap:clamp(16px,2.5vh,24px);">
+          <h2 class="reveal wipe" style="margin:0; font-size:clamp(40px,6vw,84px); font-weight:800; line-height:1.02; letter-spacing:-0.04em;">一緒に<br><span style="color:var(--accent);">つくりませんか？</span></h2>
+          <p class="reveal" style="margin:clamp(12px,2vh,22px) 0 0; font-size:clamp(16px,1.9vw,19px); line-height:1.7; color:#9aa3b0; max-width:560px;">新規プロジェクトのご相談、技術的なパートナーシップなど、お気軽にお問い合わせください。</p>
+          </div>
+          <a href="mailto:contact@mittechstudio.com" class="sns-card reveal" data-brand="#ffb648" style="max-width:420px; text-decoration:none; display:flex; align-items:center; gap:14px; border:1px solid #1b212a; border-radius:14px; padding:18px 20px; transition:border-color .3s, background .3s, transform .35s cubic-bezier(.22,1,.36,1), box-shadow .35s ease;" style-hover="background:#0e1218; transform:translateY(-3px);">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ffb648' d='M2 5a1 1 0 0 1 1-1h18a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5zm2 1.2V18h16V6.2l-8 5-8-5z'/%3E%3C/svg%3E" alt="Email" width="24" height="24" class="sns-ico" style="display:block; flex:none;" />
+            <span style="display:flex; flex-direction:column; line-height:1.3; min-width:0;">
+              <span style="font-size:15px; font-weight:600; color:#cfd5dd;">Email</span>
+              <span style="font-family:'Geist Mono',monospace; font-size:12px; color:#8b94a1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">contact@mittechstudio.com</span>
+            </span>
+            <span class="sns-go">メールする ↗</span>
+          </a>
+        </div>
+        <div class="reveal flip-card" style="flex:0 0 auto; width:340px; max-width:100%; height:410px;">
+          <div class="flip-inner">
+          <div class="flip-face" style="background:#0c0f14; border:1px solid #161b22; border-radius:16px; padding:20px 24px; display:flex; flex-direction:column; justify-content:space-between;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="width:6px; height:6px; border-radius:50%; background:var(--accent); box-shadow:0 0 8px var(--accent);"></span>
+              <span style="font-family:'Geist Mono',monospace; font-size:12px; color:#e9edf2; font-weight:500;">HQ · Tokyo, JP</span>
+            </div>
+            <span style="font-family:'Geist Mono',monospace; font-size:11px; color:#6b7480;">35.68°N 139.69°E</span>
+          </div>
+          <svg viewBox="0 0 180 210" width="100%" style="display:block; width:100%; max-width:240px; aspect-ratio:180/210; flex:none; align-self:center; margin:6px auto;">
+            <sc-for list="{{ mapDots }}" as="d" hint-placeholder-count="120">
+              <rect x="{{ d.x }}" y="{{ d.y }}" width="4.6" height="4.6" fill="{{ d.fill }}" opacity="{{ d.opacity }}"></rect>
+            </sc-for>
+            <circle cx="123" cy="135" r="4" style="fill:var(--accent);"></circle>
+            <circle cx="123" cy="135" r="8" style="fill:none; stroke:var(--accent); stroke-width:0.6; opacity:0.6;">
+              <animate attributeName="r" from="4" to="14" dur="2s" repeatCount="indefinite"></animate>
+              <animate attributeName="opacity" from="0.7" to="0" dur="2s" repeatCount="indefinite"></animate>
+            </circle>
+            <circle cx="123" cy="135" r="8" style="fill:none; stroke:var(--accent); stroke-width:0.4; opacity:0.4;">
+              <animate attributeName="r" from="6" to="20" dur="2.5s" repeatCount="indefinite"></animate>
+              <animate attributeName="opacity" from="0.5" to="0" dur="2.5s" repeatCount="indefinite"></animate>
+            </circle>
+          </svg>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; font-family:'Geist Mono',monospace; font-size:11px; color:#6b7480;">
+            <div style="display:flex; gap:16px;"><span>ping 18ms</span><span>uptime 99.98%</span></div>
+            <span style="color:var(--accent);">● live</span>
+          </div>
+          </div>
+          <div class="flip-face" style="transform:rotateY(180deg); background:#0c0f14; border:1px solid #161b22; border-radius:16px; padding:22px 24px; display:flex; flex-direction:column;">
+            <div style="font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:.14em; color:var(--accent); margin-bottom:20px;">会社概要 / OVERVIEW</div>
+            <dl style="margin:0; display:flex; flex-direction:column; gap:14px; flex:1;">
+              <div style="display:flex; justify-content:space-between; gap:16px; align-items:baseline;"><dt style="font-family:'Geist Mono',monospace; font-size:11px; color:#6b7480;">屋号</dt><dd style="margin:0; font-size:13px; color:#cfd5dd; font-weight:600;">MIT Tech Studio</dd></div>
+              <div style="display:flex; justify-content:space-between; gap:16px; align-items:baseline;"><dt style="font-family:'Geist Mono',monospace; font-size:11px; color:#6b7480;">代表</dt><dd style="margin:0; font-size:13px; color:#cfd5dd;">Mito Kawaguchi</dd></div>
+              <div style="display:flex; justify-content:space-between; gap:16px; align-items:baseline;"><dt style="font-family:'Geist Mono',monospace; font-size:11px; color:#6b7480;">設立</dt><dd style="margin:0; font-size:13px; color:#cfd5dd;">2025.08</dd></div>
+              <div style="display:flex; justify-content:space-between; gap:16px; align-items:baseline;"><dt style="font-family:'Geist Mono',monospace; font-size:11px; color:#6b7480;">拠点</dt><dd style="margin:0; font-size:13px; color:#cfd5dd;">Tokyo, Japan</dd></div>
+              <div style="display:flex; justify-content:space-between; gap:16px; align-items:baseline;"><dt style="font-family:'Geist Mono',monospace; font-size:11px; color:#6b7480;">事業</dt><dd style="margin:0; font-size:13px; color:#cfd5dd;">Web開発・デザイン</dd></div>
+              <div style="display:flex; justify-content:space-between; gap:16px; align-items:baseline;"><dt style="font-family:'Geist Mono',monospace; font-size:11px; color:#6b7480;">連絡</dt><dd style="margin:0; font-family:'Geist Mono',monospace; font-size:11px; color:var(--accent);">contact@mittechstudio.com</dd></div>
+            </dl>
+          </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal" style="margin-top:clamp(44px,7vh,72px); display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:10px;">
+        <sc-for list="{{ channels }}" as="c" hint-placeholder-count="6">
+          <a href="{{ c.url }}" target="_blank" class="sns-card" data-brand="{{ c.brand }}" style="text-decoration:none; display:flex; align-items:center; gap:13px; border:1px solid #1b212a; border-radius:12px; padding:14px 16px; transition:border-color .3s, background .3s, transform .35s cubic-bezier(.22,1,.36,1), box-shadow .35s ease;" style-hover="background:#0e1218; transform:translateY(-3px);">
+            <img data-src="{{ c.icon }}" alt="{{ c.label }}" width="20" height="20" class="sns-ico" style="display:block; flex:none;" />
+            <span style="display:flex; flex-direction:column; line-height:1.3; min-width:0;">
+              <span style="font-size:14px; font-weight:600; color:#cfd5dd;">{{ c.label }}</span>
+              <span style="font-family:'Geist Mono',monospace; font-size:11px; color:#6b7480; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ c.handle }}</span>
+            </span>
+            <span class="sns-go">{{ c.cta }}</span>
+          </a>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer style="border-top:1px solid #11151b; padding:clamp(40px,6vh,64px) clamp(20px,5vw,56px) clamp(32px,5vh,48px);">
+    <div style="max-width:1240px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:20px;">
+      <div style="display:flex; align-items:center; gap:13px;">
+        <span style="display:inline-flex; width:30px; height:30px; align-items:center; justify-content:center;"><svg viewBox="0 0 120 100" width="32" height="26" xmlns="http://www.w3.org/2000/svg" aria-label="MIT Tech Studio logo"><path d="M14 80 V26 L42 54 L70 26 V80" fill="none" stroke="#e9edf2" stroke-width="12" stroke-linejoin="round" stroke-linecap="round"></path><rect x="90" y="74" width="12" height="12" rx="2" fill="var(--accent)" style="transform-box:fill-box; transform-origin:center; animation:logoDot 2.6s ease-in-out infinite;"></rect></svg></span>
+        <span style="font-weight:700; font-size:14px;">MIT Tech Studio</span>
+      </div>
+      <div style="font-family:'Geist Mono',monospace; font-size:11px; color:#5b6471; letter-spacing:.04em;">© 2026 MIT Tech Studio · Tokyo, Japan</div>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900},&quot;accent&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;lime&quot;,&quot;cyan&quot;,&quot;amber&quot;,&quot;violet&quot;],&quot;default&quot;:&quot;lime&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;density&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;airy&quot;,&quot;compact&quot;],&quot;default&quot;:&quot;airy&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { menuOpen: false, heroCls: '' };
+
+  ACCENTS = { lime: '#b5fb6b', cyan: '#5ecfff', amber: '#ffb648', violet: '#b48cff' };
+
+  applyVars() {
+    const root = document.documentElement;
+    root.style.setProperty('--accent', this.ACCENTS[this.props.accent] || this.props.accent || '#b5fb6b');
+    root.style.setProperty('--sec-pad', this.props.density === 'compact' ? 'clamp(64px,9vh,104px)' : 'clamp(96px,13vh,168px)');
+  }
+
+  componentDidMount() {
+    this.applyVars();
+
+    const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const root = this.el || document;
+
+    const animateNode = (el) => {
+      el.classList.add('in');
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+      el.style.filter = 'none';
+      if (el.classList.contains('wipe')) el.style.clipPath = 'inset(-18% -2% -18% -2%)';
+      const bar = el.matches('[data-bar]') ? el : el.querySelector('[data-bar]');
+      if (bar) { const v = bar.getAttribute('data-bar'); requestAnimationFrame(() => bar.style.width = v + '%'); }
+      const cu = el.querySelector('[data-countup]') || (el.matches('[data-countup]') ? el : null);
+      if (cu && !cu.dataset.done) {
+        cu.dataset.done = '1';
+        const target = parseInt(cu.getAttribute('data-countup'), 10) || 0;
+        let cur = 0; const t0 = performance.now(); const dur = 1100;
+        const tick = (t) => { const p = Math.min(1, (t - t0) / dur); cu.textContent = Math.round(target * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(tick); };
+        requestAnimationFrame(tick);
+      }
+    };
+
+    // split the two big hero words into per-letter spans for kinetic typography
+    const splitWord = (span) => {
+      const frag = document.createDocumentFragment();
+      const letters = [];
+      [...span.childNodes].forEach((node) => {
+        if (node.nodeType === 3) {
+          node.textContent.split('').forEach((ch) => {
+            const s = document.createElement('span'); s.className = 'kc';
+            s.textContent = ch === ' ' ? '\u00a0' : ch;
+            frag.appendChild(s); letters.push(s);
+          });
+        } else { if (node.classList) node.classList.add('kc'); frag.appendChild(node); letters.push(node); }
+      });
+      span.textContent = ''; span.appendChild(frag); return letters;
+    };
+
+    const heroSection = root.querySelector('#home');
+    const allNodes = [...root.querySelectorAll('.reveal, .rise')];
+    const heroNodes = allNodes.filter((n) => heroSection && heroSection.contains(n));
+    const restNodes = allNodes.filter((n) => !heroSection || !heroSection.contains(n));
+
+    let kinetic = [];
+    if (!reduced && heroSection) {
+      const big = [...heroSection.querySelectorAll('.hero-line > .rise')];
+      [big[0], big[2]].filter(Boolean).forEach((t) => {
+        t.classList.add('in'); t.style.opacity = '1'; t.style.transform = 'none'; t.style.filter = 'none';
+        kinetic = kinetic.concat(splitWord(t));
+      });
+    }
+
+    const revealHero = () => {
+      heroNodes.forEach((n, i) => setTimeout(() => animateNode(n), 120 + i * 90));
+      kinetic.forEach((s, i) => setTimeout(() => s.classList.add('in'), 280 + i * 30));
+    };
+
+    this._setupCursor(reduced);
+    this._setupParallax(reduced);
+    root.querySelectorAll('.sns-card[data-brand]').forEach((el) => { const b = el.getAttribute('data-brand'); if (b) el.style.setProperty('--b', b); });
+    root.querySelectorAll('.skill-card[data-c]').forEach((el) => { const c = el.getAttribute('data-c'); if (c) el.style.setProperty('--c', c); });
+    root.querySelectorAll('img[data-src]').forEach((img) => { const s = img.getAttribute('data-src'); if (s && s.indexOf('{{') < 0) img.src = s; });
+
+    if (reduced || !('IntersectionObserver' in window)) {
+      allNodes.forEach(animateNode);
+      const intro0 = document.getElementById('intro'); if (intro0) intro0.style.display = 'none';
+      return;
+    }
+
+    this._io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const el = e.target; this._io.unobserve(el);
+        const sibs = [...el.parentElement.children].filter((c) => c.classList && (c.classList.contains('reveal') || c.classList.contains('rise')));
+        const i = Math.max(0, sibs.indexOf(el));
+        setTimeout(() => animateNode(el), i * 105);
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+    restNodes.forEach((n) => this._io.observe(n));
+
+    this._fallback = setTimeout(() => restNodes.forEach((n) => {
+      if (n.classList.contains('in')) return;
+      const r = n.getBoundingClientRect();
+      if (r.top < window.innerHeight && r.bottom > 0) animateNode(n);
+    }), 3000);
+
+    // opening sequence: logo draws → curtain splits → site
+    const intro = document.getElementById('intro');
+    if (intro) {
+      document.body.style.overflow = 'hidden';
+      try { window.scrollTo(0, 0); } catch (e) {}
+      const flyLogo = () => {
+        const ilogo = intro.querySelector('.ilogo');
+        const isvg = ilogo && ilogo.querySelector('svg');
+        const navMark = document.getElementById('navLogoMark');
+        const navSvg = navMark && navMark.querySelector('svg');
+        if (!ilogo || !isvg || !navSvg) return;
+        const a = isvg.getBoundingClientRect();
+        const b = navSvg.getBoundingClientRect();
+        if (!a.width || !b.width) return;
+        const scale = b.width / a.width;
+        const dx = (b.left + b.width / 2) - (a.left + a.width / 2);
+        const dy = (b.top + b.height / 2) - (a.top + a.height / 2);
+        navMark.style.opacity = '0';
+        ilogo.style.transition = 'transform 1s cubic-bezier(.76,0,.24,1)';
+        requestAnimationFrame(() => { ilogo.style.transform = `translate(${dx}px, ${dy}px) scale(${scale})`; });
+      };
+      this._tCharge = setTimeout(() => intro.classList.add('charge'), 1480);
+      this._tSeam = setTimeout(() => {
+        intro.classList.remove('charge');
+        const seam = intro.querySelector('.iseam');
+        const dot = document.getElementById('iDot');
+        if (seam && dot) {
+          const r = dot.getBoundingClientRect();
+          const cx = r.left + r.width / 2;
+          const cyPct = ((r.top + r.height / 2) / window.innerHeight) * 100;
+          seam.style.top = (r.top + r.height / 2) + 'px';
+          seam.style.transformOrigin = cx + 'px center';
+          const pct = Math.max(6, Math.min(94, (cx / window.innerWidth) * 100));
+          seam.style.background = `linear-gradient(90deg, transparent, var(--accent) ${(pct - 40).toFixed(0)}%, #ffffff ${(pct - 4).toFixed(0)}%, #ffffff ${(pct + 4).toFixed(0)}%, var(--accent) ${(pct + 40).toFixed(0)}%, transparent)`;
+          const itop = intro.querySelector('.itop'), ibot = intro.querySelector('.ibot');
+          if (itop && ibot) { itop.style.height = cyPct.toFixed(2) + '%'; ibot.style.height = (100 - cyPct).toFixed(2) + '%'; }
+        }
+        intro.classList.add('seam');
+      }, 1980);
+      this._t1 = setTimeout(() => { intro.classList.add('open'); flyLogo(); }, 2480);
+      this._t2 = setTimeout(revealHero, 2760);
+      this._t3 = setTimeout(() => {
+        const navMark = document.getElementById('navLogoMark'); if (navMark) navMark.style.opacity = '1';
+        intro.style.display = 'none'; document.body.style.overflow = '';
+      }, 3720);
+    } else { revealHero(); }
+  }
+
+  _setupCursor(reduced) {
+    if (reduced) return;
+    if (window.matchMedia && window.matchMedia('(pointer:coarse)').matches) return;
+    const c = document.getElementById('cursor'), d = document.getElementById('cursorDot');
+    if (!c || !d) return;
+    let cx = window.innerWidth / 2, cy = window.innerHeight / 2, x = cx, y = cy, active = false;
+    const move = (e) => {
+      cx = e.clientX; cy = e.clientY;
+      if (!active) { active = true; d.style.opacity = '1'; }
+      d.style.transform = `translate3d(${cx}px, ${cy}px, 0)`;
+    };
+    window.addEventListener('mousemove', move, { passive: true });
+    const loop = () => { x += (cx - x) * 0.18; y += (cy - y) * 0.18; c.style.transform = `translate3d(${x}px, ${y}px, 0)`; this._craf = requestAnimationFrame(loop); };
+    c.style.opacity = '0'; d.style.opacity = '0'; loop();
+    const hot = 'a, button, .flip-card, .sns-card, input, textarea';
+    this._over = (e) => { if (e.target.closest && e.target.closest(hot)) document.body.classList.add('cursor-hot'); };
+    this._out = (e) => { const rel = e.relatedTarget; if (e.target.closest && e.target.closest(hot) && !(rel && rel.closest && rel.closest(hot))) document.body.classList.remove('cursor-hot'); };
+    document.addEventListener('mouseover', this._over);
+    document.addEventListener('mouseout', this._out);
+  }
+
+  _setupParallax(reduced) {
+    if (reduced) return;
+    const els = [...document.querySelectorAll('[data-parallax]')];
+    if (!els.length) return;
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      const center = window.scrollY + window.innerHeight / 2;
+      els.forEach((el) => {
+        const r = el.getBoundingClientRect();
+        const elCenter = window.scrollY + r.top + r.height / 2;
+        const speed = parseFloat(el.getAttribute('data-parallax')) || 0;
+        const off = (elCenter - center) * speed;
+        el.style.transform = `translate3d(0, ${off.toFixed(1)}px, 0)`;
+      });
+    };
+    this._onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+    window.addEventListener('scroll', this._onScroll, { passive: true });
+    window.addEventListener('resize', this._onScroll);
+    update();
+  }
+
+  componentDidUpdate() { this.applyVars(); }
+
+  componentWillUnmount() {
+    if (this._io) this._io.disconnect();
+    [this._fallback, this._tCharge, this._tSeam, this._t1, this._t2, this._t3].forEach((t) => t && clearTimeout(t));
+    if (this._craf) cancelAnimationFrame(this._craf);
+    if (this._onScroll) { window.removeEventListener('scroll', this._onScroll); window.removeEventListener('resize', this._onScroll); }
+    if (this._over) document.removeEventListener('mouseover', this._over);
+    if (this._out) document.removeEventListener('mouseout', this._out);
+    document.body.style.overflow = '';
+  }
+
+  renderVals() {
+    const logoMark = '<svg viewBox="0 0 180 180" width="64%" height="64%" xmlns="http://www.w3.org/2000/svg" aria-label="logo"><g transform="scale(0.95)" transform-origin="90 90" fill="#07080b"><path d="M101.141 53H136.632C151.023 53 162.689 64.6662 162.689 79.0573V112.904H148.112V79.0573C148.112 78.7105 148.098 78.3662 148.072 78.0251L112.581 112.898C112.701 112.902 112.821 112.904 112.941 112.904H148.112V126.672H112.941C98.5504 126.672 86.5638 114.891 86.5638 100.5V66.7434H101.141V100.5C101.141 101.15 101.191 101.792 101.289 102.422L137.56 66.7816C137.255 66.7563 136.945 66.7434 136.632 66.7434H101.141V53Z"/><path d="M65.2926 124.136L14 66.7372H34.6355L64.7495 100.436V66.7372H80.1365V118.47C80.1365 126.278 70.4953 129.958 65.2926 124.136Z"/></g></svg>';
+
+    const CELL = 6, DOT = 4.6, OFF = (CELL - DOT) / 2;
+    const land = [
+      '                       #      ',
+      '                       #      ',
+      '                       ##     ',
+      '                       ###   #',
+      '                    # ####### ',
+      '                    ######### ',
+      '                    ##########',
+      '                   ########   ',
+      '                   ##   ##    ',
+      '                   #     #    ',
+      '                   # ##       ',
+      '                      #       ',
+      '                    ####      ',
+      '                    ####      ',
+      '                   ####       ',
+      '                    ###       ',
+      '                   ####       ',
+      '                   #####      ',
+      '                 # ####       ',
+      '                  #####       ',
+      '              ## ######       ',
+      '              # #######       ',
+      '             ##########       ',
+      '           ###########        ',
+      '     ############## ##        ',
+      '    ##############  #         ',
+      '   ###     ###  #  ##         ',
+      '       ###  ###               ',
+      ' ##   #### ##                 ',
+      '#### ###                      ',
+      '####  #                       ',
+      ' ###                          ',
+      ' ##                           ',
+      '  ##                          ',
+      '  #                           ',
+    ];
+    const TX = 20, TY = 22;
+    const mapDots = [];
+    land.forEach((row, ry) => {
+      row.split('').forEach((ch, cx) => {
+        if (ch !== '#') return;
+        const tokyo = (cx === TX && ry === TY);
+        mapDots.push({ x: (cx * CELL + OFF).toFixed(2), y: (ry * CELL + OFF).toFixed(2), fill: tokyo ? 'var(--accent)' : '#6b7480', opacity: tokyo ? 1 : 0.4 });
+      });
+    });
+
+    // GitHub contribution heatmap (53 weeks x 7 days), deterministic
+    const WEEKS = 53, GAP = 3, SZ = 11;
+    const levelColors = ['#161b22', '#0e4429', '#196c2e', '#2ea043', '#56d364'];
+    let seed = 20260621, total = 0;
+    const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+    const ghCells = [];
+    for (let w = 0; w < WEEKS; w++) {
+      for (let d = 0; d < 7; d++) {
+        const r = rnd();
+        const recent = w > WEEKS - 10 ? 0.18 : 0;
+        let lvl = r < 0.42 - recent ? 0 : r < 0.66 ? 1 : r < 0.84 ? 2 : r < 0.95 ? 3 : 4;
+        total += [0, 2, 5, 9, 14][lvl];
+        ghCells.push({ x: w * (SZ + GAP), y: d * (SZ + GAP), c: levelColors[lvl] });
+      }
+    }
+    const ghW = WEEKS * (SZ + GAP) - GAP, ghH = 7 * (SZ + GAP) - GAP;
+    const ghLegend = levelColors.map((c) => ({ c }));
+
+    return {
+      menuOpen: this.state.menuOpen,
+      heroCls: this.state.heroCls,
+      logoMark,
+      mapDots,
+      ghCells,
+      ghLegend,
+      ghW,
+      ghH,
+      ghTotal: total.toLocaleString(),
+      toggleMenu: () => this.setState((s) => ({ menuOpen: !s.menuOpen })),
+      goHome: (e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); },
+      navLinks: [
+        { label: 'About', href: '#about' },
+        { label: 'Works', href: '#works' },
+        { label: 'Writing', href: '#writing' },
+        { label: 'Contact', href: '#contact' },
+      ],
+      stats: [
+        { value: '2025.08', label: 'SINCE' },
+        { value: '1', label: 'ENGINEER +collab' },
+      ],
+      skills: [
+        { label: 'UI/UXデザイン', score: 92, color: '#b5fb6b', stack: ['Figma', 'デザインシステム', 'プロトタイプ'] },
+        { label: 'フロントエンド開発', score: 88, color: '#ffb648', stack: ['TypeScript', 'React', 'Next.js'] },
+        { label: 'Webアプリケーション', score: 81, color: '#5ecfff', stack: ['API', '認証', 'DB'] },
+        { label: 'テクニカルサポート', score: 76, color: '#b48cff', stack: ['Git', 'CI/CD', 'A11y'] },
+      ],
+      works: [
+        { idx: '01', name: 'Portfolio Landing', lang: 'TypeScript', commits: 19, desc: 'このポートフォリオサイトのソース。Next.js + TypeScript、カスタムデザインシステム。Vercel にデプロイ。', url: 'https://github.com/mitokawaguchi/5.LandingPageCreation-jy' },
+        { idx: '02', name: 'TaskFlow', lang: 'JavaScript', commits: 136, desc: 'ドラッグ&ドロップのカンバンボードを備えたタスク管理アプリ。リアルタイム更新、Vercel で公開。', url: 'https://taskflow-alpha-ebon.vercel.app' },
+        { idx: '03', name: 'Profile README', lang: 'Markdown', commits: 6, desc: 'GitHub プロフィール README。動的スタッツ、コントリビューショングラフ、自動更新スキルバッジ。', url: 'https://github.com/mitokawaguchi/mitokawaguchi' },
+      ],
+      articles: [
+        { source: 'Zenn', color: '#5ecfff', icon: 'https://cdn.simpleicons.org/zenn/5ecfff', title: 'Next.js App Router で next-intl を使い倒す', summary: 'App Router 環境での next-intl 導入手順を、ルーティング設計から型安全な翻訳キー、サーバー/クライアント両対応まで実例で解説。', likes: 42, impressions: 1280, date: '2026.02.18', url: 'https://zenn.dev/mitokawaguchi/articles/nextjs-next-intl' },
+        { source: 'Qiita', color: '#69e6a6', icon: 'https://cdn.simpleicons.org/qiita/69e6a6', title: 'デザインシステムを CSS Variables だけで構築する', summary: 'フレームワークに依存せず、CSS Variables だけでトークン管理・テーマ切替・ダークモードを実現する設計パターンを紹介。', likes: 28, impressions: 980, date: '2026.01.09', url: 'https://qiita.com/mitokawaguchi/items/css-variables-design-system' },
+        { source: 'Zenn', color: '#5ecfff', icon: 'https://cdn.simpleicons.org/zenn/5ecfff', title: 'TypeScript で堅牢な i18n を設計する', summary: '翻訳キーの型生成と補完を効かせ、抜け漏れをコンパイル時に検出する i18n アーキテクチャを段階的に構築する。', likes: 19, impressions: 612, date: '2025.12.22', url: 'https://zenn.dev/mitokawaguchi/articles/typescript-i18n' },
+      ],
+      channels: [
+        { label: 'GitHub', handle: '@mitokawaguchi', url: 'https://github.com/mitokawaguchi', icon: 'https://cdn.simpleicons.org/github/e9edf2', brand: '#e9edf2', cta: 'リポジトリへ ↗' },
+        { label: 'Zenn', handle: '@mitokawaguchi', url: 'https://zenn.dev/mitokawaguchi', icon: 'https://cdn.simpleicons.org/zenn/3EA8FF', brand: '#3EA8FF', cta: '記事を読む ↗' },
+        { label: 'Qiita', handle: '@mitokawaguchi', url: 'https://qiita.com/mitokawaguchi', icon: 'https://cdn.simpleicons.org/qiita/55C500', brand: '#55C500', cta: '記事を読む ↗' },
+        { label: 'Instagram', handle: '@mito_112_', url: 'https://instagram.com/mito_112_', icon: 'https://cdn.simpleicons.org/instagram/E4405F', brand: '#E4405F', cta: 'フォロー ↗' },
+        { label: 'Threads', handle: '@mito_112_', url: 'https://www.threads.net/@mito_112_', icon: 'https://cdn.simpleicons.org/threads/e9edf2', brand: '#e9edf2', cta: 'フォロー ↗' },
+        { label: 'X', handle: '@mito_112_', url: 'https://x.com/mito_112_', icon: 'https://cdn.simpleicons.org/x/e9edf2', brand: '#e9edf2', cta: 'フォロー ↗' },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>
