@@ -6,9 +6,9 @@ export const mono = 'var(--font-geist-mono), monospace';
  * 写真が無い場合は暗いグラデーションのみが表示される（破綻しない）。
  */
 export const SECTION_IMAGES = {
-  hero: '/mts/hero.jpg',
-  about: '/mts/about.jpg',
-  works: '/mts/works.jpg',
-  writing: '/mts/writing.jpg',
-  contact: '/mts/contact.jpg',
+  hero: '/mts/hero.png',
+  about: '/mts/about.png',
+  works: '/mts/works.png',
+  writing: '/mts/writing.png',
+  contact: '/mts/contact.png',
 } as const;
