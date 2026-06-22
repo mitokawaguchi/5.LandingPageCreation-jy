@@ -6,10 +6,10 @@
 
 | ファイル名 | セクション | 推奨する内容 |
 |---|---|---|
-| `hero.jpg` | Hero | 緑のネットワーク／パーティクルの抽象（黒背景） |
-| `about.jpg` | About | 夜のオフィス・都市夜景・作業風景 |
-| `works.jpg` | Works | 暗いデスク＋ダッシュボード画面 |
-| `writing.jpg` | Writing | 窓辺で執筆・ノートPC |
-| `contact.jpg` | Contact | チームのミーティング風景 |
+| `hero.png` | Hero | 緑のネットワーク／パーティクルの抽象（黒背景） |
+| `about.png` | About | 夜のオフィス・都市夜景・作業風景 |
+| `works.png` | Works | 暗いデスク＋ダッシュボード画面 |
+| `writing.png` | Writing | 窓辺で執筆・ノートPC |
+| `contact.png` | Contact | チームのミーティング風景 |
 
 参照パスは `components/mts/tokens.ts` の `SECTION_IMAGES` で変更できます。
