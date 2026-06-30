@@ -100,6 +100,8 @@ const CSS = `
 @keyframes dotFlash{ 0%{ opacity:1; transform:scale(1.04); filter:drop-shadow(0 0 6px var(--accent)); } 26%{ opacity:1; transform:scale(1.95); filter:drop-shadow(0 0 11px var(--accent)) drop-shadow(0 0 26px var(--accent)); } 100%{ opacity:1; transform:scale(1); filter:drop-shadow(0 0 6px var(--accent)); } }
 #intro .idraw{ stroke-dasharray:100; stroke-dashoffset:100; animation:idraw 1.1s cubic-bezier(.6,.02,.2,1) .15s forwards; }
 @keyframes idraw{ to{ stroke-dashoffset:0; } }
+#intro .idot{ opacity:0; transform-box:fill-box; transform-origin:center; animation:idot .5s cubic-bezier(.16,1,.3,1) 1.05s forwards; }
+@keyframes idot{ 0%{ opacity:0; transform:scale(.2); } 70%{ transform:scale(1.25); } 100%{ opacity:1; transform:scale(1); } }
 
 #cursor, #cursorDot{ position:fixed; top:0; left:0; z-index:9500; pointer-events:none; will-change:transform; }
 #cursor{ width:34px; height:34px; border:1.5px solid #e9edf2; border-radius:50%; margin:-17px 0 0 -17px; opacity:0; mix-blend-mode:difference; transition:width .25s ease, height .25s ease, margin .25s ease, background .25s ease, opacity .3s; }
@@ -113,16 +115,37 @@ body.cursor-hot #cursorDot::after{ width:6px; height:6px; margin:-3px 0 0 -3px; 
 .dcx .nav-links{ display:flex; }
 .dcx .nav-burger{ display:none; }
 .dcx .hide-mobile{ display:block; }
+
+/* ===== responsive: tablet ===== */
+@media (max-width:1024px){
+  .dcx{ --sec-pad: clamp(76px, 10vh, 128px); }
+}
+
+/* ===== responsive: nav collapses to burger ===== */
 @media (max-width:820px){
   .dcx .nav-links{ display:none; }
   .dcx .nav-burger{ display:inline-flex; }
   .dcx .hide-mobile{ display:none; }
+  /* commits 列が消えるので 3 カラムに詰める */
+  .dcx .work-card{ grid-template-columns:auto 1fr auto !important; }
 }
+
+/* ===== responsive: phone ===== */
+@media (max-width:560px){
+  .dcx{ --sec-pad: clamp(56px, 8vh, 92px); }
+  /* インデックス番号を省き、本文＋矢印の 2 カラムに */
+  .dcx .work-card{ grid-template-columns:1fr auto !important; column-gap:14px !important; }
+  .dcx .work-idx{ display:none; }
+  /* 連絡先カード（地図）の固定高を解放して縦に収める */
+  .dcx .nav-sub{ display:none; }
+}
+
 @media (prefers-reduced-motion:reduce){
   .dcx .reveal{ opacity:1; transform:none; filter:none; }
   .dcx .reveal.wipe{ clip-path:none; }
   .dcx .rise{ opacity:1; transform:none; }
   .dcx .kc{ opacity:1; transform:none; }
+  .dcx [style*="animation"]{ animation:none !important; }
   #intro{ display:none; }
 }
 `;

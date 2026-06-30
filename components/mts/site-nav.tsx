@@ -41,7 +41,7 @@ export function SiteNav({ onToggleMenu }: SiteNavProps) {
         </span>
         <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
           <span style={{ fontWeight: 700, fontSize: 14, letterSpacing: '-0.01em' }}>MIT Tech Studio</span>
-          <span style={{ fontFamily: mono, fontSize: 10, color: '#5b6471', letterSpacing: '.06em', marginTop: 3 }}>rev.07 · tokyo</span>
+          <span className="nav-sub" style={{ fontFamily: mono, fontSize: 10, color: '#5b6471', letterSpacing: '.06em', marginTop: 3 }}>rev.07 · tokyo</span>
         </span>
       </a>
 
