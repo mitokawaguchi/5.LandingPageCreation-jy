@@ -23,7 +23,7 @@ export function Intro() {
             strokeLinejoin="round"
             strokeLinecap="round"
           />
-          <rect id="iDot" x={90} y={74} width={12} height={12} rx={2} fill="var(--accent)" />
+          <rect id="iDot" className="idot" x={90} y={74} width={12} height={12} rx={2} fill="var(--accent)" />
           <circle className="iburst" cx={96} cy={80} r={5} fill="none" stroke="var(--accent)" strokeWidth={2} />
           <circle className="iburst iburst2" cx={96} cy={80} r={5} fill="none" stroke="var(--accent)" strokeWidth={1.4} />
         </svg>
