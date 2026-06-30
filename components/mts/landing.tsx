@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react';
 import { NAV_LINKS } from '@/data/landing-content';
+import { LanguageSwitcher } from '@/components/language-switcher';
 import { LandingStyles } from './landing-styles';
 import { useLandingEffects } from './use-landing-effects';
 import { Intro } from './intro';
@@ -51,13 +52,18 @@ function MobileMenu({ onClose }: { onClose: () => void }) {
           {link.label}
         </a>
       ))}
-      <a
-        href="#contact"
-        onClick={onClose}
-        style={{ marginTop: 'auto', textAlign: 'center', textDecoration: 'none', background: 'var(--accent)', color: '#0c0e12', fontWeight: 600, fontSize: 17, padding: 18, borderRadius: 12, fontFamily: sans }}
-      >
-        お問い合わせ →
-      </a>
+      <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: 18 }}>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <LanguageSwitcher />
+        </div>
+        <a
+          href="#contact"
+          onClick={onClose}
+          style={{ textAlign: 'center', textDecoration: 'none', background: 'var(--accent)', color: '#0c0e12', fontWeight: 600, fontSize: 17, padding: 18, borderRadius: 12, fontFamily: sans }}
+        >
+          お問い合わせ →
+        </a>
+      </div>
     </div>
   );
 }
