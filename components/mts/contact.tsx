@@ -26,14 +26,8 @@ function LocationCard() {
               <rect key={i} x={d.x} y={d.y} width={4.6} height={4.6} fill={d.fill} opacity={d.opacity} />
             ))}
             <circle cx={123} cy={135} r={4} style={{ fill: 'var(--accent)' }} />
-            <circle cx={123} cy={135} r={8} style={{ fill: 'none', stroke: 'var(--accent)', strokeWidth: 0.6, opacity: 0.6 }}>
-              <animate attributeName="r" from="4" to="14" dur="2s" repeatCount="indefinite" />
-              <animate attributeName="opacity" from="0.7" to="0" dur="2s" repeatCount="indefinite" />
-            </circle>
-            <circle cx={123} cy={135} r={8} style={{ fill: 'none', stroke: 'var(--accent)', strokeWidth: 0.4, opacity: 0.4 }}>
-              <animate attributeName="r" from="6" to="20" dur="2.5s" repeatCount="indefinite" />
-              <animate attributeName="opacity" from="0.5" to="0" dur="2.5s" repeatCount="indefinite" />
-            </circle>
+            <circle className="radar-ping" cx={123} cy={135} r={5} style={{ fill: 'none', stroke: 'var(--accent)', strokeWidth: 0.6, opacity: 0.5 }} />
+            <circle className="radar-ping d2" cx={123} cy={135} r={5} style={{ fill: 'none', stroke: 'var(--accent)', strokeWidth: 0.4, opacity: 0.4 }} />
           </svg>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 14, fontFamily: mono, fontSize: 11, color: '#6b7480' }}>
             <div style={{ display: 'flex', gap: 16 }}>
@@ -75,12 +69,15 @@ function LocationCard() {
 
 export function Contact() {
   return (
-    <section id="contact" className="sect" style={{ position: 'relative', overflow: 'hidden', padding: 'var(--sec-pad) clamp(20px,5vw,56px)' }}>
+    <section id="contact" className="sect" style={{ position: 'relative', overflow: 'clip', padding: 'var(--sec-pad) clamp(20px,5vw,56px)' }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={SECTION_IMAGES.contact}
         alt=""
         aria-hidden
+        className="parallax-img"
+        decoding="async"
+        loading="lazy"
         style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', zIndex: 0, pointerEvents: 'none' }}
       />
       <div
@@ -93,12 +90,18 @@ export function Contact() {
           background: 'linear-gradient(180deg, rgba(10,11,14,.34) 0%, rgba(10,11,14,.55) 50%, rgba(10,11,14,.9) 90%)',
         }}
       />
+      <span
+        className="orb"
+        aria-hidden
+        style={{ color: '#b5fb6b', width: '42vw', maxWidth: 540, height: '42vw', maxHeight: 540, right: '-8%', top: '6%', opacity: 0.14, zIndex: 0, animation: 'orbB 26s ease-in-out infinite' }}
+      />
       <div style={{ position: 'relative', zIndex: 1, maxWidth: 1240, margin: '0 auto' }}>
         <div style={{ display: 'flex', gap: 'clamp(32px,5vw,64px)', alignItems: 'stretch', justifyContent: 'space-between', flexWrap: 'wrap', margin: '0 0 clamp(34px,5vh,48px)' }}>
           <div style={{ flex: '1 1 340px', minWidth: 260, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: 'clamp(28px,4.5vh,48px)' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(16px,2.5vh,24px)' }}>
               <h2
-                className="reveal wipe contact-h2"
+                className="split-head shine contact-h2"
+                data-split
                 style={{ margin: 0, fontFamily: sans, fontSize: 'clamp(40px,6vw,84px)', fontWeight: 800, lineHeight: 1.02, letterSpacing: '-0.04em' }}
               >
                 一緒に
@@ -116,6 +119,7 @@ export function Contact() {
               href={`mailto:${CONTACT_EMAIL}`}
               className="sns-card reveal"
               data-brand="#ffb648"
+              data-tilt
               style={{
                 maxWidth: 420,
                 textDecoration: 'none',
@@ -149,6 +153,7 @@ export function Contact() {
               rel="noreferrer"
               className="sns-card"
               data-brand={c.brand}
+              data-tilt
               style={{
                 textDecoration: 'none',
                 display: 'flex',

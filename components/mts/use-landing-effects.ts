@@ -21,6 +21,7 @@ export function useLandingEffects<T extends HTMLElement>(root: RefObject<T | nul
 
     const animateNode = (node: HTMLElement) => {
       node.classList.add('in');
+      node.classList.add('in-view');
       node.style.opacity = '1';
       node.style.transform = 'none';
       node.style.filter = 'none';
@@ -38,14 +39,18 @@ export function useLandingEffects<T extends HTMLElement>(root: RefObject<T | nul
       if (cu && !cu.dataset.done) {
         cu.dataset.done = '1';
         const target = parseInt(cu.getAttribute('data-countup') ?? '0', 10) || 0;
-        const t0 = performance.now();
-        const dur = 1100;
-        const tick = (t: number) => {
-          const p = Math.min(1, (t - t0) / dur);
-          cu.textContent = String(Math.round(target * (1 - (1 - p) ** 3)));
-          if (p < 1) requestAnimationFrame(tick);
-        };
-        requestAnimationFrame(tick);
+        if (reduced) {
+          cu.textContent = String(target);
+        } else {
+          const t0 = performance.now();
+          const dur = 1100;
+          const tick = (t: number) => {
+            const p = Math.min(1, (t - t0) / dur);
+            cu.textContent = String(Math.round(target * (1 - (1 - p) ** 3)));
+            if (p < 1) requestAnimationFrame(tick);
+          };
+          requestAnimationFrame(tick);
+        }
       }
     };
 
@@ -173,6 +178,196 @@ export function useLandingEffects<T extends HTMLElement>(root: RefObject<T | nul
           window.removeEventListener('resize', onScroll);
         });
       }
+    }
+
+    // ── scroll progress (--scrollp) ──
+    if (!reduced) {
+      let spTicking = false;
+      const updateSp = () => {
+        spTicking = false;
+        const doc = document.documentElement;
+        const max = doc.scrollHeight - window.innerHeight || 1;
+        const p = Math.min(1, Math.max(0, window.scrollY / max));
+        doc.style.setProperty('--scrollp', p.toFixed(4));
+      };
+      const onSp = () => {
+        if (!spTicking) {
+          spTicking = true;
+          requestAnimationFrame(updateSp);
+        }
+      };
+      window.addEventListener('scroll', onSp, { passive: true });
+      window.addEventListener('resize', onSp);
+      updateSp();
+      cleanups.push(() => {
+        window.removeEventListener('scroll', onSp);
+        window.removeEventListener('resize', onSp);
+      });
+    }
+
+    // ── offscreen / tab-hidden pause for looping ambient motion ──
+    if (!reduced && 'IntersectionObserver' in window) {
+      const loopSections = Array.from(
+        el.querySelectorAll<HTMLElement>('#home, #about, #works, #writing, #contact'),
+      );
+      const ioPause = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            (e.target as HTMLElement).classList.toggle('paused', !e.isIntersecting);
+          });
+        },
+        { threshold: 0 },
+      );
+      loopSections.forEach((s) => ioPause.observe(s));
+      const onVis = () => {
+        document.documentElement.classList.toggle('tab-hidden', document.hidden);
+      };
+      document.addEventListener('visibilitychange', onVis);
+      cleanups.push(() => {
+        ioPause.disconnect();
+        document.removeEventListener('visibilitychange', onVis);
+        document.documentElement.classList.remove('tab-hidden');
+      });
+    }
+
+    // ── kinetic headings ([data-split]) + shine sweep ──
+    if (!reduced) {
+      const addChar = (ch: string, dest: Node, letters: HTMLElement[]) => {
+        const s = document.createElement('span');
+        s.className = 'kw';
+        s.textContent = ch;
+        dest.appendChild(s);
+        letters.push(s);
+      };
+      const buildInto = (src: Node, dest: Node, letters: HTMLElement[]) => {
+        Array.from(src.childNodes).forEach((n) => {
+          if (n.nodeType === 3) {
+            const text = n.textContent ?? '';
+            if (text.includes(' ')) {
+              // スペース区切り（英字など）は単語単位で改行を許し、語中では割らない
+              const parts = text.split(' ');
+              parts.forEach((part, wi) => {
+                if (wi > 0) dest.appendChild(document.createTextNode(' '));
+                if (part === '') return;
+                const word = document.createElement('span');
+                word.style.display = 'inline-block';
+                word.style.whiteSpace = 'nowrap';
+                for (const ch of part) addChar(ch, word, letters);
+                dest.appendChild(word);
+              });
+            } else {
+              // CJK など空白の無いテキストは 1 文字単位（自然な折り返しを維持）
+              for (const ch of text) addChar(ch, dest, letters);
+            }
+          } else if (n.nodeName === 'BR') {
+            dest.appendChild(document.createElement('br'));
+          } else if (n instanceof HTMLElement) {
+            const wrap = n.cloneNode(false) as HTMLElement;
+            dest.appendChild(wrap);
+            buildInto(n, wrap, letters);
+          }
+        });
+      };
+      const heads = Array.from(el.querySelectorAll<HTMLElement>('[data-split]'));
+      const splitMap = new Map<HTMLElement, HTMLElement[]>();
+      heads.forEach((h) => {
+        const letters: HTMLElement[] = [];
+        const holder = document.createElement('span');
+        buildInto(h, holder, letters);
+        h.textContent = '';
+        while (holder.firstChild) h.appendChild(holder.firstChild);
+        splitMap.set(h, letters);
+      });
+      const revealHead = (h: HTMLElement) => {
+        const ws = splitMap.get(h) ?? [];
+        ws.forEach((s, i) => timers.push(setTimeout(() => s.classList.add('in'), i * 26)));
+        if (h.classList.contains('shine')) {
+          timers.push(setTimeout(() => h.classList.add('lit'), Math.min(ws.length, 12) * 26 + 140));
+        }
+      };
+      if ('IntersectionObserver' in window) {
+        const ioH = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((e) => {
+              if (!e.isIntersecting) return;
+              ioH.unobserve(e.target);
+              revealHead(e.target as HTMLElement);
+            });
+          },
+          { threshold: 0.25, rootMargin: '0px 0px -8% 0px' },
+        );
+        heads.forEach((h) => ioH.observe(h));
+        cleanups.push(() => ioH.disconnect());
+      } else {
+        heads.forEach(revealHead);
+      }
+    }
+
+    // ── pointer-driven 3D tilt + magnetic (fine pointer only) ──
+    if (!reduced && window.matchMedia?.('(pointer:fine)').matches) {
+      el.querySelectorAll<HTMLElement>('[data-tilt]').forEach((node) => {
+        let rafT = 0;
+        const orig = node.style.transition;
+        const onEnter = () => {
+          if (node.classList.contains('reveal') && !node.classList.contains('in')) return;
+          node.style.transition = 'transform .12s cubic-bezier(.16,1,.3,1)';
+        };
+        const onMove = (e: PointerEvent) => {
+          if (node.classList.contains('reveal') && !node.classList.contains('in')) return;
+          if (rafT) return;
+          rafT = requestAnimationFrame(() => {
+            rafT = 0;
+            const r = node.getBoundingClientRect();
+            const px = (e.clientX - r.left) / r.width - 0.5;
+            const py = (e.clientY - r.top) / r.height - 0.5;
+            const max = 5.5;
+            node.style.transform = `perspective(900px) rotateY(${(px * max).toFixed(2)}deg) rotateX(${(-py * max).toFixed(2)}deg)`;
+          });
+        };
+        const onLeave = () => {
+          if (rafT) {
+            cancelAnimationFrame(rafT);
+            rafT = 0;
+          }
+          node.style.transition = orig || 'transform .5s cubic-bezier(.16,1,.3,1)';
+          node.style.transform = node.classList.contains('reveal') ? 'none' : '';
+        };
+        node.addEventListener('pointerenter', onEnter);
+        node.addEventListener('pointermove', onMove);
+        node.addEventListener('pointerleave', onLeave);
+        cleanups.push(() => {
+          node.removeEventListener('pointerenter', onEnter);
+          node.removeEventListener('pointermove', onMove);
+          node.removeEventListener('pointerleave', onLeave);
+        });
+      });
+
+      el.querySelectorAll<HTMLElement>('[data-magnetic]').forEach((node) => {
+        let rafM = 0;
+        const onMove = (e: PointerEvent) => {
+          if (rafM) return;
+          rafM = requestAnimationFrame(() => {
+            rafM = 0;
+            const r = node.getBoundingClientRect();
+            const mx = e.clientX - (r.left + r.width / 2);
+            const my = e.clientY - (r.top + r.height / 2);
+            node.style.transform = `translate(${(mx * 0.3).toFixed(1)}px, ${(my * 0.3).toFixed(1)}px)`;
+          });
+        };
+        const onLeave = () => {
+          if (rafM) {
+            cancelAnimationFrame(rafM);
+            rafM = 0;
+          }
+          node.style.transform = '';
+        };
+        node.addEventListener('pointermove', onMove);
+        node.addEventListener('pointerleave', onLeave);
+        cleanups.push(() => {
+          node.removeEventListener('pointermove', onMove);
+          node.removeEventListener('pointerleave', onLeave);
+        });
+      });
     }
 
     el.querySelectorAll<HTMLElement>('.sns-card[data-brand]').forEach((node) => {

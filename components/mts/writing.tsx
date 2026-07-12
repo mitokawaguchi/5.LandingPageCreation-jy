@@ -3,12 +3,15 @@ import { sans, mono, SECTION_IMAGES } from './tokens';
 
 export function Writing() {
   return (
-    <section id="writing" className="sect" style={{ position: 'relative', overflow: 'hidden', padding: 'var(--sec-pad) clamp(20px,5vw,56px)' }}>
+    <section id="writing" className="sect" style={{ position: 'relative', overflow: 'clip', padding: 'var(--sec-pad) clamp(20px,5vw,56px)' }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={SECTION_IMAGES.writing}
         alt=""
         aria-hidden
+        className="parallax-img"
+        decoding="async"
+        loading="lazy"
         style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', zIndex: 0, pointerEvents: 'none', opacity: 0.5 }}
       />
       <div
@@ -21,9 +24,15 @@ export function Writing() {
           background: 'linear-gradient(180deg, rgba(10,11,14,.72) 0%, rgba(10,11,14,.82) 45%, rgba(10,11,14,.95) 90%)',
         }}
       />
+      <span
+        className="orb"
+        aria-hidden
+        style={{ color: '#b48cff', width: '38vw', maxWidth: 480, height: '38vw', maxHeight: 480, left: '-6%', top: '-4%', opacity: 0.14, zIndex: 0, animation: 'orbA 25s ease-in-out infinite' }}
+      />
       <div style={{ position: 'relative', zIndex: 1, maxWidth: 1240, margin: '0 auto' }}>
         <h2
-          className="reveal wipe"
+          className="split-head shine"
+          data-split
           style={{ margin: '0 0 clamp(40px,7vh,64px)', fontFamily: sans, fontSize: 'clamp(32px,4.5vw,56px)', fontWeight: 700, letterSpacing: '-0.03em' }}
         >
           執筆記事

@@ -46,30 +46,37 @@ function GithubPopup() {
 export function Works() {
   return (
     <section id="works" className="sect" style={{ position: 'relative', padding: 'var(--sec-pad) clamp(20px,5vw,56px)' }}>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={SECTION_IMAGES.works}
-        alt=""
-        aria-hidden
-        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', zIndex: 0, pointerEvents: 'none' }}
-      />
-      <div
-        aria-hidden
-        style={{
-          position: 'absolute',
-          inset: 0,
-          zIndex: 0,
-          pointerEvents: 'none',
-          background: 'linear-gradient(180deg, rgba(10,11,14,.34) 0%, rgba(10,11,14,.55) 50%, rgba(10,11,14,.9) 90%)',
-        }}
-      />
+      {/* 背景レイヤーだけを clip でクリップ（section は visible のまま＝ホバーポップアップを切らない） */}
+      <div aria-hidden style={{ position: 'absolute', inset: 0, overflow: 'clip', zIndex: 0, pointerEvents: 'none' }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={SECTION_IMAGES.works}
+          alt=""
+          className="parallax-img"
+          decoding="async"
+          loading="lazy"
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(180deg, rgba(10,11,14,.34) 0%, rgba(10,11,14,.55) 50%, rgba(10,11,14,.9) 90%)',
+          }}
+        />
+        <span
+          className="orb"
+          style={{ color: '#5ecfff', width: '44vw', maxWidth: 560, height: '44vw', maxHeight: 560, left: '-8%', bottom: '-6%', opacity: 0.13, animation: 'orbC 27s ease-in-out infinite' }}
+        />
+      </div>
       <div style={{ position: 'relative', zIndex: 1, maxWidth: 1240, margin: '0 auto' }}>
         <div
           className="reveal section-head"
           style={{ position: 'relative', zIndex: 20, display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16, marginBottom: 'clamp(40px,7vh,64px)' }}
         >
           <h2
-            className="reveal wipe"
+            className="split-head shine"
+            data-split
             style={{ margin: 0, fontFamily: sans, fontSize: 'clamp(40px,5.5vw,76px)', fontWeight: 700, letterSpacing: '-0.03em' }}
           >
             Selected Works
@@ -80,6 +87,7 @@ export function Works() {
               target="_blank"
               rel="noreferrer"
               className="cta"
+              data-magnetic
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -108,6 +116,7 @@ export function Works() {
               target="_blank"
               rel="noreferrer"
               className="reveal work-card"
+              data-tilt
               style={{
                 textDecoration: 'none',
                 color: 'inherit',

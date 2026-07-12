@@ -19,6 +19,7 @@ import { sans } from './tokens';
 function MobileMenu({ onClose }: { onClose: () => void }) {
   return (
     <div
+      className="mobile-menu"
       style={{
         position: 'fixed',
         inset: 0,
@@ -42,12 +43,13 @@ function MobileMenu({ onClose }: { onClose: () => void }) {
           ×
         </button>
       </div>
-      {NAV_LINKS.map((link) => (
+      {NAV_LINKS.map((link, i) => (
         <a
           key={link.href}
           href={link.href}
           onClick={onClose}
-          style={{ textDecoration: 'none', color: '#cfd5dd', fontSize: 34, fontWeight: 600, letterSpacing: '-0.02em', padding: '14px 0', borderBottom: '1px solid #14181f', fontFamily: sans }}
+          className="mm-link"
+          style={{ ['--i' as string]: i, textDecoration: 'none', color: '#cfd5dd', fontSize: 34, fontWeight: 600, letterSpacing: '-0.02em', padding: '14px 0', borderBottom: '1px solid #14181f', fontFamily: sans }}
         >
           {link.label}
         </a>
@@ -77,9 +79,10 @@ export function Landing() {
     <div
       ref={rootRef}
       className="dcx"
-      style={{ fontFamily: sans, background: '#0c0e12', color: '#cfd5dd', minHeight: '100vh', overflowX: 'hidden' }}
+      style={{ fontFamily: sans, background: '#0c0e12', color: '#cfd5dd', minHeight: '100vh' }}
     >
       <LandingStyles />
+      <div id="scrollProgress" aria-hidden />
       <Intro />
       <Cursor />
       <SiteNav onToggleMenu={() => setMenuOpen((o) => !o)} />

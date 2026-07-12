@@ -60,6 +60,7 @@ export function SiteNav({ onToggleMenu }: SiteNavProps) {
         <div className="cm-wrap" style={{ marginLeft: 10 }}>
           <a
             href="#contact"
+            data-magnetic
             style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 8, background: 'var(--accent)', color: '#0c0e12', fontWeight: 600, fontSize: 14, padding: '10px 18px', borderRadius: 9, transition: 'transform .15s, box-shadow .2s' }}
           >
             お問い合わせ

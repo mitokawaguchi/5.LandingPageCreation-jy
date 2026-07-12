@@ -8,8 +8,6 @@ export function Intro() {
       <div className="ilogo">
         <svg
           viewBox="0 0 120 100"
-          width="clamp(120px,16vw,200px)"
-          height="auto"
           xmlns="http://www.w3.org/2000/svg"
           style={{ width: 'clamp(120px,16vw,200px)', height: 'auto', overflow: 'visible' }}
         >

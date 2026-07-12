@@ -8,7 +8,7 @@ export function About() {
       className="sect"
       style={{
         position: 'relative',
-        overflow: 'hidden',
+        overflow: 'clip',
         padding: 'clamp(28px,4vh,56px) clamp(20px,5vw,56px) var(--sec-pad)',
         marginTop: 'clamp(-90px,-11vh,-56px)',
       }}
@@ -18,6 +18,9 @@ export function About() {
         src={SECTION_IMAGES.about}
         alt=""
         aria-hidden
+        className="parallax-img"
+        decoding="async"
+        loading="lazy"
         style={{
           position: 'absolute',
           inset: 0,
@@ -40,6 +43,11 @@ export function About() {
             'linear-gradient(90deg, rgba(8,9,12,.96) 0%, rgba(8,9,12,.9) 50%, rgba(8,9,12,.62) 100%)',
         }}
       />
+      <span
+        className="orb"
+        aria-hidden
+        style={{ color: '#b5fb6b', width: '40vw', maxWidth: 520, height: '40vw', maxHeight: 520, right: '-6%', top: '2%', opacity: 0.16, zIndex: 0, animation: 'orbB 23s ease-in-out infinite' }}
+      />
       <div style={{ position: 'relative', zIndex: 1, maxWidth: 1240, margin: '0 auto' }}>
         <div
           className="reveal grid-feat"
@@ -52,7 +60,8 @@ export function About() {
         >
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <h2
-              className="reveal wipe"
+              className="split-head shine"
+              data-split
               style={{
                 margin: '0 0 clamp(30px,5vh,46px)',
                 fontFamily: sans,

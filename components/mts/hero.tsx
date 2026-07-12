@@ -1,4 +1,34 @@
-import { sans, SECTION_IMAGES } from './tokens';
+import { sans, mono, SECTION_IMAGES } from './tokens';
+import { AmbientCanvas } from './ambient-canvas';
+
+const MARQUEE_ITEMS = [
+  'TypeScript',
+  'React',
+  'Next.js',
+  'Figma',
+  'Design Systems',
+  'Motion Design',
+  'Accessibility',
+  'UI / UX',
+  'Vercel',
+  'CI / CD',
+];
+
+function HeroMarquee() {
+  const items = [...MARQUEE_ITEMS, ...MARQUEE_ITEMS];
+  return (
+    <div className="mq" aria-hidden style={{ marginTop: 'clamp(30px,4.5vh,48px)', maxWidth: 620 }}>
+      <div className="mq-track">
+        {items.map((label, i) => (
+          <span className="mq-item" key={i}>
+            <span className="mq-dot" />
+            <b>{label}</b>
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export function Hero() {
   return (
@@ -7,6 +37,7 @@ export function Hero() {
       className="hero-section"
       style={{
         position: 'relative',
+        overflow: 'clip',
         minHeight: 'clamp(620px, 90vh, 1000px)',
         display: 'flex',
         flexDirection: 'column',
@@ -17,6 +48,7 @@ export function Hero() {
       <div
         aria-hidden
         data-parallax="0.18"
+        className="hero-grid"
         style={{
           position: 'absolute',
           inset: '-12% 0',
@@ -35,6 +67,9 @@ export function Hero() {
         src={SECTION_IMAGES.hero}
         alt=""
         aria-hidden
+        className="parallax-img"
+        decoding="async"
+        fetchPriority="high"
         style={{
           position: 'absolute',
           inset: 0,
@@ -58,9 +93,34 @@ export function Hero() {
         }}
       />
 
+      {/* ambient aurora orbs (soft drifting glow) */}
+      <span
+        className="orb"
+        aria-hidden
+        style={{ color: '#b5fb6b', width: '46vw', maxWidth: 620, height: '46vw', maxHeight: 620, left: '-8%', top: '-14%', opacity: 0.32, animation: 'orbA 17s ease-in-out infinite' }}
+      />
+      <span
+        className="orb"
+        aria-hidden
+        style={{ color: '#5ecfff', width: '38vw', maxWidth: 520, height: '38vw', maxHeight: 520, right: '-6%', top: '4%', opacity: 0.22, animation: 'orbB 21s ease-in-out infinite' }}
+      />
+      <span
+        className="orb"
+        aria-hidden
+        style={{ color: '#b48cff', width: '32vw', maxWidth: 440, height: '32vw', maxHeight: 440, left: '30%', bottom: '-18%', opacity: 0.18, animation: 'orbC 24s ease-in-out infinite' }}
+      />
+
+      {/* lightweight particle constellation (canvas, capped + offscreen-paused) */}
+      <AmbientCanvas opacity={0.5} />
+
+      {/* periodic scan beam */}
+      <span className="hero-scan" aria-hidden />
+
       <div
+        className="hero-exit"
         style={{
           position: 'relative',
+          zIndex: 2,
           maxWidth: 1240,
           margin: 0,
           display: 'flex',
@@ -136,7 +196,57 @@ export function Hero() {
               技術力とデザインの融合。精密かつエレガントなWeb体験を創造し、ビジネスの未来を加速させます。
             </p>
           </div>
+
+          <div className="rise">
+            <HeroMarquee />
+          </div>
         </div>
+      </div>
+
+      {/* scroll cue */}
+      <div
+        className="rise"
+        aria-hidden
+        style={{
+          position: 'absolute',
+          left: 'clamp(20px,5vw,56px)',
+          bottom: 'clamp(22px,4vh,40px)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 10,
+          fontFamily: mono,
+          fontSize: 11,
+          letterSpacing: '.12em',
+          color: '#6b7480',
+          zIndex: 2,
+        }}
+      >
+        <span
+          style={{
+            display: 'inline-flex',
+            width: 22,
+            height: 34,
+            borderRadius: 12,
+            border: '1px solid #2a323d',
+            position: 'relative',
+          }}
+        >
+          <span
+            className="scroll-cue"
+            style={{
+              position: 'absolute',
+              left: '50%',
+              top: 7,
+              width: 3,
+              height: 7,
+              marginLeft: -1.5,
+              borderRadius: 2,
+              background: 'var(--accent)',
+              animation: 'scrollCue 1.8s cubic-bezier(.45,.05,.35,1) infinite',
+            }}
+          />
+        </span>
+        SCROLL
       </div>
     </section>
   );
