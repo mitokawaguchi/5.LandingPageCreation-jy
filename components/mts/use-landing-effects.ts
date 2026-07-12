@@ -278,12 +278,25 @@ export function useLandingEffects<T extends HTMLElement>(root: RefObject<T | nul
         while (holder.firstChild) h.appendChild(holder.firstChild);
         splitMap.set(h, letters);
       });
+      const revealed = new Set<HTMLElement>();
       const revealHead = (h: HTMLElement) => {
+        if (revealed.has(h)) return;
+        revealed.add(h);
         const ws = splitMap.get(h) ?? [];
         ws.forEach((s, i) => timers.push(setTimeout(() => s.classList.add('in'), i * 26)));
         if (h.classList.contains('shine')) {
           timers.push(setTimeout(() => h.classList.add('lit'), Math.min(ws.length, 12) * 26 + 140));
         }
+      };
+      // スクロール位置が到達した見出しは必ず出す。高速スクロールで IO が
+      // 「表示中」を取りこぼしても（1フレームで通過しても）、上端を過ぎた見出しは
+      // ここで確実に表示される（bottom>0 を条件にしない = 通過済みも救済）。
+      const revealHeadsInView = () => {
+        heads.forEach((h) => {
+          if (revealed.has(h)) return;
+          const r = h.getBoundingClientRect();
+          if (r.top < window.innerHeight * 1.05) revealHead(h);
+        });
       };
       if ('IntersectionObserver' in window) {
         const ioH = new IntersectionObserver(
@@ -294,10 +307,29 @@ export function useLandingEffects<T extends HTMLElement>(root: RefObject<T | nul
               revealHead(e.target as HTMLElement);
             });
           },
-          { threshold: 0.25, rootMargin: '0px 0px -8% 0px' },
+          { threshold: 0.01, rootMargin: '0px 0px 0px 0px' },
         );
         heads.forEach((h) => ioH.observe(h));
         cleanups.push(() => ioH.disconnect());
+        // スクロール連動フォールバック：どんな端末・スクロール速度でも表示域の見出しは必ず出す
+        let hTick = false;
+        const onHScroll = () => {
+          if (hTick) return;
+          hTick = true;
+          requestAnimationFrame(() => {
+            hTick = false;
+            revealHeadsInView();
+          });
+        };
+        window.addEventListener('scroll', onHScroll, { passive: true });
+        window.addEventListener('resize', onHScroll);
+        cleanups.push(() => {
+          window.removeEventListener('scroll', onHScroll);
+          window.removeEventListener('resize', onHScroll);
+        });
+        // 初期表示分（オープニング前後）を確実に出すフォールバック
+        timers.push(setTimeout(revealHeadsInView, 2600));
+        timers.push(setTimeout(revealHeadsInView, 4200));
       } else {
         heads.forEach(revealHead);
       }
